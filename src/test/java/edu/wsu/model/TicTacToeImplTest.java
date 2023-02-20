@@ -6,7 +6,7 @@ class TicTacToeImplTest {
 
   @org.junit.jupiter.api.Test
   void getWinner() {
-    TicTacToe ttt = new TicTacToeImpl();
-    assertEquals("Bertie", ttt.getWinner());
+    Player ttt = new Innocent();
+    assertEquals("Bertie", ttt.getRole());
   }
 }

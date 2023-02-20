@@ -8,7 +8,7 @@ public class Innocent extends Player{
     //special checking within the player class
 
     @Override
-    public String tellRole(){
-        return "You are an innocent passenger!";
+    public void tellRole(){
+        hear("You are an innocent passenger!");
     }
 }

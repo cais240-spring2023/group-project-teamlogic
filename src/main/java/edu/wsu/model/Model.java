@@ -13,7 +13,7 @@ public class Model
     public boolean rolesAssigned;//keeps track of whether the roles were already assigned
     //                             because I can't directly access it the way I stored this information
 
-    private Player[] votes;//keeps track of each player's vote
+    private Player[] votes = new Player[PLAYER_COUNT];//keeps track of each player's vote
     //index i -> player i's vote
     //e.g. votes[0] = Joebob, player 0 voted for Joebob
 
@@ -21,15 +21,6 @@ public class Model
 
     public enum Role{
         NONE, INNOCENT, MURDERER, DETECTIVE;
-        public static Innocent setInnocent(Player player){
-            return (Innocent) player;//casts the Player object to an Innocent object
-        }
-        public static Murderer setMurderer(Player player){
-            return (Murderer) player;//casts the Player object to a Murderer object
-        }
-        public static Detective setDetective(Player player){
-            return (Detective) player;//casts the Player object to a Detective object
-        }
     }
 
     public Model(){
@@ -47,10 +38,11 @@ public class Model
             //But I use you because we won't have a winner first turn!
 
             nightPhase();
+            turnNumber++;
             morningPhase();
             dayPhase();
 
-        }while(checkWinner() == null && turnNumber > MAX_TURNS);
+        }while(checkWinner() == null && turnNumber < MAX_TURNS);
     }
 
     private void nightPhase(){
@@ -63,13 +55,20 @@ public class Model
         }//Doing this for all players (not just murderer and detective) to future-proof this
         //In the future, other roles will have
     }
-    private void nightHandler(Player actor, Player acted){//This is going to have to be replaced when we add more roles
+    public void nightHandler(Player actor, Player acted){//This is going to have to be replaced when we add more roles
         if(actor instanceof Murderer){
-            acted.kill(actor);
+            acted.killedBy(actor);
         }
         if(actor instanceof Detective){
             Player p = acted.getVisited();
-            actor.hear(acted.getName() + " was visited by " + p.getName());
+            String name;
+            if(p == null){
+                name = "nobody!";
+            }
+            else{
+                name = p.getName();
+            }
+            actor.hear(acted.getName() + " visited " + name);
         }
     }
     private void morningPhase(){
@@ -89,10 +88,29 @@ public class Model
         }
     }
 
-    private void addPlayersPhase(){
+    public void addPlayersPhase(){
         for(int i = 0; i < players.length; i++){
             addPlayer(Player.create());
         }
+    }
+
+    public int countInnocents(){
+        int a = 0;
+        for(int i = 0; i < PLAYER_COUNT; i++){
+            if(players[i] instanceof Innocent && players[i].isAlive()){
+                a++;
+            }
+        }
+        return a;
+    }
+    public int countMurderers(){
+        int a = 0;
+        for(int i = 0; i < PLAYER_COUNT; i++){
+            if(players[i] instanceof Murderer && players[i].isAlive()){
+                a++;
+            }
+        }
+        return a;
     }
 
 
@@ -123,21 +141,25 @@ public class Model
         }
     }
 
+    private Role[] defaultRoles(){
+        return new Role[] {Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.DETECTIVE,Role.MURDERER};
+    }
+
     public boolean assignRoles(){
         if(!rolesAssigned){
-            Role[] roleList = new Role[PLAYER_COUNT];
+            Role[] roleList = defaultRoles();
             shuffle(roleList);
             for(int i = 0; i < PLAYER_COUNT; i++){
                 switch(roleList[i]){
                     case INNOCENT:
-                        players[i] = Role.setInnocent(players[i]);
+                        players[i] = players[i].setInnocent();
                         break;
                     case MURDERER:
-                        murderer = Role.setMurderer(players[i]);
+                        murderer = players[i].setMurderer();
                         players[i] = murderer;
                         break;
                     case DETECTIVE:
-                        detective = Role.setDetective(players[i]);
+                        detective = players[i].setDetective();
                         players[i] = detective;
                         break;
                 }

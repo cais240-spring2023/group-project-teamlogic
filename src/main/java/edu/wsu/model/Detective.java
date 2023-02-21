@@ -14,6 +14,13 @@ public class Detective extends Innocent{
         hear("You are a detective.");
     }
 
+    public Detective(String name){
+        this.name = name;
+    }
+    public Detective(){
+        this.name = "Jimbo";//should not be called
+    }
+
     @Override
     public Player activityHandler(Player[] players){
         Player selected;

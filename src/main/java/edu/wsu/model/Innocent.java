@@ -11,4 +11,11 @@ public class Innocent extends Player{
     public void tellRole(){
         hear("You are an innocent passenger!");
     }
+
+    public Innocent(String name){
+        this.name = name;
+    }
+    public Innocent(){
+        this.name = "Jimbo";//should not be called
+    }
 }

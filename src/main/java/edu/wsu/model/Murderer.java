@@ -14,6 +14,13 @@ public class Murderer extends Player{
         hear("You are a the murderer!");
     }
 
+    public Murderer(String name){
+        this.name = name;
+    }
+    public Murderer(){
+        this.name = "Jimbo";//should not be called
+    }
+
     @Override
     public Player activityHandler(Player[] players){
         Player selected;

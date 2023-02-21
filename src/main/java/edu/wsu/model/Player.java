@@ -3,11 +3,12 @@ package edu.wsu.model;
 import java.util.Scanner;
 
 public class Player {
-    private String name;//What the player is called :)
+    protected String name;//What the player is called :)
     private boolean alive;
     private Player killer;
     private Player visited;
-    private String messages;
+    private String messages = "";
+    private boolean input = true;//for testing
 
 
     public Player(){//should never be called
@@ -34,9 +35,9 @@ public class Player {
     public void kill(){
         alive = false;
     }
-    public void kill(Player killer){
+    public void killedBy(Player murderer){
         alive = false;
-        this.killer = killer;
+        killer = murderer;
     }
     public boolean isAlive(){
         return alive;
@@ -79,10 +80,12 @@ public class Player {
     public void displayMessages(){//This should be replaced when FXML is working
         System.out.println(name + ", your messages...\n\n");
         System.out.println(messages);
-        Scanner sc = new Scanner(System.in);
-        System.out.println("\n\nPress ENTER to continue...");
-        sc.next();
-        sc.close();
+        if(input) {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("\n\nPress ENTER to continue...");
+            sc.next();
+            sc.close();
+        }
         clearMessages();
     }
     protected Player selectPlayer(Player[] players){//This should be replaced when we have FXML
@@ -99,5 +102,20 @@ public class Player {
                 }
             }
         }
+    }
+
+
+    public Innocent setInnocent(){
+        return new Innocent(name);
+    }
+    public Murderer setMurderer(){
+        return new Murderer(name);
+    }
+    public Detective setDetective(){
+        return new Detective(name);
+    }
+
+    public void disableInput(){
+        input = false;
     }
 }

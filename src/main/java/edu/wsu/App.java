@@ -1,6 +1,7 @@
 package edu.wsu;
 
-import edu.wsu.model.Players;
+import edu.wsu.model.Innocent;
+import edu.wsu.model.Player;
 import javafx.application.Application;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -13,10 +14,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,33 +33,35 @@ public class App extends Application {
     int currentPlayer = 0;
 
 
-    ObservableList<Players> players;
+    ObservableList<Player> players;
 
     @Override
     public void start(Stage stage) throws Exception {
         // Create a 2x3 grid pane
-        GridPane gridPane = new GridPane();
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
-        gridPane.setPadding(new Insets(10));
+        GridPane playerButtonGrid = new GridPane();
+        playerButtonGrid.setHgap(10);
+        playerButtonGrid.setVgap(10);
+        playerButtonGrid.setPadding(new Insets(10));
+        BorderPane basePane = new BorderPane();
+        basePane.setCenter(playerButtonGrid);
 
-        List<Players> playerList = Arrays.asList(
-                new Players("innocent", "daph"),
-                new Players("murderer", "jason"),
-                new Players("cop", "casey"),
-                new Players("cop", "lucas"),
-                new Players("cop", "ivan"),
-                new Players("cop", "gavin")
-        );
-        players = FXCollections.observableList(playerList);
+        Innocent[] playerList = new Innocent[] {
+            new Innocent("daph"),
+            new Innocent("jason"),
+            new Innocent("casey"),
+            new Innocent("lucas"),
+            new Innocent("ivan"),
+            new Innocent("gavin")
+        };
+        players = FXCollections.observableList(Arrays.asList(playerList));
 
         //Loops to fill out the table
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {
                 int index = i * 3 + j;
                 if (index < players.size()) {
-                    Button button = new Button(players.get(index).playername);
-                    gridPane.add(button, j, i);
+                    Button button = new Button(players.get(index).getName());
+                    playerButtonGrid.add(button, j, i);
 
                     //disables the button once picked to simulate it being voted out or killed
                     button.setOnAction(event -> {
@@ -65,25 +70,29 @@ public class App extends Application {
                 }
             }
         }
-        ObservableList<String> currentPlayerOptions = FXCollections.observableList(players.get(currentPlayer).actionOption);
+        ArrayList<String> actions = playerList[currentPlayer].getActions();
+        ObservableList<String> currentPlayerOptions = FXCollections.observableList(actions);
         ScrollPane optionsDisplay = new ScrollPane();
         ListView<String> options = new ListView<>();
         options.setItems(currentPlayerOptions);
         optionsDisplay.setContent(options);
 
-        gridPane.add(optionsDisplay, 1,1);
+        basePane.setRight(optionsDisplay);
 
-        //code for the skip button
+        //code for the confirm button
         GridPane bottomPane = new GridPane();
         bottomPane.setAlignment(Pos.CENTER);
 
-        Button bottomButton = new Button("Skip Turn");
-        bottomButton.setOnAction(event -> {
-            System.out.println("Turn has been skipped");
+        Button confirmButton = new Button("confirm Turn");
+        confirmButton.setOnAction(event -> {
+            //add logic for player actions
+            System.out.println("Turn has been confirmed");
         });
+        bottomPane.add(confirmButton, 1, 1);
+        basePane.setBottom(bottomPane);
 
         //Window maker
-        Scene scene = new Scene(gridPane, 400, 300);
+        Scene scene = new Scene(basePane, 400, 300);
         scene.getStylesheets().add("/styles/Styles.css");
         stage.setTitle("Player List");
         stage.setScene(scene);

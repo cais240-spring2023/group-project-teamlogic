@@ -1,5 +1,6 @@
 package edu.wsu.model;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Detective extends Innocent{
@@ -9,16 +10,14 @@ public class Detective extends Innocent{
     //That way, you can just add special functionality in each class rather than having to do
     //special checking within the player class
 
+    public Detective(String name) {
+        super(name);
+        actions.add("arrest");
+    }
+
     @Override
     public void tellRole(){
         hear("You are a detective.");
-    }
-
-    public Detective(String name){
-        this.name = name;
-    }
-    public Detective(){
-        this.name = "Jimbo";//should not be called
     }
 
     @Override

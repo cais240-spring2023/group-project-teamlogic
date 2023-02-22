@@ -2,13 +2,13 @@ package edu.wsu.controller;
 
 import edu.wsu.App;
 import java.io.IOException;
-import javafx.fxml.FXML;
 
-public class PrimaryController {
+import javafx.application.Application;
+import javafx.fxml.FXML;
+import javafx.stage.Stage;
 
 
 //This is where Im going to put the java fx code for now
-package org.example;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 import java.util.Arrays;
 import java.util.List;
 
-public class ButtonTable extends Application {
+public class PrimaryController extends Application {
 
 
     //Needs a list of names to put into the buttons
@@ -29,7 +29,7 @@ public class ButtonTable extends Application {
             );
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) throws Exception{
         // Create a 2x3 grid pane
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10);
@@ -68,7 +68,6 @@ public class ButtonTable extends Application {
         stage.show();
 
             }
-        }
 
     @FXML
     private void switchToSecondary() throws IOException {

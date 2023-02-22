@@ -1,55 +1,32 @@
 package edu.wsu.model;
 
-public class Murderer implements Player {
+import java.util.Scanner;
 
-    String role;
-    String roleType;
-    String playerName;
-    boolean aliveStatus;
-    int votes;
+public class Murderer extends Player{
+    //I thought it would be wise to split these off into different classes
+    //rather than handling it all in one class
+    //
+    //That way, you can just add special functionality in each class rather than having to do
+    //special checking within the player class
 
+    @Override
+    public void tellRole(){
+        hear("You are a the murderer!");
+    }
+
+    public Murderer(String name){
+        this.name = name;
+    }
     public Murderer(){
-        role = "murderer";
-        roleType = "bad";
-        playerName = "";
-        aliveStatus = true;
-        votes = 0;
-    }
-    @Override
-    public String getRole() {
-        return role;
+        this.name = "Jimbo";//should not be called
     }
 
     @Override
-    public String getRoleType() {
-        return roleType;
+    public Player activityHandler(Player[] players){
+        Player selected;
+        while(true) {
+            selected = selectPlayer(players);
+            if(selected.isAlive()) return selected;
+        }
     }
-
-    @Override
-    public String getName() {
-        return playerName;
-    }
-
-    @Override
-    public boolean isAlive() {
-        if (aliveStatus == true)
-            return true;
-        return false;
-    }
-
-    @Override
-    public boolean vote(Player player) {
-        return false;
-    }
-
-    @Override
-    public int voteCount() {
-        return 0;
-    }
-
-    @Override
-    public boolean takeTurn() {
-        return false;
-    }
-
 }

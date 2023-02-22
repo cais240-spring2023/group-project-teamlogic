@@ -1,6 +1,8 @@
 package edu.wsu.model;
 
-public class Innocent extends Player{
+import java.util.Scanner;
+
+public class Detective extends Innocent{
     //I thought it would be wise to split these off into different classes
     //rather than handling it all in one class
     //
@@ -9,13 +11,22 @@ public class Innocent extends Player{
 
     @Override
     public void tellRole(){
-        hear("You are an innocent passenger!");
+        hear("You are a detective.");
     }
 
-    public Innocent(String name){
+    public Detective(String name){
         this.name = name;
     }
-    public Innocent(){
+    public Detective(){
         this.name = "Jimbo";//should not be called
+    }
+
+    @Override
+    public Player activityHandler(Player[] players){
+        Player selected;
+        while(true) {
+            selected = selectPlayer(players);
+            if(selected.isAlive()) return selected;
+        }
     }
 }

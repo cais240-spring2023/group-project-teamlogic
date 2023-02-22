@@ -1,5 +1,6 @@
 package edu.wsu;
 
+import edu.wsu.model.Innocent;
 import edu.wsu.model.Player;
 import javafx.application.Application;
 import javafx.beans.Observable;
@@ -44,13 +45,13 @@ public class App extends Application {
         BorderPane basePane = new BorderPane();
         basePane.setCenter(playerButtonGrid);
 
-        Player[] playerList = new Player[] {
-            new Player("daph"),
-            new Player("jason"),
-            new Player("casey"),
-            new Player("lucas"),
-            new Player("ivan"),
-            new Player("gavin")
+        Innocent[] playerList = new Innocent[] {
+            new Innocent("daph"),
+            new Innocent("jason"),
+            new Innocent("casey"),
+            new Innocent("lucas"),
+            new Innocent("ivan"),
+            new Innocent("gavin")
         };
         players = FXCollections.observableList(Arrays.asList(playerList));
 
@@ -69,12 +70,8 @@ public class App extends Application {
                 }
             }
         }
-        ArrayList<String> names = new ArrayList<>();
-        for (Player player:
-             players) {
-            names.add(player.getName());
-        }
-        ObservableList<String> currentPlayerOptions = FXCollections.observableList(names);
+        ArrayList<String> actions = playerList[currentPlayer].getActions();
+        ObservableList<String> currentPlayerOptions = FXCollections.observableList(actions);
         ScrollPane optionsDisplay = new ScrollPane();
         ListView<String> options = new ListView<>();
         options.setItems(currentPlayerOptions);

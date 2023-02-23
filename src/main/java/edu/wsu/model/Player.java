@@ -46,7 +46,7 @@ public class Player implements PlayerInterface{
     public boolean isAlive(){
         return alive;
     }
-    //might need error handling if the selected player is dead.
+
     @Override
     public Player vote(Player[] players){//this MUST be a living player, add a check to make sure it only returns living players!
         Player selected;

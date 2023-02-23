@@ -2,7 +2,7 @@ package edu.wsu.model;
 
 import java.util.Random;
 
-public class Model
+public class Model implements ModelInterface
 {
 
     public Player[] players;
@@ -27,7 +27,7 @@ public class Model
         players = new Player[PLAYER_COUNT];
         rolesAssigned = false;
     }
-
+    @Override
     public void gameLoop(){
         int turnNumber = 0;
         addPlayersPhase();
@@ -44,8 +44,8 @@ public class Model
 
         }while(checkWinner() == null && turnNumber < MAX_TURNS);
     }
-
-    private void nightPhase(){
+    @Override
+    public void nightPhase(){
         Player selection;
         for(int i = 0; i < players.length; i++){
             selection = players[i].doActivity(players);
@@ -55,6 +55,7 @@ public class Model
         }//Doing this for all players (not just murderer and detective) to future-proof this
         //In the future, other roles will have
     }
+    @Override
     public void nightHandler(Player actor, Player acted){//This is going to have to be replaced when we add more roles
         if(actor instanceof Murderer){
             acted.killedBy(actor);
@@ -71,12 +72,14 @@ public class Model
             actor.hear(acted.getName() + " visited " + name);
         }
     }
-    private void morningPhase(){
+    @Override
+    public void morningPhase(){
         for(int i = 0; i < players.length; i++){
             players[i].displayMessages();
         }
     }
-    private void dayPhase(){
+    @Override
+    public void dayPhase(){
         for(int i = 0; i < PLAYER_COUNT; i++){
             if(players[i].isAlive()){
                 votes[i] = players[i].vote(players);
@@ -87,13 +90,13 @@ public class Model
             chosen.kill();
         }
     }
-
+    @Override
     public void addPlayersPhase(){
         for(int i = 0; i < players.length; i++){
             addPlayer(Player.create());
         }
     }
-
+    @Override
     public int countInnocents(){
         int a = 0;
         for(int i = 0; i < PLAYER_COUNT; i++){
@@ -103,6 +106,7 @@ public class Model
         }
         return a;
     }
+    @Override
     public int countMurderers(){
         int a = 0;
         for(int i = 0; i < PLAYER_COUNT; i++){

@@ -9,7 +9,7 @@ public class Model
 
     public Player[] players;
     private static final int PLAYER_COUNT = 6;
-    private static final int MAX_TURNS = 15;
+    private static final int MAX_TURNS = 15;//easy to change
     public Murderer murderer;//pointer to one of the players
     public Detective detective;//pointer also
     public boolean rolesAssigned;//keeps track of whether the roles were already assigned

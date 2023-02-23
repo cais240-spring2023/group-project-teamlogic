@@ -3,7 +3,7 @@ package edu.wsu.model;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Murderer extends Innocent{
+public class Murderer extends Player{
     //I thought it would be wise to split these off into different classes
     //rather than handling it all in one class
     //

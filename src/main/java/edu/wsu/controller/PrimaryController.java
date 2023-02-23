@@ -1,15 +1,8 @@
 package edu.wsu.controller;
-
 import edu.wsu.App;
 import java.io.IOException;
-
-import edu.wsu.model.Player;
 import javafx.application.Application;
-
 import javafx.fxml.FXML;
-
-
-
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -17,25 +10,20 @@ import javafx.stage.Stage;
 
 //This is where Im going to put the java fx code for now
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class PrimaryController extends Application {
 
 
     //Needs a list of names to put into the buttons
 
-
-    public static List<String> names = new ArrayList<>();
+    public static int size;
+    public static String names[] = new String[size];
 
     public static String playerName;
 
@@ -62,10 +50,9 @@ public class PrimaryController extends Application {
             stageWindow.show();
 
             submitName.setOnAction(e -> {
-                        playerName = playerField.getText();
-                        Player.create(playerName);
-                        if (!playerName.isEmpty()) {
-                            names.add(playerName);
+                for (int i = 0; i < size; i++) {
+                    playerName = String.valueOf(playerField);
+                     names[i] = playerName;
                         }
                     stageWindow.close();
                     }
@@ -75,8 +62,8 @@ public class PrimaryController extends Application {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {
                 int index = i * 3 + j;
-                if (index < names.size()) {
-                    Button button = new Button(names.get(index));
+                if (index < size) {
+                    Button button = new Button(names[i]);
                     gridPane.add(button, j, i);
 
                     //disables the button once picked to simulate it being voted out or killed

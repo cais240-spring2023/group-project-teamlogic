@@ -11,8 +11,7 @@ public class Murderer extends Player{
     //special checking within the player class
 
     public Murderer(String name) {
-        super(name);
-        actions.add("murder");
+        this.name = name;
     }
 
     @Override

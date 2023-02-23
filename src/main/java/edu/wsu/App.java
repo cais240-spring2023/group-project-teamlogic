@@ -1,9 +1,6 @@
 package edu.wsu;
 
-import edu.wsu.model.Detective;
-import edu.wsu.model.Innocent;
-import edu.wsu.model.Murderer;
-import edu.wsu.model.Player;
+import edu.wsu.model.*;
 import javafx.application.Application;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -26,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static edu.wsu.model.Model.MAX_TURNS;
+
 /**
  * JavaFX App
  */
@@ -34,6 +33,7 @@ public class App extends Application {
     private static Scene scene;
 
     int currentPlayer = 0;
+    Model game = new Model();
 
 
     ObservableList<Player> players;
@@ -42,18 +42,20 @@ public class App extends Application {
     private Label transition;
     private String selectedPlayer;
     private String time = "day";
-
+    private int turnCount = 0;
     @Override
     public void start(Stage stage) throws Exception {
         // Create a 2x3 grid pane
         Player[] playerList = new Player[] {
-                new Innocent("daph"),
-                new Detective("jason"),
-                new Murderer("casey"),
+                new Murderer("daph"),
+                new Innocent("jason"),
+                //new Murderer("casey"),
                 new Innocent("lucas"),
                 new Innocent("ivan"),
-                new Innocent("gavin")
+                //new Innocent("gavin")
         };
+        game.addPlayer(playerList[0]);
+        game.addPlayer(playerList[1]);
         players = FXCollections.observableList(Arrays.asList(playerList));
         GridPane playerButtonGrid = new GridPane();
         playerButtonGrid.setHgap(10);
@@ -65,6 +67,16 @@ public class App extends Application {
         Button next = new Button("next");
         next.setOnAction(actionEvent -> {
             scene.setRoot(dayPane);
+            if (currentPlayer >= playerList.length){
+                if (time.equals("day")){
+                    time = "night";
+                }
+                if (time.equals("night")){
+                    time = "day";
+                    turnCount++;
+                }
+                currentPlayer = 0;
+            }
             ArrayList<String> actions = playerList[currentPlayer].getActions();
             ObservableList<String> currentPlayerOptions = FXCollections.observableList(actions);
             ListView<String> options = new ListView<>();
@@ -113,9 +125,37 @@ public class App extends Application {
             //add logic for player actions
             System.out.println("Turn has been confirmed");
             if (options.getSelectionModel().getSelectedItem() != null && selectedPlayer != null) {
+                String action = options.getSelectionModel().getSelectedItem();
+                if (action.equals("murder")){
+                    for (Player player:
+                         game.players) {
+                        if (player.nameIs(selectedPlayer)){
+                            player.kill();
+                        }
+                    }
+                }
+                if (action.equals("vote")){
+                    game.receiveVote(players.get(currentPlayer), game.getPlayer(selectedPlayer));
+                }
                 selectedPlayer = null;
                 //needs to do action
                 currentPlayer++;
+                if (currentPlayer>=playerList.length){
+                    turnCount++;
+                    Player killMe = game.tallyVotes();
+                    if (killMe != null){
+                        System.out.println("die");
+                        killMe.kill();
+                    }
+                }
+                if (turnCount >= MAX_TURNS){
+                    Model.Role winner = game.checkWinner();
+                    BorderPane victoryPane = new BorderPane();
+                    Label vMessage = new Label(winner.name());
+                    victoryPane.setCenter(vMessage);
+                    scene.setRoot(victoryPane);
+                    return;
+                }
                 //needs to have current player connected to looping player in model
                 Label transLabel = new Label(players.get(currentPlayer).getName() + " step up");
                 transitionPane.setTop(transLabel);

@@ -8,8 +8,8 @@ public class Model
 {
 
     public Player[] players;
-    private static final int PLAYER_COUNT = 6;
-    private static final int MAX_TURNS = 15;
+    private static final int PLAYER_COUNT = 2;
+    public static final int MAX_TURNS = 1;
     public Murderer murderer;//pointer to one of the players
     public Detective detective;//pointer also
     public boolean rolesAssigned;//keeps track of whether the roles were already assigned
@@ -173,6 +173,15 @@ public class Model
             return false;
         }
     }
+    public Player getPlayer(String playerName){
+        for (Player player:
+             players) {
+            if (player.nameIs(playerName)){
+                return player;
+            }
+        }
+        return null;
+}
     public void tellRoles(){
         for(int i = 0; i < PLAYER_COUNT; i++){
             players[i].tellRole();
@@ -180,22 +189,32 @@ public class Model
     }
 
     public boolean receiveVote(Player voter, Player target){//I didn't end up using this function, but I'm not deleting it
+        int voterIndex = 0;
+        int targetIndex = 0;
         for(int i = 0; i < players.length; i++){
             if(players[i] == voter && voter.isAlive()){//sets votes[i] to target, where i is
-                votes[i] = target;//                     the voter's index in the players list
-                return true;
+                voterIndex = i;
+            }
+            if(players[i] == target && target.isAlive()){//sets votes[i] to target, where i is
+                targetIndex = i;
             }
         }
-        return false;
+        votes[targetIndex] = target;
+        return true;
+//        return false;
     }
     public Player tallyVotes(){
-        int[] tally = new int[PLAYER_COUNT];//should be initialized to 0
+        int[] tally = new int[votes.length];//should be initialized to 0
         int workingIndex;
-        for(int i = 0; i < players.length; i++){
+        for(int i = 0; i < votes.length; i++){
             if(votes[i] != null){
                 workingIndex = getPlayerIndex(votes[i]);
                 tally[workingIndex]++;
             }
+        }
+        for (int i:
+             tally) {
+            System.out.println(i);
         }
         int threshold = getLivingPlayerCount()/2+1;//integer division always rounds down, so x/2+1 will always be
         for(int i = 0; i < players.length; i++){//guaranteed to be the smallest number greater than half
@@ -234,53 +253,81 @@ public class Model
     }
 
     public Role checkWinner(){
-        Role team = null;
-        //Stores the team of the first living player it finds
-        //into "team". Either this team has already won or
-        //no team has yet.
-        for(int i = 0; i < players.length; i++){
-            if (players[i].isAlive()) {
-                if(players[i] instanceof Innocent){
-                    //This will resolve true for Detectives and any other
-                    //innocent roles we may define in the future,
-                    //since Detective extends Innocent
-                    team = Role.INNOCENT;
-                    break;
-                }
-                else if(players[i] instanceof Murderer){
-                    //Likewise, this will resolve true for any
-                    //future evil roles if we're smart and make them
-                    //extensions of the Murderer type
-                    team = Role.MURDERER;
-                    break;
-                }
-                else{
-                    //Handle neutral roles
-                    //DO NOT BREAK... neutral roles by definition win with innocents and murderers
-                    //Probably won't ever actually need anything here
-                }
+        int livingInnocents = 0;
+        int livingKillers = 0;
+        for (Player player:
+             players) {
+            if (player instanceof Innocent && player.isAlive()){
+                livingInnocents++;
             }
+            if (player instanceof Murderer && player.isAlive()){
+                livingKillers++;
+            }
+
         }
-        if(team == null){
-            return Role.NONE;//If team is still null, it means everyone is dead. IDK who should win here!
+        if (livingInnocents == 0){
+            return Role.MURDERER;
         }
-        switch(team){
-            case INNOCENT:
-                for(int i = 0; i < players.length; i++){
-                    if(players[i].isAlive() && players[i] instanceof Murderer){
-                        return null;//Game has not ended
-                    }
-                }
-                return Role.INNOCENT;//Will only return if no murderer are alive
-            case MURDERER:
-                for(int i = 0; i < players.length; i++){
-                    if(players[i].isAlive() && players[i] instanceof Innocent){
-                        return null;//Game has not ended
-                    }
-                }
-                return Role.MURDERER;//Will only return if no innocents are alive
+        if (livingKillers == 0){
+            return Role.INNOCENT;
         }
-        return null;//In case something has gone very wrong
+        return Role.NONE;
+//        Role team = null;
+//        //Stores the team of the first living player it finds
+//        //into "team". Either this team has already won or
+//        //no team has yet.
+//        for(int i = 0; i < players.length; i++){
+//            if (players[i] == null){
+//                System.out.println(i);
+//                continue;
+//            }
+//            if (players[i].isAlive()) {
+//                if(players[i] instanceof Innocent){
+//                    //This will resolve true for Detectives and any other
+//                    //innocent roles we may define in the future,
+//                    //since Detective extends Innocent
+//                    team = Role.INNOCENT;
+//                    break;
+//                }
+//                else if(players[i] instanceof Murderer){
+//                    //Likewise, this will resolve true for any
+//                    //future evil roles if we're smart and make them
+//                    //extensions of the Murderer type
+//                    team = Role.MURDERER;
+//                    break;
+//                }
+//                else{
+//                    //Handle neutral roles
+//                    //DO NOT BREAK... neutral roles by definition win with innocents and murderers
+//                    //Probably won't ever actually need anything here
+//                }
+//            }
+//        }
+//        if(team == null){
+//            return Role.NONE;//If team is still null, it means everyone is dead. IDK who should win here!
+//        }
+//        switch(team){
+//            case INNOCENT:
+//                for(int i = 0; i < players.length; i++){
+//                    if(players[i].isAlive() && players[i] instanceof Murderer){
+//                        return Role.NONE;//Game has not ended
+//                    }
+//                }
+//                return Role.INNOCENT;//Will only return if no murderer are alive
+//            case MURDERER:
+//                for(int i = 0; i < players.length; i++){
+//                    if(players[i].isAlive() && players[i] instanceof Innocent){
+//                        return Role.NONE;//Game has not ended
+//                    }
+//                }
+//                return Role.MURDERER;//Will only return if no innocents are alive
+//        }
+//        System.out.println("hi");
+//        for (Player player:
+//             players) {
+//            System.out.println(player.name + " " + player.isAlive());
+//        }
+//        return Role.NONE;//In case something has gone very wrong
     }
 
 }

@@ -1,5 +1,7 @@
 package edu.wsu.model;
 
+import edu.wsu.controller.PrimaryController;
+
 import java.util.Scanner;
 
 public class Player implements PlayerInterface{
@@ -20,11 +22,10 @@ public class Player implements PlayerInterface{
         alive = true;
     }
 
-    public static Player create(){//This should be entirely replaced when we have FXML working
-        Scanner sc = new Scanner(System.in);
-        String name = sc.nextLine();
-        sc.close();
-        return new Player(name);
+    public static Player create(String playerName){//This should be entirely replaced when we have FXML working
+        String name = "";
+        PrimaryController.playerName = name;
+        return new Player();
     }
     @Override
     public void tellRole(){//should never be called

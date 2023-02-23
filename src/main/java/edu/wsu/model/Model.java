@@ -2,6 +2,8 @@ package edu.wsu.model;
 
 import java.util.Random;
 
+import static edu.wsu.controller.PrimaryController.playerName;
+
 public class Model
 {
 
@@ -90,7 +92,7 @@ public class Model
 
     public void addPlayersPhase(){
         for(int i = 0; i < players.length; i++){
-            addPlayer(Player.create());
+            addPlayer(Player.create(playerName));
         }
     }
 

@@ -3,8 +3,15 @@ package edu.wsu.controller;
 import edu.wsu.App;
 import java.io.IOException;
 
+import edu.wsu.model.Player;
 import javafx.application.Application;
+
 import javafx.fxml.FXML;
+
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 
@@ -17,6 +24,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,9 +33,11 @@ public class PrimaryController extends Application {
 
 
     //Needs a list of names to put into the buttons
-    public static List<String> names = Arrays.asList(
-            "Daph", "Jack", "Casey", "Lucas", "Ivan", "Gavin"
-            );
+
+
+    public static List<String> names = new ArrayList<>();
+
+    public static String playerName;
 
     @Override
     public void start(Stage stage) throws Exception{
@@ -36,7 +47,31 @@ public class PrimaryController extends Application {
         gridPane.setVgap(10);
         gridPane.setPadding(new Insets(10));
 
-        //Loops to fill out the table
+
+            //This should make a second window to input the name into the list and have it disappear once the
+            // submit button is pressed
+            //Current problems is that textwindow appears behind the main window and list doesnt get updated
+            // Will try to work on it more tomorrow
+            TextField playerField = new TextField();
+            Button submitName = new Button("Submit name");
+            Stage stageWindow = new Stage();
+            VBox root = new VBox();
+            root.getChildren().addAll(playerField, submitName);
+            Scene nameScene = new Scene(root, 150,150);
+            stageWindow.setScene(nameScene);
+            stageWindow.show();
+
+            submitName.setOnAction(e -> {
+                        playerName = playerField.getText();
+                        Player.create(playerName);
+                        if (!playerName.isEmpty()) {
+                            names.add(playerName);
+                        }
+                    stageWindow.close();
+                    }
+            );
+
+            //Loops to fill out the table
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {
                 int index = i * 3 + j;
@@ -54,7 +89,6 @@ public class PrimaryController extends Application {
         //code for the skip button
         GridPane bottomPane = new GridPane();
         bottomPane.setAlignment(Pos.CENTER);
-
         Button bottomButton = new Button("Skip Turn");
         bottomButton.setOnAction(event -> {
             System.out.println("Turn has been skipped");
@@ -67,7 +101,9 @@ public class PrimaryController extends Application {
         stage.setScene(scene);
         stage.show();
 
-            }
+
+
+    }
 
     @FXML
     private void switchToSecondary() throws IOException {

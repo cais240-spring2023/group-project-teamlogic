@@ -2,9 +2,11 @@ package edu.wsu.model;
 
 import edu.wsu.controller.PrimaryController;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Player implements PlayerInterface{
+    protected ArrayList<String> actions;
     protected String name;//What the player is called :)
     private boolean alive;
     private Player killer;
@@ -13,19 +15,26 @@ public class Player implements PlayerInterface{
     private boolean input = true;//for testing
 
 
-    public Player(){//should never be called
-        name = "Jimbo";
-        alive = true;
-    }
+
     public Player(String name){//use this not Player()
         this.name = name;
         alive = true;
+        this.actions = new ArrayList<>();
+        actions.add("vote");
+        actions.add("skip");
+    }
+    public ArrayList<String> getActions() {
+        return actions;
+    }
+
+    public void setActions(ArrayList<String> actions) {
+        this.actions = actions;
     }
 
     public static Player create(String playerName){//This should be entirely replaced when we have FXML working
         String name = "";
         PrimaryController.playerName = name;
-        return new Player();
+        return new Player(playerName);
     }
     @Override
     public void tellRole(){//should never be called

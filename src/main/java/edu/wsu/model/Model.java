@@ -2,7 +2,7 @@ package edu.wsu.model;
 
 import java.util.Random;
 
-public class Model implements ModelInterface
+public class Model
 {
 
     public Player[] players;
@@ -27,7 +27,7 @@ public class Model implements ModelInterface
         players = new Player[PLAYER_COUNT];
         rolesAssigned = false;
     }
-    @Override
+
     public void gameLoop(){
         int turnNumber = 0;
         addPlayersPhase();
@@ -44,8 +44,8 @@ public class Model implements ModelInterface
 
         }while(checkWinner() == null && turnNumber < MAX_TURNS);
     }
-    @Override
-    public void nightPhase(){
+
+    private void nightPhase(){
         Player selection;
         for(int i = 0; i < players.length; i++){
             selection = players[i].doActivity(players);
@@ -55,7 +55,6 @@ public class Model implements ModelInterface
         }//Doing this for all players (not just murderer and detective) to future-proof this
         //In the future, other roles will have
     }
-    @Override
     public void nightHandler(Player actor, Player acted){//This is going to have to be replaced when we add more roles
         if(actor instanceof Murderer){
             acted.killedBy(actor);
@@ -72,14 +71,12 @@ public class Model implements ModelInterface
             actor.hear(acted.getName() + " visited " + name);
         }
     }
-    @Override
-    public void morningPhase(){
+    private void morningPhase(){
         for(int i = 0; i < players.length; i++){
             players[i].displayMessages();
         }
     }
-    @Override
-    public void dayPhase(){
+    private void dayPhase(){
         for(int i = 0; i < PLAYER_COUNT; i++){
             if(players[i].isAlive()){
                 votes[i] = players[i].vote(players);
@@ -90,13 +87,13 @@ public class Model implements ModelInterface
             chosen.kill();
         }
     }
-    @Override
+
     public void addPlayersPhase(){
         for(int i = 0; i < players.length; i++){
             addPlayer(Player.create());
         }
     }
-    @Override
+
     public int countInnocents(){
         int a = 0;
         for(int i = 0; i < PLAYER_COUNT; i++){
@@ -106,7 +103,6 @@ public class Model implements ModelInterface
         }
         return a;
     }
-    @Override
     public int countMurderers(){
         int a = 0;
         for(int i = 0; i < PLAYER_COUNT; i++){

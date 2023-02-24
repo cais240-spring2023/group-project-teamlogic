@@ -1,6 +1,7 @@
 package edu.wsu.model;
 
 import java.util.Random;
+import java.util.Scanner;
 
 import static edu.wsu.controller.PrimaryController.playerName;
 
@@ -8,8 +9,8 @@ public class Model
 {
 
     public Player[] players;
-    private static final int PLAYER_COUNT = 2;
-    public static final int MAX_TURNS = 1;
+    private static final int PLAYER_COUNT = 6;
+    public static final int MAX_TURNS = 15;
     public Murderer murderer;//pointer to one of the players
     public Detective detective;//pointer also
     public boolean rolesAssigned;//keeps track of whether the roles were already assigned
@@ -35,26 +36,35 @@ public class Model
         addPlayersPhase();
         assignRoles();
         tellRoles();
-        morningPhase();//Used to tell players their role
+        morningPhase(turnNumber);//Used to tell players their role
+        nightPhase();//so we skip the night phase
         do{//Do while loop... haven't seen much of you
             //But I use you because we won't have a winner first turn!
 
-            nightPhase();
             turnNumber++;
-            morningPhase();
+            morningPhase(turnNumber);//Used to tell players their role
             dayPhase();
+            nightPhase();
 
         }while(checkWinner() == null && turnNumber < MAX_TURNS);
+        if(turnNumber == MAX_TURNS){
+            System.out.println("The train has arrived at its destination.");
+        }
+        Scanner sc = new Scanner(System.in);
+        sc.close();
     }
 
     private void nightPhase(){
-        Player selection;
+        Player[] selection = new Player[PLAYER_COUNT];
         for(int i = 0; i < players.length; i++){
-            selection = players[i].doActivity(players);
-            if(selection != null){
-                nightHandler(players[i],selection);
+            selection[i] = players[i].doActivity(players);
+        }
+        for(int i = 0; i < players.length; i++){
+            if(selection[i] != null){
+                nightHandler(players[i],selection[i]);
             }
-        }//Doing this for all players (not just murderer and detective) to future-proof this
+        }
+        //Doing this for all players (not just murderer and detective) to future-proof this
         //In the future, other roles will have
     }
     public void nightHandler(Player actor, Player acted){//This is going to have to be replaced when we add more roles
@@ -73,9 +83,16 @@ public class Model
             actor.hear(acted.getName() + " visited " + name);
         }
     }
-    private void morningPhase(){
+    private void morningPhase(int turn){
+        System.out.print(Integer.toString(turn) + "\nGood morning!\nLiving players: ");
         for(int i = 0; i < players.length; i++){
-            players[i].displayMessages();
+            if(players[i].isAlive()) System.out.print(players[i].name + ", ");
+        }
+        System.out.println("\n\nPress ENTER to continue...");
+        Scanner sc = new Scanner(System.in);
+        sc.nextLine();
+        for(int i = 0; i < players.length; i++){
+            if(players[i].isAlive()) players[i].displayMessages();
         }
     }
     private void dayPhase(){
@@ -92,7 +109,7 @@ public class Model
 
     public void addPlayersPhase(){
         for(int i = 0; i < players.length; i++){
-            addPlayer(Player.create(playerName));
+            addPlayer(Player.tempCreate(i));//REPLACE THIS
         }
     }
 
@@ -189,19 +206,14 @@ public class Model
     }
 
     public boolean receiveVote(Player voter, Player target){//I didn't end up using this function, but I'm not deleting it
-        int voterIndex = 0;
         int targetIndex = 0;
         for(int i = 0; i < players.length; i++){
-            if(players[i] == voter && voter.isAlive()){//sets votes[i] to target, where i is
-                voterIndex = i;
-            }
-            if(players[i] == target && target.isAlive()){//sets votes[i] to target, where i is
+            if(players[i] == voter && target.isAlive()){//sets votes[i] to target, where i is
                 targetIndex = i;
             }
         }
         votes[targetIndex] = target;
         return true;
-//        return false;
     }
     public Player tallyVotes(){
         int[] tally = new int[votes.length];//should be initialized to 0
@@ -212,14 +224,11 @@ public class Model
                 tally[workingIndex]++;
             }
         }
-        for (int i:
-             tally) {
-            System.out.println(i);
-        }
         int threshold = getLivingPlayerCount()/2+1;//integer division always rounds down, so x/2+1 will always be
         for(int i = 0; i < players.length; i++){//guaranteed to be the smallest number greater than half
             if(tally[i] >= threshold){//if the player's tally exceeds the threshold, return this player
                 clearVotes();//clear the votes after the votes have all been tallied
+                System.out.println(players[i].name + " got kicked off the train! Good luck to them!");
                 return players[i];
             }
         }
@@ -265,13 +274,19 @@ public class Model
             }
 
         }
-        if (livingInnocents == 0){
+        if (livingInnocents == 0 && livingKillers > 0){
+            System.out.println("Murderers won.");
             return Role.MURDERER;
         }
-        if (livingKillers == 0){
+        else if (livingKillers == 0 && livingInnocents > 0){
+            System.out.println("Innocents won.");
             return Role.INNOCENT;
         }
-        return Role.NONE;
+        else if(livingKillers == 0 && livingInnocents == 0){
+            System.out.println("Nobody won.");
+            return Role.NONE;
+        }
+        return null;
 //        Role team = null;
 //        //Stores the team of the first living player it finds
 //        //into "team". Either this team has already won or

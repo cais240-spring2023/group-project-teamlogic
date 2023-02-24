@@ -20,16 +20,18 @@ public class Murderer extends Player{
 
     @Override
     public void tellRole(){
-        hear("You are a the murderer!");
+        hear("You are the murderer!");
     }
 
 
 
     @Override
     public Player activityHandler(Player[] players){
+        System.out.println(name + ", select a player to MURDER!\n");
         Player selected;
         while(true) {
             selected = selectPlayer(players);
+            if(selected == null) return null;
             if(selected.isAlive()) return selected;
         }
     }

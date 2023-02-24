@@ -22,9 +22,11 @@ public class Detective extends Innocent{
 
     @Override
     public Player activityHandler(Player[] players){
+        System.out.println(name + ", select a player to investigate.\n");
         Player selected;
         while(true) {
             selected = selectPlayer(players);
+            if(selected == null) return null;
             if(selected.isAlive()) return selected;
         }
     }

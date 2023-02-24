@@ -44,6 +44,7 @@ public class Model
             turnNumber++;
             morningPhase(turnNumber);//Used to tell players their role
             dayPhase();
+            if(checkWinner() != null) break;
             nightPhase();
 
         }while(checkWinner() == null && turnNumber < MAX_TURNS);

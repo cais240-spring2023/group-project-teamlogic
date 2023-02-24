@@ -2,9 +2,11 @@ package edu.wsu.model;
 
 import edu.wsu.controller.PrimaryController;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Player implements PlayerInterface{
+    protected ArrayList<String> actions;
     protected String name;//What the player is called :)
     private boolean alive;
     private Player killer;
@@ -13,19 +15,32 @@ public class Player implements PlayerInterface{
     private boolean input = true;//for testing
 
 
-    public Player(){//should never be called
-        name = "Jimbo";
-        alive = true;
-    }
+
     public Player(String name){//use this not Player()
         this.name = name;
         alive = true;
+        this.actions = new ArrayList<>();
+        actions.add("vote");
+        actions.add("skip");
+    }
+    public ArrayList<String> getActions() {
+        return actions;
+    }
+
+    public void setActions(ArrayList<String> actions) {
+        this.actions = actions;
     }
 
     public static Player create(String playerName){//This should be entirely replaced when we have FXML working
         String name = "";
         PrimaryController.playerName = name;
-        return new Player();
+        return new Player(playerName);
+    }
+    public static Player tempCreate(int i){
+        System.out.println("Player " + Integer.toString(i+1) + "... enter name");
+        Scanner sc = new Scanner(System.in);
+        String name = sc.next();
+        return new Player(name);
     }
     @Override
     public void tellRole(){//should never be called
@@ -50,9 +65,11 @@ public class Player implements PlayerInterface{
 
     @Override
     public Player vote(Player[] players){//this MUST be a living player, add a check to make sure it only returns living players!
+        System.out.println(name + ", select who to vote to kill.");
         Player selected;
         while(true) {
             selected = selectPlayer(players);
+            if(selected == null) return null;
             if(selected.isAlive()) return selected;
         }
     }
@@ -90,15 +107,20 @@ public class Player implements PlayerInterface{
     public void clearMessages(){
         messages = "";
     }
+    public static void clear(){
+        for(int i = 0; i < 1000; i++) {
+            System.out.println("");//trolled
+        }
+    }
     @Override
     public void displayMessages(){//This should be replaced when FXML is working
+        clear();
         System.out.println(name + ", your messages...\n\n");
         System.out.println(messages);
         if(input) {
             Scanner sc = new Scanner(System.in);
             System.out.println("\n\nPress ENTER to continue...");
-            sc.next();
-            sc.close();
+            sc.nextLine();
         }
         clearMessages();
     }
@@ -112,8 +134,7 @@ public class Player implements PlayerInterface{
             }
             for(int i = 0; i < players.length; i++){
                 if(players[i].nameIs(name)){//Identifies a player with this name
-                    sc.close();//Success, this is our guy
-                    return players[i];
+                    return players[i];//Success, this is our guy
                 }
             }
         }

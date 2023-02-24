@@ -9,21 +9,11 @@ public class Innocent extends Player{
     //
     //That way, you can just add special functionality in each class rather than having to do
     //special checking within the player class
-    protected ArrayList<String> actions;
 
     public Innocent(String name) {
         super(name);
-        this.actions = new ArrayList<>();
-        actions.add("vote");
-        actions.add("skip");
-    }
-    public ArrayList<String> getActions() {
-        return actions;
     }
 
-    public void setActions(ArrayList<String> actions) {
-        this.actions = actions;
-    }
 
     @Override
     public void tellRole(){

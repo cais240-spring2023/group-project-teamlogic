@@ -3,7 +3,7 @@ package edu.wsu.model;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Murderer extends Innocent{
+public class Murderer extends Player{
     //I thought it would be wise to split these off into different classes
     //rather than handling it all in one class
     //
@@ -12,21 +12,26 @@ public class Murderer extends Innocent{
 
     public Murderer(String name) {
         super(name);
+        this.actions = new ArrayList<>();
+        actions.add("vote");
+        actions.add("skip");
         actions.add("murder");
     }
 
     @Override
     public void tellRole(){
-        hear("You are a the murderer!");
+        hear("You are the murderer!");
     }
 
 
 
     @Override
     public Player activityHandler(Player[] players){
+        System.out.println(name + ", select a player to MURDER!\n");
         Player selected;
         while(true) {
             selected = selectPlayer(players);
+            if(selected == null) return null;
             if(selected.isAlive()) return selected;
         }
     }

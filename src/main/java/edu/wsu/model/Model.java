@@ -44,6 +44,7 @@ public class Model
             turnNumber++;
             morningPhase(turnNumber);//Used to tell players their role
             dayPhase();
+            if(checkWinner() != null) break;
             nightPhase();
 
         }while(checkWinner() == null && turnNumber < MAX_TURNS);
@@ -57,7 +58,7 @@ public class Model
     private void nightPhase(){
         Player[] selection = new Player[PLAYER_COUNT];
         for(int i = 0; i < players.length; i++){
-            selection[i] = players[i].doActivity(players);
+            if(players[i].isAlive()) selection[i] = players[i].doActivity(players);
         }
         for(int i = 0; i < players.length; i++){
             if(selection[i] != null){

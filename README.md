@@ -1,8 +1,7 @@
 [![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-f4981d0f882b2a3f0472912d15f9806d57e124e0fc890972558857b51b24a6f9.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=10089974)
-# TicTacToe App
+# Nestor's Murder Mystery: On a Train: Nestor Express: The Game (2023)
 
-This is a JavaFX application generated using the javafx-archetype-fxml Maven archetype. 
-The command that was used to generate the project:
+Story point: The time it takes to program one action for one role
 
 ```bash
  mvn archetype:generate -DarchetypeGroupId=org.openjfx -DarchetypeArtifactId=javafx-archetype-fxml \

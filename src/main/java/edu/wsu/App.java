@@ -1,5 +1,6 @@
 package edu.wsu;
 
+
 import edu.wsu.model.*;
 import javafx.application.Application;
 import javafx.beans.Observable;
@@ -32,6 +33,7 @@ public class App extends Application {
 
     private static Scene scene;
 
+
     int currentPlayer = 0;
     Model game = new Model();
 
@@ -43,16 +45,19 @@ public class App extends Application {
     private String selectedPlayer;
     private String time = "day";
     private int turnCount = 0;
+
+    public App() {
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
-        // Create a 2x3 grid pane
         Player[] playerList = new Player[] {
-                new Murderer("daph"),
+                new Detective("daph"),
                 new Innocent("jason"),
-                //new Murderer("casey"),
+                new Innocent("casey"),
                 new Innocent("lucas"),
                 new Innocent("ivan"),
-                //new Innocent("gavin")
+                new Murderer("gavin")
         };
         game.addPlayer(playerList[0]);
         game.addPlayer(playerList[1]);
@@ -92,6 +97,7 @@ public class App extends Application {
         transitionPane.setTop(transition);
 
 
+
         //Loops to fill out the table
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {
@@ -115,6 +121,7 @@ public class App extends Application {
         options.setItems(currentPlayerOptions);
         optionsDisplay.setContent(options);
         dayPane.setRight(optionsDisplay);
+
 
         //code for the confirm button
         GridPane bottomPane = new GridPane();
@@ -140,7 +147,7 @@ public class App extends Application {
                 selectedPlayer = null;
                 //needs to do action
                 currentPlayer++;
-                if (currentPlayer>=playerList.length){
+                if (currentPlayer <= playerList.length){
                     turnCount++;
                     Player killMe = game.tallyVotes();
                     if (killMe != null){

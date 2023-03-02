@@ -33,7 +33,7 @@ public class Player implements PlayerInterface{
 
     public static Player create(String playerName){//This should be entirely replaced when we have FXML working
         String name = "";
-        PrimaryController.playerName = name;
+        PrimaryController.playerName = new String[]{name};
         return new Player(playerName);
     }
     public static Player tempCreate(int i){

@@ -3,14 +3,13 @@ package edu.wsu.model;
 import java.util.Random;
 import java.util.Scanner;
 
-import static edu.wsu.controller.PrimaryController.playerName;
 
 public class Model
 {
 
     public Player[] players;
     private static final int PLAYER_COUNT = 6;
-    public static final int MAX_TURNS = 15;
+    public static final int MAX_TURNS = 30;
     public Murderer murderer;//pointer to one of the players
     public Detective detective;//pointer also
     public boolean rolesAssigned;//keeps track of whether the roles were already assigned

@@ -198,7 +198,7 @@ public class Model
             }
         }
         return null;
-}
+    }
     public void tellRoles(){
         for(int i = 0; i < PLAYER_COUNT; i++){
             players[i].tellRole();

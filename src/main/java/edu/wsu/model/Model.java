@@ -109,7 +109,7 @@ public class Model
 
     public void addPlayersPhase(){
         for(int i = 0; i < players.length; i++){
-            addPlayer(Player.tempCreate(i));//REPLACE THIS
+            addPlayer(Player.create());//REPLACE THIS
         }
     }
 

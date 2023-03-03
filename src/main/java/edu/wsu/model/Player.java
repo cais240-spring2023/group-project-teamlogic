@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Player implements PlayerInterface{
     protected ArrayList<String> actions;
-    protected String name;//What the player is called :)
+    protected static String name;//What the player is called :)
     private boolean alive;
     private Player killer;
     private Player visited;
@@ -31,16 +31,14 @@ public class Player implements PlayerInterface{
         this.actions = actions;
     }
 
-    public static Player create(String playerName){//This should be entirely replaced when we have FXML working
-        String name = "";
-        PrimaryController.playerName = new String[]{name};
-        return new Player(playerName);
-    }
-    public static Player tempCreate(int i){
-        System.out.println("Player " + Integer.toString(i+1) + "... enter name");
-        Scanner sc = new Scanner(System.in);
-        String name = sc.next();
-        return new Player(name);
+    public static Player create() {
+        if (PrimaryController.playerName[PrimaryController.currentIndex]== "") {
+            return null;
+        }
+        else{
+            PrimaryController.playerName[PrimaryController.currentIndex] = name;
+            return new Player(name);
+        }
     }
     @Override
     public void tellRole(){//should never be called

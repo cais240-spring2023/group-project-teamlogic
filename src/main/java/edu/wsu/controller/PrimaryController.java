@@ -1,6 +1,8 @@
 package edu.wsu.controller;
 
 import edu.wsu.App;
+import edu.wsu.model.Player;
+import edu.wsu.model.PlayerInterface;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -17,10 +19,14 @@ import java.io.IOException;
 //ignore this for sprint 1
 public class PrimaryController extends Application {
 
+    //The model should be called and the name should be passed to the playerCreate
+
+
     //Creates an array of names with the size of 12
     public static String[] playerName = new String[12];
+
     //Index of the array used to assign names to slots
-    private int currentIndex = 0;
+    public static int currentIndex = 0;
     //Label to instruct the user to input the name
     private Label nameLabel = new Label("Enter Name");
     //Textfield to take the name
@@ -35,7 +41,8 @@ public class PrimaryController extends Application {
         submitButton.setOnAction(e ->{
 
             String input = nameField.getText();
-            playerName[currentIndex] = input; // add the name to the array
+            Player player = new Player(input); // add the name to the array
+            playerName[currentIndex] = String.valueOf(player);
             currentIndex++; // increment the index
             nameField.clear(); // clear the text field
 
@@ -47,6 +54,7 @@ public class PrimaryController extends Application {
         mainStage.setScene(scene);
         mainStage.setTitle("Names");
         mainStage.show();
+
 
     }
 

@@ -14,9 +14,15 @@ public interface PlayerInterface
 
  /**
   * Changes a player's status to dead (out of the game).
+  * (Used when a player is out of the game without being murdered ex. voted out)
   */
  public void kill();
 
+ /**
+  * Changes a player's status to dead and lets that player know who killed them.
+  * (Used when a player is murdered)
+  * @param murderer
+  */
  public void killedBy(Player murderer);
 
  /**

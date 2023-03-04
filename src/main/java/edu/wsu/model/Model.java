@@ -26,13 +26,17 @@ public class Model
     }
 
     public Model(){
+        String[] names = new String[]{"joe", "tim", "bob", "alan", "kenneth", "mari"};
         players = new Player[PLAYER_COUNT];
+        for (int i = 0; i < players.length; i++) {
+            players[i] = new Player(names[i]);
+        }
         rolesAssigned = false;
     }
 
     public void gameLoop(){
         int turnNumber = 0;
-        addPlayersPhase();
+        //addPlayersPhase();
         assignRoles();
         tellRoles();
         morningPhase(turnNumber);//Used to tell players their role
@@ -109,7 +113,8 @@ public class Model
 
     public void addPlayersPhase(){
         for(int i = 0; i < players.length; i++){
-            addPlayer(Player.create());//REPLACE THIS
+            //addPlayer(Player.create());//REPLACE THIS
+
         }
     }
 
@@ -131,12 +136,6 @@ public class Model
         }
         return a;
     }
-
-
-
-
-
-
 
     public boolean addPlayer(Player player){//Take a wild guess what this does
         for(int i = 0; i < PLAYER_COUNT; i++){//searches for a null spot and then puts the player in that spot

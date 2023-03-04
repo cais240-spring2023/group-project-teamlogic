@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Player implements PlayerInterface{
     protected ArrayList<String> actions;
-    protected static String name;//What the player is called :)
+    protected String name;//What the player is called :)
     private boolean alive;
     private Player killer;
     private Player visited;
@@ -29,16 +29,6 @@ public class Player implements PlayerInterface{
 
     public void setActions(ArrayList<String> actions) {
         this.actions = actions;
-    }
-
-    public static Player create() {
-        if (PrimaryController.playerName[PrimaryController.currentIndex]== "") {
-            return null;
-        }
-        else{
-            PrimaryController.playerName[PrimaryController.currentIndex] = name;
-            return new Player(name);
-        }
     }
     @Override
     public void tellRole(){//should never be called

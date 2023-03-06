@@ -21,6 +21,7 @@ public class Model
     //index i -> player i's vote
     //e.g. votes[0] = Joebob, player 0 voted for Joebob
     public static final boolean TEXT_MODE = false;
+    public static final boolean TEST_MODE = false;
 
 
 
@@ -102,7 +103,7 @@ public class Model
             sc.nextLine();
         }
         else{
-            MessageDisplayer.display(Integer.toString(turn), goodMorning);
+            MessageDisplayer.display("Day " + turn, goodMorning);
         }
         for(int i = 0; i < players.length; i++){
             if(players[i].isAlive()) players[i].displayMessages();
@@ -192,6 +193,14 @@ public class Model
                 }
             }
             rolesAssigned = true;
+            if(!TEXT_MODE && TEST_MODE){
+                for(int i = 0; i < players.length; i++){
+                    if(players[i] instanceof Detective) System.out.println(players[i].getName() + " is a detective.");
+                    else if(players[i] instanceof Innocent) System.out.println(players[i].getName() + " is an innocent.");
+                    else if(players[i] instanceof Murderer) System.out.println(players[i].getName() + " is a murderer.");
+                    else System.out.println(players[i].getName() + " has no role!");
+                }
+            }
             return true;
         }
         else{
@@ -236,7 +245,9 @@ public class Model
         for(int i = 0; i < players.length; i++){//guaranteed to be the smallest number greater than half
             if(tally[i] >= threshold){//if the player's tally exceeds the threshold, return this player
                 clearVotes();//clear the votes after the votes have all been tallied
-                System.out.println(players[i].name + " got kicked off the train! Good luck to them!");
+                final String kickedOffText = players[i].name + " got kicked off the train! Good luck to them!";
+                if(TEXT_MODE) System.out.println(kickedOffText);
+                else MessageDisplayer.display("Vote result",kickedOffText);
                 return players[i];
             }
         }
@@ -282,16 +293,23 @@ public class Model
             }
 
         }
+        final String boxName = "Game results";
+        final String murdererWinText = "Murderers won.";
+        final String innocentWinText = "Innocents won.";
+        final String totalLossText = "Nobody won!";
         if (livingInnocents == 0 && livingKillers > 0){
-            System.out.println("Murderers won.");
+            if(TEXT_MODE) System.out.println(murdererWinText);
+            else MessageDisplayer.display(boxName,murdererWinText);
             return Role.MURDERER;
         }
         else if (livingKillers == 0 && livingInnocents > 0){
-            System.out.println("Innocents won.");
+            if(TEXT_MODE) System.out.println(innocentWinText);
+            else MessageDisplayer.display(boxName,innocentWinText);
             return Role.INNOCENT;
         }
         else if(livingKillers == 0 && livingInnocents == 0){
-            System.out.println("Nobody won.");
+            if(TEXT_MODE) System.out.println("Nobody won.");
+            else MessageDisplayer.display(boxName,totalLossText);
             return Role.NONE;
         }
         return null;

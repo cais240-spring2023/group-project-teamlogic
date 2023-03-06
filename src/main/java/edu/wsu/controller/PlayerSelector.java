@@ -169,10 +169,10 @@ public class PlayerSelector {
         });
     }
 
-    public static void launch(String purpose){
+    public static void launch(String name, String purpose, boolean onlyCheckTheLiving){
         JFrame frame = new JFrame("Test");
         PlayerSelector playerSelector = new PlayerSelector(frame);
-        playerSelector.playerSelector.setBorder(BorderFactory.createTitledBorder("Select a player to " + purpose + "..."));
+        playerSelector.playerSelector.setBorder(BorderFactory.createTitledBorder(name + ", select a player to " + purpose + "..."));
         frame.setContentPane(playerSelector.playerSelector);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
@@ -182,7 +182,7 @@ public class PlayerSelector {
             e.printStackTrace();
         }
         for(int i = 0; i < selections.length; i++){
-            if(selections[i] != null) playerSelector.buttons[i].setText(selections[i].getName());
+            if(selections[i] != null && (selections[i].isAlive() || !onlyCheckTheLiving)) playerSelector.buttons[i].setText(selections[i].getName());
             else playerSelector.buttons[i].setVisible(false);
         }
         for(int i = selections.length; i < 12; i++){
@@ -191,14 +191,14 @@ public class PlayerSelector {
         frame.setVisible(true);
     }
 
-    public static Player selectPlayer(Player[] players, String purpose){
+    public static Player selectPlayer(Player[] players, String name, String purpose, boolean onlyCheckTheLiving){
         if(players.length > 12){
             return null;
         }
         selections = players;
         toReturn = null;
         done = false;
-        launch(purpose);
+        launch(name, purpose, onlyCheckTheLiving);
         while(!done){
             System.out.print("");//I don't know why but this is completely necessary
         }

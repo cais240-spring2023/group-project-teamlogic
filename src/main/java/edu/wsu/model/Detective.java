@@ -2,9 +2,6 @@ package edu.wsu.model;
 
 import edu.wsu.controller.PlayerSelector;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
 public class Detective extends Innocent{
     //I thought it would be wise to split these off into different classes
     //rather than handling it all in one class
@@ -32,12 +29,12 @@ public class Detective extends Innocent{
         System.out.println(name + ", select a player to investigate.\n");
         Player selected;
         while(true) {
-            selected = selectPlayer(players);
+            selected = textBasedPlayerSelector(players);
             if(selected == null) return null;
             if(selected.isAlive()) return selected;
         }
     }
     public Player panelBasedActivityHandler(Player[] players){
-        return PlayerSelector.selectPlayer(players,"investigate");
+        return PlayerSelector.selectPlayer(players, name,"investigate", true);
     }
 }

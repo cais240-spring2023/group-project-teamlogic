@@ -3,7 +3,6 @@ package edu.wsu.model;
 import edu.wsu.controller.PlayerSelector;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Murderer extends Player{
     //I thought it would be wise to split these off into different classes
@@ -37,12 +36,12 @@ public class Murderer extends Player{
         System.out.println(name + ", select a player to MURDER!\n");
         Player selected;
         while(true) {
-            selected = selectPlayer(players);
+            selected = textBasedPlayerSelector(players);
             if(selected == null) return null;
             if(selected.isAlive()) return selected;
         }
     }
     public Player panelBasedActivityHandler(Player[] players){
-        return PlayerSelector.selectPlayer(players,"kill");
+        return PlayerSelector.selectPlayer(players,name,"kill", true);
     }
 }

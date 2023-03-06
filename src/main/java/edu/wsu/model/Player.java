@@ -2,7 +2,6 @@ package edu.wsu.model;
 
 import edu.wsu.controller.MessageDisplayer;
 import edu.wsu.controller.PlayerSelector;
-import edu.wsu.controller.PrimaryController;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -62,13 +61,13 @@ public class Player implements PlayerInterface{
         System.out.println(name + ", select who to vote to kill.");
         Player selected;
         while(true) {
-            selected = selectPlayer(players);
+            selected = textBasedPlayerSelector(players);
             if(selected == null) return null;
             if(selected.isAlive()) return selected;
         }
     }
     public Player panelVote(Player[] players){
-        return PlayerSelector.selectPlayer(players,"vote against");
+        return PlayerSelector.selectPlayer(players, name,"vote against", true);
     }
     @Override
     public Player doActivity(Player[] players){
@@ -131,7 +130,7 @@ public class Player implements PlayerInterface{
         }
     }
 
-    protected Player selectPlayer(Player[] players){//This should be replaced when we have FXML
+    protected Player textBasedPlayerSelector(Player[] players){//This should be replaced when we have FXML
         Scanner sc = new Scanner(System.in);
         while(true) {
             String name = sc.nextLine();//Allows player to input a name

@@ -1,5 +1,7 @@
 package edu.wsu.model;
 
+import edu.wsu.controller.MessageDisplayer;
+import edu.wsu.controller.PlayerSelector;
 import edu.wsu.controller.PrimaryController;
 
 import java.util.ArrayList;
@@ -53,6 +55,10 @@ public class Player implements PlayerInterface{
 
     @Override
     public Player vote(Player[] players){//this MUST be a living player, add a check to make sure it only returns living players!
+        if(Model.TEXT_MODE) return textVote(players);
+        else return panelVote(players);
+    }
+    public Player textVote(Player[] players){
         System.out.println(name + ", select who to vote to kill.");
         Player selected;
         while(true) {
@@ -60,6 +66,9 @@ public class Player implements PlayerInterface{
             if(selected == null) return null;
             if(selected.isAlive()) return selected;
         }
+    }
+    public Player panelVote(Player[] players){
+        return PlayerSelector.selectPlayer(players,"vote against");
     }
     @Override
     public Player doActivity(Player[] players){
@@ -101,7 +110,17 @@ public class Player implements PlayerInterface{
         }
     }
     @Override
-    public void displayMessages(){//This should be replaced when FXML is working
+    public void displayMessages(){
+        if(!messages.equals("")) {
+            if (Model.TEXT_MODE) textMessages();
+            else panelMessages();
+            clearMessages();
+        }
+    }
+    public void panelMessages(){
+        MessageDisplayer.display(name,messages);
+    }
+    public void textMessages(){//This should be replaced when FXML is working
         clear();
         System.out.println(name + ", your messages...\n\n");
         System.out.println(messages);
@@ -110,7 +129,6 @@ public class Player implements PlayerInterface{
             System.out.println("\n\nPress ENTER to continue...");
             sc.nextLine();
         }
-        clearMessages();
     }
 
     protected Player selectPlayer(Player[] players){//This should be replaced when we have FXML

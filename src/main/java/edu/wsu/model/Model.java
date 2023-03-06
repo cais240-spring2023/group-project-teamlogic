@@ -1,5 +1,7 @@
 package edu.wsu.model;
 
+import edu.wsu.controller.MessageDisplayer;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -18,6 +20,7 @@ public class Model
     private Player[] votes = new Player[PLAYER_COUNT];//keeps track of each player's vote
     //index i -> player i's vote
     //e.g. votes[0] = Joebob, player 0 voted for Joebob
+    public static final boolean TEXT_MODE = false;
 
 
 
@@ -88,13 +91,19 @@ public class Model
         }
     }
     private void morningPhase(int turn){
-        System.out.print(Integer.toString(turn) + "\nGood morning!\nLiving players: ");
+        String goodMorning = "Good morning!\nLiving players: ";
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) System.out.print(players[i].name + ", ");
+            if(players[i].isAlive()) goodMorning += players[i].name + ", ";
         }
-        System.out.println("\n\nPress ENTER to continue...");
-        Scanner sc = new Scanner(System.in);
-        sc.nextLine();
+        goodMorning = goodMorning.substring(0,goodMorning.length()-2);
+        if(TEXT_MODE) {
+            System.out.println(goodMorning + "\n\n\nPress ENTER to continue...");
+            Scanner sc = new Scanner(System.in);
+            sc.nextLine();
+        }
+        else{
+            MessageDisplayer.display(Integer.toString(turn), goodMorning);
+        }
         for(int i = 0; i < players.length; i++){
             if(players[i].isAlive()) players[i].displayMessages();
         }

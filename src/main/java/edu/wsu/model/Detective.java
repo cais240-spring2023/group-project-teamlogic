@@ -1,5 +1,7 @@
 package edu.wsu.model;
 
+import edu.wsu.controller.PlayerSelector;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -22,6 +24,11 @@ public class Detective extends Innocent{
 
     @Override
     public Player activityHandler(Player[] players){
+        if(Model.TEXT_MODE) return textBasedActivityHandler(players);
+        else return panelBasedActivityHandler(players);
+    }
+
+    public Player textBasedActivityHandler(Player[] players){
         System.out.println(name + ", select a player to investigate.\n");
         Player selected;
         while(true) {
@@ -29,5 +36,8 @@ public class Detective extends Innocent{
             if(selected == null) return null;
             if(selected.isAlive()) return selected;
         }
+    }
+    public Player panelBasedActivityHandler(Player[] players){
+        return PlayerSelector.selectPlayer(players,"investigate");
     }
 }

@@ -241,17 +241,20 @@ public class Model
                 tally[workingIndex]++;
             }
         }
-        int threshold = getLivingPlayerCount()/2+1;//integer division always rounds down, so x/2+1 will always be
-        for(int i = 0; i < players.length; i++){//guaranteed to be the smallest number greater than half
+        final int threshold = getLivingPlayerCount()/2+1;//           integer division always rounds down, so x/2+1 will always be
+        final String kickedOffText = " got kicked off the train!";//  guaranteed to be the smallest number greater than half
+        final String goodLuck = " Good luck to them!";
+        for(int i = 0; i < players.length; i++){
             if(tally[i] >= threshold){//if the player's tally exceeds the threshold, return this player
                 clearVotes();//clear the votes after the votes have all been tallied
-                final String kickedOffText = players[i].name + " got kicked off the train! Good luck to them!";
-                if(TEXT_MODE) System.out.println(kickedOffText);
-                else MessageDisplayer.display("Vote result",kickedOffText);
+                if(TEXT_MODE) System.out.println(players[i].name + kickedOffText + goodLuck);
+                else MessageDisplayer.display("Vote result",players[i].name + kickedOffText + goodLuck);
                 return players[i];
             }
         }
         clearVotes();
+        if(TEXT_MODE) System.out.println("Nobody" + kickedOffText);
+        else MessageDisplayer.display("Vote result","Nobody" + kickedOffText);
         return null;//if no player's tally exceeds the threshold, return null
     }
 

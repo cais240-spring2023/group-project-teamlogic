@@ -1,6 +1,7 @@
 package edu.wsu.model;
 
 import edu.wsu.controller.MessageDisplayer;
+import edu.wsu.controller.MessageDisplayerFX;
 
 import java.util.Random;
 import java.util.Scanner;
@@ -112,7 +113,7 @@ public class Model
             sc.nextLine();
         }
         else{
-            MessageDisplayer.display("Day " + turn, goodMorning);
+            MessageDisplayerFX.display("Day " + turn, goodMorning);
         }
         for(int i = 0; i < players.length; i++){
             if(players[i].isAlive()){
@@ -261,13 +262,13 @@ public class Model
             if(tally[i] >= threshold){//if the player's tally exceeds the threshold, return this player
                 clearVotes();//clear the votes after the votes have all been tallied
                 if(TEXT_MODE) System.out.println(players[i].name + kickedOffText + goodLuck);
-                else MessageDisplayer.display("Vote result",players[i].name + kickedOffText + goodLuck);
+                else MessageDisplayerFX.display("Vote result",players[i].name + kickedOffText + goodLuck);
                 return players[i];
             }
         }
         clearVotes();
         if(TEXT_MODE) System.out.println("Nobody" + kickedOffText);
-        else MessageDisplayer.display("Vote result","Nobody" + kickedOffText);
+        else MessageDisplayerFX.display("Vote result","Nobody" + kickedOffText);
         return null;//if no player's tally exceeds the threshold, return null
     }
 
@@ -315,17 +316,17 @@ public class Model
         final String totalLossText = "Nobody won!";
         if (livingInnocents == 0 && livingKillers > 0){
             if(TEXT_MODE) System.out.println(murdererWinText);
-            else MessageDisplayer.display(boxName,murdererWinText);
+            else MessageDisplayerFX.display(boxName,murdererWinText);
             return Role.MURDERER;
         }
         else if (livingKillers == 0 && livingInnocents > 0){
             if(TEXT_MODE) System.out.println(innocentWinText);
-            else MessageDisplayer.display(boxName,innocentWinText);
+            else MessageDisplayerFX.display(boxName,innocentWinText);
             return Role.INNOCENT;
         }
         else if(livingKillers == 0 && livingInnocents == 0){
             if(TEXT_MODE) System.out.println("Nobody won.");
-            else MessageDisplayer.display(boxName,totalLossText);
+            else MessageDisplayerFX.display(boxName,totalLossText);
             return Role.NONE;
         }
         return null;

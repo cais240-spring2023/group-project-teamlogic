@@ -1,6 +1,7 @@
 package edu.wsu;
 
 import edu.wsu.controller.MessageDisplayer;
+import edu.wsu.controller.MessageDisplayerFX;
 import edu.wsu.controller.PlayerSelector;
 import edu.wsu.model.Player;
 
@@ -9,6 +10,7 @@ import edu.wsu.model.Player;
 //Nothing substantive should happen here.
 public class Sandbox {
     public static void main(String args[]){
-        MessageDisplayerFX
+        MessageDisplayerFX m = new MessageDisplayerFX();
+        m.display("Test","Testing\n123");
     }
 }

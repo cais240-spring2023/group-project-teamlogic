@@ -1,6 +1,7 @@
 package edu.wsu.model;
 
 import edu.wsu.controller.MessageDisplayer;
+import edu.wsu.controller.MessageDisplayerFX;
 import edu.wsu.controller.PlayerSelector;
 
 import java.util.ArrayList;
@@ -117,7 +118,7 @@ public class Player implements PlayerInterface{
         }
     }
     public void panelMessages(){
-        MessageDisplayer.display(name,messages);
+        MessageDisplayerFX.display(name,messages);
     }
     public void textMessages(){//This should be replaced when FXML is working
         clear();

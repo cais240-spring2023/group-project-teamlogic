@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class Model
 {
+    private Player whoseTurn;//Set to point to a player when waiting to receive votes or night actions, null otherwise
 
     public Player[] players;
     private static final int PLAYER_COUNT = 6;
@@ -21,7 +22,7 @@ public class Model
     //index i -> player i's vote
     //e.g. votes[0] = Joebob, player 0 voted for Joebob
     public static final boolean TEXT_MODE = false;
-    public static final boolean TEST_MODE = false;
+    public static final boolean TEST_MODE = true;
 
 
 
@@ -36,6 +37,10 @@ public class Model
             players[i] = new Player(names[i]);
         }
         rolesAssigned = false;
+    }
+
+    public Player whoseTurnIsIt(){
+        return whoseTurn;
     }
 
     public void gameLoop(){
@@ -65,7 +70,11 @@ public class Model
     private void nightPhase(){
         Player[] selection = new Player[PLAYER_COUNT];
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) selection[i] = players[i].doActivity(players);
+            if(players[i].isAlive()){
+                whoseTurn = players[i];
+                selection[i] = players[i].doActivity(players);
+                whoseTurn = null;
+            }
         }
         for(int i = 0; i < players.length; i++){
             if(selection[i] != null){
@@ -106,7 +115,11 @@ public class Model
             MessageDisplayer.display("Day " + turn, goodMorning);
         }
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) players[i].displayMessages();
+            if(players[i].isAlive()){
+                whoseTurn = players[i];
+                players[i].displayMessages();
+                whoseTurn = null;
+            }
         }
     }
     private void dayPhase(){

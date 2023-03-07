@@ -1,5 +1,7 @@
 package edu.wsu.model;
 
+import edu.wsu.controller.PrimaryController;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -25,13 +27,20 @@ public class Model
         NONE, INNOCENT, MURDERER, DETECTIVE;
     }
 
-    public Model(){
+    public Model() {
         String[] names = new String[]{"joe", "tim", "bob", "alan", "kenneth", "mari"};
+        boolean testMode = false;
         players = new Player[PLAYER_COUNT];
         for (int i = 0; i < players.length; i++) {
-            players[i] = new Player(names[i]);
+            if (testMode = true) {
+                players[i] = new Player(names[i]);
+                System.out.println(players[i]);
+            } else {
+                players[i] = new Player(PrimaryController.playerName[i]);
+            }
+
+            rolesAssigned = false;
         }
-        rolesAssigned = false;
     }
 
     public void gameLoop(){
@@ -111,12 +120,6 @@ public class Model
         }
     }
 
-    public void addPlayersPhase(){
-        for(int i = 0; i < players.length; i++){
-            //addPlayer(Player.create());//REPLACE THIS
-
-        }
-    }
 
     public int countInnocents(){
         int a = 0;

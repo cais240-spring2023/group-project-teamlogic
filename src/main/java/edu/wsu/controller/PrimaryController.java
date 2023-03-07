@@ -2,7 +2,6 @@ package edu.wsu.controller;
 
 import edu.wsu.App;
 import edu.wsu.model.Player;
-import edu.wsu.model.PlayerInterface;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;

@@ -1,12 +1,15 @@
 package edu.wsu.model;
 
+import edu.wsu.view.TransitionView;
+
 import java.util.Random;
 import java.util.Scanner;
 
 
 public class Model
 {
-
+    TransitionView transitionView;
+    public Player currentPlayer;
     public Player[] players;
     private static final int PLAYER_COUNT = 6;
     public static final int MAX_TURNS = 30;
@@ -53,11 +56,19 @@ public class Model
         Scanner sc = new Scanner(System.in);
         sc.close();
     }
+    public Player getCurrentPlayer(){
+        return currentPlayer;
+    }
 
     private void nightPhase(){
         Player[] selection = new Player[PLAYER_COUNT];
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) selection[i] = players[i].doActivity(players);
+
+            if(players[i].isAlive()){
+                currentPlayer = players[i];
+                selection[i] = players[i].doActivity(players);
+                currentPlayer = null;
+            }
         }
         for(int i = 0; i < players.length; i++){
             if(selection[i] != null){
@@ -92,7 +103,11 @@ public class Model
         Scanner sc = new Scanner(System.in);
         sc.nextLine();
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) players[i].displayMessages();
+            if(players[i].isAlive()) {
+                currentPlayer = players[i];
+                players[i].displayMessages();
+                currentPlayer = null;
+            }
         }
     }
     private void dayPhase(){
@@ -343,6 +358,10 @@ public class Model
 //            System.out.println(player.name + " " + player.isAlive());
 //        }
 //        return Role.NONE;//In case something has gone very wrong
+    }
+
+    public void clearTransitionView(){
+        transitionView.closeStage();
     }
 
 }

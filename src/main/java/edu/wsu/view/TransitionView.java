@@ -1,5 +1,6 @@
 package edu.wsu.view;
 
+import edu.wsu.controller.TransitionController;
 import edu.wsu.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,12 +24,32 @@ public class TransitionView {
     @FXML
     public Button exitButton;
 
-    private static Scene scene;
-    AnchorPane transitionPane;
+    Model model = new Model();
+    Stage stage;
+    TransitionController controller;
 
-    public TransitionView(){}
+    public TransitionView(){
+    }
 
     private void initialize(){
-        currentPlayerMessage.setText("It is your turn: " + /*playerName*/ " Click below to begin.");
+        playerName.setText(model.getCurrentPlayer().getName());
+        currentPlayerMessage.setText("It is your turn: " + model.getCurrentPlayer().getName()
+                + " Click below to begin.");
+        takeTurn.setOnAction(this::startTurn);
+        //TODO: set the image
     }
+    @FXML
+    public void startTurn(ActionEvent event){
+        controller.startTurn(event);
+    }
+
+    public void setController(TransitionController controller){
+        this.controller = controller;
+    }
+
+    public void closeStage(){
+        stage.close();
+    }
+
+
 }

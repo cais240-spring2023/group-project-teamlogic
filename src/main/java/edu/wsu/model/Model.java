@@ -1,5 +1,6 @@
 package edu.wsu.model;
 
+import edu.wsu.App;
 import edu.wsu.controller.MessageDisplayer;
 import edu.wsu.controller.MessageDisplayerFX;
 
@@ -11,6 +12,7 @@ public class Model
 {
     private Player whoseTurn;//Set to point to a player when waiting to receive votes or night actions, null otherwise
 
+    private static App appLink;
     public Player[] players;
     private static final int PLAYER_COUNT = 6;
     public static final int MAX_TURNS = 30;
@@ -29,6 +31,10 @@ public class Model
 
     public enum Role{
         NONE, INNOCENT, MURDERER, DETECTIVE;
+    }
+    public static void setAppLink(App app){
+        Player.setAppLink(app);
+        appLink = app;
     }
 
     public Model(){
@@ -113,7 +119,7 @@ public class Model
             sc.nextLine();
         }
         else{
-            MessageDisplayerFX.display("Day " + turn, goodMorning);
+            MessageDisplayerFX.display("Day " + turn, goodMorning, appLink);
         }
         for(int i = 0; i < players.length; i++){
             if(players[i].isAlive()){
@@ -262,13 +268,13 @@ public class Model
             if(tally[i] >= threshold){//if the player's tally exceeds the threshold, return this player
                 clearVotes();//clear the votes after the votes have all been tallied
                 if(TEXT_MODE) System.out.println(players[i].name + kickedOffText + goodLuck);
-                else MessageDisplayerFX.display("Vote result",players[i].name + kickedOffText + goodLuck);
+                else MessageDisplayerFX.display("Vote result",players[i].name + kickedOffText + goodLuck, appLink);
                 return players[i];
             }
         }
         clearVotes();
         if(TEXT_MODE) System.out.println("Nobody" + kickedOffText);
-        else MessageDisplayerFX.display("Vote result","Nobody" + kickedOffText);
+        else MessageDisplayerFX.display("Vote result","Nobody" + kickedOffText, appLink);
         return null;//if no player's tally exceeds the threshold, return null
     }
 
@@ -316,17 +322,17 @@ public class Model
         final String totalLossText = "Nobody won!";
         if (livingInnocents == 0 && livingKillers > 0){
             if(TEXT_MODE) System.out.println(murdererWinText);
-            else MessageDisplayerFX.display(boxName,murdererWinText);
+            else MessageDisplayerFX.display(boxName,murdererWinText,appLink);
             return Role.MURDERER;
         }
         else if (livingKillers == 0 && livingInnocents > 0){
             if(TEXT_MODE) System.out.println(innocentWinText);
-            else MessageDisplayerFX.display(boxName,innocentWinText);
+            else MessageDisplayerFX.display(boxName,innocentWinText,appLink);
             return Role.INNOCENT;
         }
         else if(livingKillers == 0 && livingInnocents == 0){
             if(TEXT_MODE) System.out.println("Nobody won.");
-            else MessageDisplayerFX.display(boxName,totalLossText);
+            else MessageDisplayerFX.display(boxName,totalLossText,appLink);
             return Role.NONE;
         }
         return null;

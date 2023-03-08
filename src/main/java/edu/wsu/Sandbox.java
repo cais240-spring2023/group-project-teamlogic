@@ -10,7 +10,5 @@ import edu.wsu.model.Player;
 //Nothing substantive should happen here.
 public class Sandbox {
     public static void main(String args[]){
-        MessageDisplayerFX m = new MessageDisplayerFX();
-        m.display("Test","Testing\n123");
     }
 }

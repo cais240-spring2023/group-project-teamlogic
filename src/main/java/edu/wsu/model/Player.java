@@ -1,5 +1,6 @@
 package edu.wsu.model;
 
+import edu.wsu.App;
 import edu.wsu.controller.MessageDisplayer;
 import edu.wsu.controller.MessageDisplayerFX;
 import edu.wsu.controller.PlayerSelector;
@@ -15,6 +16,7 @@ public class Player implements PlayerInterface{
     private Player visited;
     private String messages = "";
     private boolean input = true;//for testing
+    private static App appLink;
 
 
 
@@ -24,6 +26,9 @@ public class Player implements PlayerInterface{
         this.actions = new ArrayList<>();
         actions.add("vote");
         actions.add("skip");
+    }
+    public static void setAppLink(App app){
+        appLink = app;
     }
     public ArrayList<String> getActions() {
         return actions;
@@ -118,7 +123,7 @@ public class Player implements PlayerInterface{
         }
     }
     public void panelMessages(){
-        MessageDisplayerFX.display(name,messages);
+        MessageDisplayerFX.display(name,messages,appLink);
     }
     public void textMessages(){//This should be replaced when FXML is working
         clear();

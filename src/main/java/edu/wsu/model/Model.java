@@ -1,13 +1,31 @@
 package edu.wsu.model;
 
-import edu.wsu.controller.PrimaryController;
+
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.util.Random;
 import java.util.Scanner;
 
 
-public class Model
+public class Model extends Application
 {
+    //-----------------------------------
+    //For the window for username
+    public static String[] playerName = new String[12];
+    private Label nameLabel = new Label("Enter Name");
+    private Button submitButton = new Button("Submit");
+    private Button closeButton = new Button("Finish");
+
+    public TextField nameField = new TextField();
+    public static int currentIndex = 0;
+    //-------------------------------------
 
     public Player[] players;
     private static final int PLAYER_COUNT = 6;
@@ -18,6 +36,7 @@ public class Model
     //                             because I can't directly access it the way I stored this information
 
     private Player[] votes = new Player[PLAYER_COUNT];//keeps track of each player's vote
+
     //index i -> player i's vote
     //e.g. votes[0] = Joebob, player 0 voted for Joebob
 
@@ -26,6 +45,7 @@ public class Model
     public enum Role{
         NONE, INNOCENT, MURDERER, DETECTIVE;
     }
+
 
     public Model() {
         String[] names = new String[]{"joe", "tim", "bob", "alan", "kenneth", "mari"};
@@ -36,11 +56,38 @@ public class Model
                 players[i] = new Player(names[i]);
                 System.out.println(players[i]);
             } else {
-                players[i] = new Player(PrimaryController.playerName[i]);
+                players[i] = new Player(playerName[i]);
             }
 
             rolesAssigned = false;
         }
+    }
+
+    @Override
+    public void start(Stage mainStage) throws Exception {
+        VBox root = new VBox(10, nameLabel, nameField, submitButton, closeButton);
+        root.setPadding(new Insets(10));
+
+        submitButton.setOnAction(e ->{
+
+            String input = nameField.getText();
+            Player player = new Player(input); // add the name to the array
+            playerName[currentIndex] = String.valueOf(player);
+            currentIndex++; // increment the index
+            nameField.clear(); // clear the text field
+
+            System.out.println("Name added: " + input); //Just making sure the name got processed
+        });
+
+        closeButton.setOnAction(e ->{
+            mainStage.close();
+        });
+        Scene scene = new Scene(root, 300, 200);
+
+        mainStage.setScene(scene);
+        mainStage.setTitle("Names");
+        mainStage.show();
+
     }
 
     public void gameLoop(){
@@ -66,7 +113,6 @@ public class Model
         Scanner sc = new Scanner(System.in);
         sc.close();
     }
-
     private void nightPhase(){
         Player[] selection = new Player[PLAYER_COUNT];
         for(int i = 0; i < players.length; i++){

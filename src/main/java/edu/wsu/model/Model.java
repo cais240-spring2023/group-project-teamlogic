@@ -1,32 +1,18 @@
 package edu.wsu.model;
 
-
-import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import edu.wsu.App;
+import edu.wsu.controller.MessageDisplayer;
+import edu.wsu.controller.MessageDisplayerFX;
 
 import java.util.Random;
 import java.util.Scanner;
 
 
-public class Model extends Application
+public class Model
 {
-    //-----------------------------------
-    //For the window for username
-    public static String[] playerName = new String[12];
-    private Label nameLabel = new Label("Enter Name");
-    private Button submitButton = new Button("Submit");
-    private Button closeButton = new Button("Finish");
+    private Player whoseTurn;//Set to point to a player when waiting to receive votes or night actions, null otherwise
 
-    public TextField nameField = new TextField();
-    public static int currentIndex = 0;
-    //-------------------------------------
-
+    private static App appLink;
     public Player[] players;
     private static final int PLAYER_COUNT = 6;
     public static final int MAX_TURNS = 30;
@@ -36,62 +22,53 @@ public class Model extends Application
     //                             because I can't directly access it the way I stored this information
 
     private Player[] votes = new Player[PLAYER_COUNT];//keeps track of each player's vote
-
     //index i -> player i's vote
     //e.g. votes[0] = Joebob, player 0 voted for Joebob
+    public static final boolean TEXT_MODE = false;
+    public static final boolean TEST_MODE = true;
+    private Player[] selection = new Player[PLAYER_COUNT];
+    private int turnNumber = 0;
 
 
 
     public enum Role{
         NONE, INNOCENT, MURDERER, DETECTIVE;
     }
-
-
-    public Model() {
-        String[] names = new String[]{"joe", "tim", "bob", "alan", "kenneth", "mari"};
-        boolean testMode = false;
-        players = new Player[PLAYER_COUNT];
-        for (int i = 0; i < players.length; i++) {
-            if (testMode = true) {
-                players[i] = new Player(names[i]);
-                System.out.println(players[i]);
-            } else {
-                players[i] = new Player(playerName[i]);
-            }
-
-            rolesAssigned = false;
-        }
+    public static void setAppLink(App app){
+        Player.setAppLink(app);
+        appLink = app;
     }
 
-    @Override
-    public void start(Stage mainStage) throws Exception {
-        VBox root = new VBox(10, nameLabel, nameField, submitButton, closeButton);
-        root.setPadding(new Insets(10));
+    public Model(){
+        String[] names = new String[]{"joe", "tim", "bob", "alan", "kenneth", "mari"};
+        players = new Player[PLAYER_COUNT];
+        for (int i = 0; i < players.length; i++) {
+            players[i] = new Player(names[i]);
+        }
+        rolesAssigned = false;
+    }
 
-        submitButton.setOnAction(e ->{
-
-            String input = nameField.getText();
-            Player player = new Player(input); // add the name to the array
-            playerName[currentIndex] = String.valueOf(player);
-            currentIndex++; // increment the index
-            nameField.clear(); // clear the text field
-
-            System.out.println("Name added: " + input); //Just making sure the name got processed
-        });
-
-        closeButton.setOnAction(e ->{
-            mainStage.close();
-        });
-        Scene scene = new Scene(root, 300, 200);
-
-        mainStage.setScene(scene);
-        mainStage.setTitle("Names");
-        mainStage.show();
-
+    public Player whoseTurnIsIt(){
+        return whoseTurn;
+    }
+    public Player[] getPlayers(){
+        return players;
+    }
+    public void incrementTurn(){
+        turnNumber++;
+    }
+    public int getTurn(){
+        return turnNumber;
+    }
+    public String listLivingPlayers(){
+        String livingPlayers = new String();
+        for(int i = 0; i < players.length; i++){
+            if(players[i].isAlive()) livingPlayers += players[i].getName() + ", ";
+        }
+        return livingPlayers.substring(0,livingPlayers.length()-2);
     }
 
     public void gameLoop(){
-        int turnNumber = 0;
         //addPlayersPhase();
         assignRoles();
         tellRoles();
@@ -100,7 +77,7 @@ public class Model extends Application
         do{//Do while loop... haven't seen much of you
             //But I use you because we won't have a winner first turn!
 
-            turnNumber++;
+            incrementTurn();
             morningPhase(turnNumber);//Used to tell players their role
             dayPhase();
             if(checkWinner() != null) break;
@@ -113,11 +90,24 @@ public class Model extends Application
         Scanner sc = new Scanner(System.in);
         sc.close();
     }
+
     private void nightPhase(){
-        Player[] selection = new Player[PLAYER_COUNT];
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) selection[i] = players[i].doActivity(players);
+            if(players[i].isAlive()){
+                whoseTurn = players[i];
+                selection[i] = players[i].doActivity(players);
+                whoseTurn = null;
+            }
         }
+        nightOver();
+    }
+    public void submitAction(Player actor, Player acted){
+        if(acted.isAlive()) {
+            int i = getPlayerIndex(actor);
+            selection[i] = acted;
+        }
+    }
+    public void nightOver(){
         for(int i = 0; i < players.length; i++){
             if(selection[i] != null){
                 nightHandler(players[i],selection[i]);
@@ -143,15 +133,25 @@ public class Model extends Application
         }
     }
     private void morningPhase(int turn){
-        System.out.print(Integer.toString(turn) + "\nGood morning!\nLiving players: ");
+        String goodMorning = "Good morning!\nLiving players: ";
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) System.out.print(players[i].name + ", ");
+            if(players[i].isAlive()) goodMorning += players[i].name + ", ";
         }
-        System.out.println("\n\nPress ENTER to continue...");
-        Scanner sc = new Scanner(System.in);
-        sc.nextLine();
+        goodMorning = goodMorning.substring(0,goodMorning.length()-2);
+        if(TEXT_MODE) {
+            System.out.println(goodMorning + "\n\n\nPress ENTER to continue...");
+            Scanner sc = new Scanner(System.in);
+            sc.nextLine();
+        }
+        else{
+            MessageDisplayerFX.display("Day " + turn, goodMorning, appLink);
+        }
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) players[i].displayMessages();
+            if(players[i].isAlive()){
+                whoseTurn = players[i];
+                players[i].displayMessages();
+                whoseTurn = null;
+            }
         }
     }
     private void dayPhase(){
@@ -166,6 +166,12 @@ public class Model extends Application
         }
     }
 
+    public void addPlayersPhase(){
+        for(int i = 0; i < players.length; i++){
+            //addPlayer(Player.create());//REPLACE THIS
+
+        }
+    }
 
     public int countInnocents(){
         int a = 0;
@@ -232,6 +238,14 @@ public class Model extends Application
                 }
             }
             rolesAssigned = true;
+            if(!TEXT_MODE && TEST_MODE){
+                for(int i = 0; i < players.length; i++){
+                    if(players[i] instanceof Detective) System.out.println(players[i].getName() + " is a detective.");
+                    else if(players[i] instanceof Innocent) System.out.println(players[i].getName() + " is an innocent.");
+                    else if(players[i] instanceof Murderer) System.out.println(players[i].getName() + " is a murderer.");
+                    else System.out.println(players[i].getName() + " has no role!");
+                }
+            }
             return true;
         }
         else{
@@ -272,15 +286,20 @@ public class Model extends Application
                 tally[workingIndex]++;
             }
         }
-        int threshold = getLivingPlayerCount()/2+1;//integer division always rounds down, so x/2+1 will always be
-        for(int i = 0; i < players.length; i++){//guaranteed to be the smallest number greater than half
+        final int threshold = getLivingPlayerCount()/2+1;//           integer division always rounds down, so x/2+1 will always be
+        final String kickedOffText = " got kicked off the train!";//  guaranteed to be the smallest number greater than half
+        final String goodLuck = " Good luck to them!";
+        for(int i = 0; i < players.length; i++){
             if(tally[i] >= threshold){//if the player's tally exceeds the threshold, return this player
                 clearVotes();//clear the votes after the votes have all been tallied
-                System.out.println(players[i].name + " got kicked off the train! Good luck to them!");
+                if(TEXT_MODE) System.out.println(players[i].name + kickedOffText + goodLuck);
+                else MessageDisplayerFX.display("Vote result",players[i].name + kickedOffText + goodLuck, appLink);
                 return players[i];
             }
         }
         clearVotes();
+        if(TEXT_MODE) System.out.println("Nobody" + kickedOffText);
+        else MessageDisplayerFX.display("Vote result","Nobody" + kickedOffText, appLink);
         return null;//if no player's tally exceeds the threshold, return null
     }
 
@@ -291,6 +310,14 @@ public class Model extends Application
             }
         }
         return -1;//error case
+    }
+    public Player getNextPlayer(Player player){
+        if(player == null) return players[0];
+        int i = getPlayerIndex(player);
+        i++;
+        if(i == players.length) return null;
+        else if(players[i].isAlive()) return players[i];
+        else return getNextPlayer(players[i]);//if the next player is dead, get the next next
     }
 
     public void clearVotes(){
@@ -316,22 +343,24 @@ public class Model extends Application
              players) {
             if (player instanceof Innocent && player.isAlive()){
                 livingInnocents++;
+                System.out.println(player.getName() + " is a living innocent. That makes " + livingInnocents);
             }
             if (player instanceof Murderer && player.isAlive()){
                 livingKillers++;
+                System.out.println(player.getName() + " is a living killer. That makes " + livingKillers);
             }
 
         }
         if (livingInnocents == 0 && livingKillers > 0){
-            System.out.println("Murderers won.");
+            System.out.println("Killers win");
             return Role.MURDERER;
         }
         else if (livingKillers == 0 && livingInnocents > 0){
-            System.out.println("Innocents won.");
+            System.out.println("Innos win");
             return Role.INNOCENT;
         }
         else if(livingKillers == 0 && livingInnocents == 0){
-            System.out.println("Nobody won.");
+            System.out.println("This game is empty");
             return Role.NONE;
         }
         return null;

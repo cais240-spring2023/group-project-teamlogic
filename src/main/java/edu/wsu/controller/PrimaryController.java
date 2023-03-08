@@ -1,6 +1,6 @@
 package edu.wsu.controller;
 
-import edu.wsu.App;
+import edu.wsu.OldApp;
 import edu.wsu.model.Player;
 import javafx.application.Application;
 import javafx.fxml.FXML;
@@ -86,7 +86,7 @@ public class PrimaryController extends Application {
 
     @FXML
     private void switchToSecondary() throws IOException {
-        App.setRoot("secondary");
+        OldApp.setRoot("secondary");
     }
 
 

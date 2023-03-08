@@ -1,6 +1,8 @@
 package edu.wsu.model;
 
-import edu.wsu.controller.PrimaryController;
+import edu.wsu.App;
+import edu.wsu.controller.MessageDisplayerFX;
+import edu.wsu.controller.PlayerSelector;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -13,6 +15,14 @@ public class Player implements PlayerInterface{
     private Player visited;
     private String messages = "";
     private boolean input = true;//for testing
+    private static App appLink;
+
+    public String getNightActionName(){
+        return "";
+    }
+    public boolean hasAction(){
+        return false;
+    }
 
 
 
@@ -22,6 +32,9 @@ public class Player implements PlayerInterface{
         this.actions = new ArrayList<>();
         actions.add("vote");
         actions.add("skip");
+    }
+    public static void setAppLink(App app){
+        appLink = app;
     }
     public ArrayList<String> getActions() {
         return actions;
@@ -53,13 +66,20 @@ public class Player implements PlayerInterface{
 
     @Override
     public Player vote(Player[] players){//this MUST be a living player, add a check to make sure it only returns living players!
+        if(Model.TEXT_MODE) return textVote(players);
+        else return panelVote(players);
+    }
+    public Player textVote(Player[] players){
         System.out.println(name + ", select who to vote to kill.");
         Player selected;
         while(true) {
-            selected = selectPlayer(players);
+            selected = textBasedPlayerSelector(players);
             if(selected == null) return null;
             if(selected.isAlive()) return selected;
         }
+    }
+    public Player panelVote(Player[] players){
+        return PlayerSelector.selectPlayer(players, name,"vote against", true);
     }
     @Override
     public Player doActivity(Player[] players){
@@ -101,7 +121,19 @@ public class Player implements PlayerInterface{
         }
     }
     @Override
-    public void displayMessages(){//This should be replaced when FXML is working
+    public boolean displayMessages(){
+        if(!messages.equals("")) {
+            if (Model.TEXT_MODE) textMessages();
+            else panelMessages();
+            clearMessages();
+            return true;
+        }
+        else return false;
+    }
+    public void panelMessages(){
+        MessageDisplayerFX.display(name,messages,appLink);
+    }
+    public void textMessages(){//This should be replaced when FXML is working
         clear();
         System.out.println(name + ", your messages...\n\n");
         System.out.println(messages);
@@ -110,10 +142,9 @@ public class Player implements PlayerInterface{
             System.out.println("\n\nPress ENTER to continue...");
             sc.nextLine();
         }
-        clearMessages();
     }
 
-    protected Player selectPlayer(Player[] players){//This should be replaced when we have FXML
+    protected Player textBasedPlayerSelector(Player[] players){//This should be replaced when we have FXML
         Scanner sc = new Scanner(System.in);
         while(true) {
             String name = sc.nextLine();//Allows player to input a name

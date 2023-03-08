@@ -37,4 +37,12 @@ public class Detective extends Innocent{
     public Player panelBasedActivityHandler(Player[] players){
         return PlayerSelector.selectPlayer(players, name,"investigate", true);
     }
+
+    @Override
+    public String getNightActionName(){
+        return "investigate";
+    }
+    public boolean hasAction(){
+        return true;
+    }
 }

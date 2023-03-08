@@ -44,4 +44,12 @@ public class Murderer extends Player{
     public Player panelBasedActivityHandler(Player[] players){
         return PlayerSelector.selectPlayer(players,name,"kill", true);
     }
+
+    @Override
+    public String getNightActionName(){
+        return "murder";
+    }
+    public boolean hasAction(){
+        return true;
+    }
 }

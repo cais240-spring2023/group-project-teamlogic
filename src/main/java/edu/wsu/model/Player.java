@@ -1,7 +1,6 @@
 package edu.wsu.model;
 
 import edu.wsu.App;
-import edu.wsu.controller.MessageDisplayer;
 import edu.wsu.controller.MessageDisplayerFX;
 import edu.wsu.controller.PlayerSelector;
 
@@ -17,6 +16,13 @@ public class Player implements PlayerInterface{
     private String messages = "";
     private boolean input = true;//for testing
     private static App appLink;
+
+    public String getNightActionName(){
+        return "";
+    }
+    public boolean hasAction(){
+        return false;
+    }
 
 
 
@@ -115,12 +121,14 @@ public class Player implements PlayerInterface{
         }
     }
     @Override
-    public void displayMessages(){
+    public boolean displayMessages(){
         if(!messages.equals("")) {
             if (Model.TEXT_MODE) textMessages();
             else panelMessages();
             clearMessages();
+            return true;
         }
+        else return false;
     }
     public void panelMessages(){
         MessageDisplayerFX.display(name,messages,appLink);

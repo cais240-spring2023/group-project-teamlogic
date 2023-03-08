@@ -72,7 +72,7 @@ public interface PlayerInterface
  public Player getVisited();
  public void hear(String message);
  public void clearMessages();
- public void displayMessages();
+ public boolean displayMessages();
 
  /**
   * Creates a new innocent player.

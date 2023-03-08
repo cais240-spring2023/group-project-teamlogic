@@ -14,14 +14,11 @@ import java.util.concurrent.CountDownLatch;
 
 public class MessageDisplayerFX {
 
-    static boolean done = false;
-
-    public static Scene newScene(String name, String messages){
-        done = false;
+    public static Scene newScene(String name, String messages, App app){
         StackPane root = new StackPane();
         Button close = new Button();
         close.setText("Okay");
-        close.setOnAction(event -> {done = true;});
+        close.setOnAction(event -> {app.next();});
         StackPane.setAlignment(close, Pos.BOTTOM_CENTER);
         Label text = new Label();
         text.setText(name + "...\n" + messages);
@@ -31,7 +28,7 @@ public class MessageDisplayerFX {
     }
 
     public static void display(String name, String messages, App app){
-        app.changeScene(newScene(name, messages));
+        app.changeScene(newScene(name, messages, app));
     }
     public static boolean waiting(){
         Scanner sc = new Scanner(System.in);

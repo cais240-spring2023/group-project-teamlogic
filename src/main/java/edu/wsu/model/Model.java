@@ -26,6 +26,8 @@ public class Model
     //e.g. votes[0] = Joebob, player 0 voted for Joebob
     public static final boolean TEXT_MODE = false;
     public static final boolean TEST_MODE = true;
+    private Player[] selection = new Player[PLAYER_COUNT];
+    private int turnNumber = 0;
 
 
 
@@ -49,9 +51,24 @@ public class Model
     public Player whoseTurnIsIt(){
         return whoseTurn;
     }
+    public Player[] getPlayers(){
+        return players;
+    }
+    public void incrementTurn(){
+        turnNumber++;
+    }
+    public int getTurn(){
+        return turnNumber;
+    }
+    public String listLivingPlayers(){
+        String livingPlayers = new String();
+        for(int i = 0; i < players.length; i++){
+            if(players[i].isAlive()) livingPlayers += players[i].getName() + ", ";
+        }
+        return livingPlayers.substring(0,livingPlayers.length()-2);
+    }
 
     public void gameLoop(){
-        int turnNumber = 0;
         //addPlayersPhase();
         assignRoles();
         tellRoles();
@@ -60,7 +77,7 @@ public class Model
         do{//Do while loop... haven't seen much of you
             //But I use you because we won't have a winner first turn!
 
-            turnNumber++;
+            incrementTurn();
             morningPhase(turnNumber);//Used to tell players their role
             dayPhase();
             if(checkWinner() != null) break;
@@ -75,7 +92,6 @@ public class Model
     }
 
     private void nightPhase(){
-        Player[] selection = new Player[PLAYER_COUNT];
         for(int i = 0; i < players.length; i++){
             if(players[i].isAlive()){
                 whoseTurn = players[i];
@@ -83,6 +99,15 @@ public class Model
                 whoseTurn = null;
             }
         }
+        nightOver();
+    }
+    public void submitAction(Player actor, Player acted){
+        if(acted.isAlive()) {
+            int i = getPlayerIndex(actor);
+            selection[i] = acted;
+        }
+    }
+    public void nightOver(){
         for(int i = 0; i < players.length; i++){
             if(selection[i] != null){
                 nightHandler(players[i],selection[i]);
@@ -286,6 +311,14 @@ public class Model
         }
         return -1;//error case
     }
+    public Player getNextPlayer(Player player){
+        if(player == null) return players[0];
+        int i = getPlayerIndex(player);
+        i++;
+        if(i == players.length) return null;
+        else if(players[i].isAlive()) return players[i];
+        else return getNextPlayer(players[i]);//if the next player is dead, get the next next
+    }
 
     public void clearVotes(){
         for(int i = 0; i < votes.length; i++){
@@ -310,29 +343,24 @@ public class Model
              players) {
             if (player instanceof Innocent && player.isAlive()){
                 livingInnocents++;
+                System.out.println(player.getName() + " is a living innocent. That makes " + livingInnocents);
             }
             if (player instanceof Murderer && player.isAlive()){
                 livingKillers++;
+                System.out.println(player.getName() + " is a living killer. That makes " + livingKillers);
             }
 
         }
-        final String boxName = "Game results";
-        final String murdererWinText = "Murderers won.";
-        final String innocentWinText = "Innocents won.";
-        final String totalLossText = "Nobody won!";
         if (livingInnocents == 0 && livingKillers > 0){
-            if(TEXT_MODE) System.out.println(murdererWinText);
-            else MessageDisplayerFX.display(boxName,murdererWinText,appLink);
+            System.out.println("Killers win");
             return Role.MURDERER;
         }
         else if (livingKillers == 0 && livingInnocents > 0){
-            if(TEXT_MODE) System.out.println(innocentWinText);
-            else MessageDisplayerFX.display(boxName,innocentWinText,appLink);
+            System.out.println("Innos win");
             return Role.INNOCENT;
         }
         else if(livingKillers == 0 && livingInnocents == 0){
-            if(TEXT_MODE) System.out.println("Nobody won.");
-            else MessageDisplayerFX.display(boxName,totalLossText,appLink);
+            System.out.println("This game is empty");
             return Role.NONE;
         }
         return null;

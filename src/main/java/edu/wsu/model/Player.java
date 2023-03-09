@@ -121,17 +121,17 @@ public class Player implements PlayerInterface{
         }
     }
     @Override
-    public boolean displayMessages(){
+    public boolean displayMessages(Model m){
         if(!messages.equals("")) {
             if (Model.TEXT_MODE) textMessages();
-            else panelMessages();
+            else panelMessages(m);
             clearMessages();
             return true;
         }
         else return false;
     }
-    public void panelMessages(){
-        MessageDisplayerFX.display(name,messages,appLink);
+    public void panelMessages(Model m){
+        MessageDisplayerFX.display(name,messages,appLink, m);
     }
     public void textMessages(){//This should be replaced when FXML is working
         clear();

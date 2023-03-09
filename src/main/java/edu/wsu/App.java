@@ -1,201 +1,212 @@
 package edu.wsu;
 
-
-import edu.wsu.model.*;
+import edu.wsu.controller.MessageDisplayerFX;
+import edu.wsu.controller.PlayerSelectorFX;
+import edu.wsu.model.Model;
+import edu.wsu.model.Player;
 import javafx.application.Application;
-import javafx.beans.Observable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static edu.wsu.model.Model.MAX_TURNS;
-
-/**
- * JavaFX App
- */
 public class App extends Application {
 
-    private static Scene scene;
+    private Scene currentlyShowing;
+    private Stage stage;
 
-
-    int currentPlayer = 0;
-    Model game = new Model();
-
-
-    ObservableList<Player> players;
-    private BorderPane dayPane;
-    private BorderPane transitionPane;
-    private Label transition;
-    private String selectedPlayer;
-    private String time = "day";
-    private int turnCount = 0;
-
-    public App() {
-    }
+    private Order currentlyOn;
+    private boolean skipVoting = true;
+    private Player whoseTurn = null;
+    private Model m;
 
     @Override
-    public void start(Stage stage) throws Exception {
-        Player[] playerList = new Player[] {
-                new Detective("daph"),
-                new Innocent("jason"),
-                new Innocent("casey"),
-                new Innocent("lucas"),
-                new Innocent("ivan"),
-                new Murderer("gavin")
-        };
-        game.addPlayer(playerList[0]);
-        game.addPlayer(playerList[1]);
-        players = FXCollections.observableList(Arrays.asList(playerList));
-        GridPane playerButtonGrid = new GridPane();
-        playerButtonGrid.setHgap(10);
-        playerButtonGrid.setVgap(10);
-        playerButtonGrid.setPadding(new Insets(10));
-        dayPane = new BorderPane();
-        dayPane.setCenter(playerButtonGrid);
-        transitionPane = new BorderPane();
-        Button next = new Button("next");
-        next.setOnAction(actionEvent -> {
-            scene.setRoot(dayPane);
-            if (currentPlayer >= playerList.length){
-                if (time.equals("day")){
-                    time = "night";
-                }
-                if (time.equals("night")){
-                    time = "day";
-                    turnCount++;
-                }
-                currentPlayer = 0;
-            }
-            ArrayList<String> actions = playerList[currentPlayer].getActions();
-            ObservableList<String> currentPlayerOptions = FXCollections.observableList(actions);
-            ListView<String> options = new ListView<>();
-            options.setItems(currentPlayerOptions);
-            ScrollPane optionsDisplay = new ScrollPane();
-            optionsDisplay.setContent(options);
-            ScrollPane child = (ScrollPane) dayPane.getChildren().get(1);
-            ListView<String> grandChild = (ListView<String>) child.getContent();
-            grandChild.setItems(currentPlayerOptions);
-        });
-        transition = new Label(players.get(currentPlayer).getName() + " step up");
-        transitionPane.setCenter(next);
-        transitionPane.setTop(transition);
+    public void start(Stage stage){
+        final int BUTTON_WIDTH = 125;
+
+        Image nestor = new Image("file:./src/main/resources/nestor.png");
+        ImageView nestorView = new ImageView(nestor);
+
+        Button hotSeat = new Button("Hot Seat");
+        hotSeat.setPrefWidth(BUTTON_WIDTH);
+        hotSeat.setOnAction(event -> {startGame();});
+
+        Button server = new Button("Launch server");
+        server.setPrefWidth(BUTTON_WIDTH);
+
+        Button client = new Button("Connect to server");
+        client.setPrefWidth(BUTTON_WIDTH);
+
+        Button roleList = new Button("View Role List");
+        roleList.setPrefWidth(BUTTON_WIDTH);
 
 
 
-        //Loops to fill out the table
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 3; j++) {
-                int index = i * 3 + j;
-                if (index < players.size()) {
-                    Button button = new Button(players.get(index).getName());
-                    playerButtonGrid.add(button, j, i);
+        BorderPane root = new BorderPane();
+        VBox vbox = new VBox();
+        vbox.getChildren().add(nestorView);
+        vbox.getChildren().add(hotSeat);
+        vbox.getChildren().add(server);
+        vbox.getChildren().add(client);
+        vbox.getChildren().add(roleList);
+        vbox.setAlignment(Pos.CENTER);
+        root.setCenter(vbox);
 
-                    //disables the button once picked to simulate it being voted out or killed
-                    button.setOnAction(event -> {
-                        //button.setDisable(true);
-                        selectedPlayer = players.get(index).getName();
-                    });
-                }
-            }
-        }
-        ArrayList<String> actions = playerList[currentPlayer].getActions();
-        ObservableList<String> currentPlayerOptions = FXCollections.observableList(actions);
-        ScrollPane optionsDisplay = new ScrollPane();
-        ListView<String> options = new ListView<>();
-        options.setItems(currentPlayerOptions);
-        optionsDisplay.setContent(options);
-        dayPane.setRight(optionsDisplay);
+        Scene scene = new Scene(root, 400, 350);
 
-
-        //code for the confirm button
-        GridPane bottomPane = new GridPane();
-        bottomPane.setAlignment(Pos.CENTER);
-
-        Button confirmButton = new Button("confirm Turn");
-        confirmButton.setOnAction(event -> {
-            //add logic for player actions
-            System.out.println("Turn has been confirmed");
-            if (options.getSelectionModel().getSelectedItem() != null && selectedPlayer != null) {
-                String action = options.getSelectionModel().getSelectedItem();
-                if (action.equals("murder")){
-                    for (Player player:
-                         game.players) {
-                        if (player.nameIs(selectedPlayer)){
-                            player.kill();
-                        }
-                    }
-                }
-                if (action.equals("vote")){
-                    game.receiveVote(players.get(currentPlayer), game.getPlayer(selectedPlayer));
-                }
-                selectedPlayer = null;
-                //needs to do action
-                currentPlayer++;
-                if (currentPlayer <= playerList.length){
-                    turnCount++;
-                    Player killMe = game.tallyVotes();
-                    if (killMe != null){
-                        System.out.println("die");
-                        killMe.kill();
-                    }
-                }
-                if (turnCount >= MAX_TURNS){
-                    Model.Role winner = game.checkWinner();
-                    BorderPane victoryPane = new BorderPane();
-                    Label vMessage = new Label(winner.name());
-                    victoryPane.setCenter(vMessage);
-                    scene.setRoot(victoryPane);
-                    return;
-                }
-                //needs to have current player connected to looping player in model
-                Label transLabel = new Label(players.get(currentPlayer).getName() + " step up");
-                transitionPane.setTop(transLabel);
-                goToTransition();
-            }
-        });
-        bottomPane.add(confirmButton, 1, 1);
-        dayPane.setBottom(bottomPane);
-
-        //Window maker
-        scene = new Scene(transitionPane, 400, 300);
-        scene.getStylesheets().add("/styles/Styles.css");
-        stage.setTitle("Player List");
+        stage.setTitle("Nestor's Murder Mystery");
         stage.setScene(scene);
+        currentlyShowing = scene;
+        this.stage = stage;
         stage.show();
-
     }
 
-    public void goToTransition() {
-        scene.setRoot(transitionPane);
+    public void changeScene(Scene scene){
+        if(currentlyShowing != null) stage.setScene(scene);
+        currentlyShowing = scene;
     }
 
-    public static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
+    public void test(){
+        MessageDisplayerFX.display("Test","Testing123",this);
+        MessageDisplayerFX.waiting();
+        MessageDisplayerFX.display("Test","Testing456",this);
+        MessageDisplayerFX.waiting();
     }
 
-    public static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
+    public void startGame(){
+        m = new Model();
+        m.setAppLink(this);
+        //Add players
+        m.assignRoles();
+        m.tellRoles();
+        currentlyOn = Order.GOOD_MORNING;
+        doNext();
     }
 
-    public static void main(String[] args) {
-        launch();
+    public static enum Order{
+        GOOD_MORNING,DISPLAY_MESSAGES,VOTE,THROW_OFF,NIGHT_ACTION,END,CLOSE
     }
 
+    public void next(){
+        Model.Role winners;
+        switch(currentlyOn){
+            case GOOD_MORNING:
+                currentlyOn = Order.DISPLAY_MESSAGES;
+                whoseTurn = m.getNextPlayer(null);
+                break;
+            case DISPLAY_MESSAGES:
+                whoseTurn = m.getNextPlayer(whoseTurn);
+                if(whoseTurn == null){
+                    if(skipVoting){
+                        currentlyOn = Order.NIGHT_ACTION;
+                        skipVoting = false;
+                    }
+                    else currentlyOn = Order.VOTE;
+                    whoseTurn = m.getNextPlayer(null);
+                }
+                break;
+            case VOTE:
+                whoseTurn = m.getNextPlayer(whoseTurn);
+                if(whoseTurn == null){
+                    winners = m.checkWinner();
+                    currentlyOn = Order.THROW_OFF;
+                    if(winners != null) goodGame(winners);
+                }
+                break;
+            case THROW_OFF:
+                whoseTurn = m.getNextPlayer(null);
+                currentlyOn = Order.NIGHT_ACTION;
+            case NIGHT_ACTION:
+                whoseTurn = m.getNextPlayer(whoseTurn);
+                if(whoseTurn == null){
+                    m.nightOver();
+                    winners = m.checkWinner();
+                    m.incrementTurn();
+                    currentlyOn = Order.GOOD_MORNING;
+                    if(winners != null) goodGame(winners);
+                }
+                break;
+            case END:
+                currentlyOn = Order.CLOSE;
+                break;
+        }
+        doNext();
+    }
+
+    public void doNext(){
+        switch(currentlyOn){
+            case GOOD_MORNING:
+                System.out.println("Good morning");
+                goodMorning();
+                break;
+            case DISPLAY_MESSAGES:
+                System.out.println("Display messages");
+                displayMessages(whoseTurn);
+                break;
+            case VOTE:
+                System.out.println("Vote");
+                getVote(whoseTurn);
+                break;
+            case THROW_OFF:
+                System.out.println("Throw off");
+                Player victim = m.tallyVotes();
+                if(victim != null) {
+                    victim.kill();
+                    thrownOff(victim);
+                }
+                break;
+            case NIGHT_ACTION:
+                System.out.println("Night action");
+                getNightAction(whoseTurn);
+                break;
+            case CLOSE: Platform.exit();
+        }
+    }
+
+    public void goodMorning(){
+        String goodMorning = "Good morning!\nLiving Players: " + m.listLivingPlayers();
+        MessageDisplayerFX.display("Day "+m.getTurn(),goodMorning,this);
+    }
+    public void displayMessages(Player player){
+        if(player.displayMessages());
+        else next();
+    }
+    public void getVote(Player player){
+        PlayerSelectorFX.choose(m.getPlayers(),player,"vote against",this);
+    }
+    public void receive(Player player, Player choice, String purpose){
+        if(purpose == "vote against") m.receiveVote(player, choice);
+        else m.submitAction(player,choice);
+        next();
+    }
+    public void getNightAction(Player player){
+        if(player.hasAction()) PlayerSelectorFX.choose(m.getPlayers(),player,player.getNightActionName(),this);
+        else next();
+    }
+    public void goodGame(Model.Role winners){
+        System.out.println("Good game");
+        currentlyOn = Order.END;
+        String winnerString = "";
+        switch(winners){
+            case INNOCENT:
+                winnerString = "Innocents";
+                break;
+            case MURDERER:
+                winnerString = "Murderers";
+                break;
+            case NONE:
+                winnerString = "Nobody";
+        }
+        winnerString += " won!";
+        MessageDisplayerFX.display("Winners",winnerString,this);
+        System.out.println(winnerString);
+    }
+    public void thrownOff(Player player){
+        MessageDisplayerFX.display("Player killed!",player.getName() + " was thrown off the train. Good luck to them!",this);
+    }
 }

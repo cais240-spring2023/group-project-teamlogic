@@ -1,6 +1,6 @@
 package edu.wsu.controller;
 
-import edu.wsu.App;
+import edu.wsu.OldApp;
 import java.io.IOException;
 import javafx.fxml.FXML;
 
@@ -8,6 +8,6 @@ public class SecondaryController {
 
     @FXML
     private void switchToPrimary() throws IOException {
-        App.setRoot("primary");
+        OldApp.setRoot("primary");
     }
 }

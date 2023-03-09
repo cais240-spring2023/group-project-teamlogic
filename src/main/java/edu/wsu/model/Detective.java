@@ -1,7 +1,6 @@
 package edu.wsu.model;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import edu.wsu.controller.PlayerSelector;
 
 public class Detective extends Innocent{
     //I thought it would be wise to split these off into different classes
@@ -22,12 +21,28 @@ public class Detective extends Innocent{
 
     @Override
     public Player activityHandler(Player[] players){
+        if(Model.TEXT_MODE) return textBasedActivityHandler(players);
+        else return panelBasedActivityHandler(players);
+    }
+
+    public Player textBasedActivityHandler(Player[] players){
         System.out.println(name + ", select a player to investigate.\n");
         Player selected;
         while(true) {
-            selected = selectPlayer(players);
+            selected = textBasedPlayerSelector(players);
             if(selected == null) return null;
             if(selected.isAlive()) return selected;
         }
+    }
+    public Player panelBasedActivityHandler(Player[] players){
+        return PlayerSelector.selectPlayer(players, name,"investigate", true);
+    }
+
+    @Override
+    public String getNightActionName(){
+        return "investigate";
+    }
+    public boolean hasAction(){
+        return true;
     }
 }

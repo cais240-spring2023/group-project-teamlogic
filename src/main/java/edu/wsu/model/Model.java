@@ -1,6 +1,8 @@
 package edu.wsu.model;
 
-import edu.wsu.view.TransitionView;
+import edu.wsu.App;
+import edu.wsu.controller.MessageDisplayer;
+import edu.wsu.controller.MessageDisplayerFX;
 
 import java.util.Random;
 import java.util.Scanner;
@@ -8,8 +10,9 @@ import java.util.Scanner;
 
 public class Model
 {
-    TransitionView transitionView;
-    public Player currentPlayer;
+    private Player whoseTurn;//Set to point to a player when waiting to receive votes or night actions, null otherwise
+
+    private static App appLink;
     public Player[] players;
     private static final int PLAYER_COUNT = 6;
     public static final int MAX_TURNS = 30;
@@ -21,21 +24,52 @@ public class Model
     private Player[] votes = new Player[PLAYER_COUNT];//keeps track of each player's vote
     //index i -> player i's vote
     //e.g. votes[0] = Joebob, player 0 voted for Joebob
+    public static final boolean TEXT_MODE = false;
+    public static final boolean TEST_MODE = true;
+    private Player[] selection = new Player[PLAYER_COUNT];
+    private int turnNumber = 0;
 
 
 
     public enum Role{
         NONE, INNOCENT, MURDERER, DETECTIVE;
     }
+    public static void setAppLink(App app){
+        Player.setAppLink(app);
+        appLink = app;
+    }
 
     public Model(){
+        String[] names = new String[]{"joe", "tim", "bob", "alan", "kenneth", "mari"};
         players = new Player[PLAYER_COUNT];
+        for (int i = 0; i < players.length; i++) {
+            players[i] = new Player(names[i]);
+        }
         rolesAssigned = false;
     }
 
+    public Player whoseTurnIsIt(){
+        return whoseTurn;
+    }
+    public Player[] getPlayers(){
+        return players;
+    }
+    public void incrementTurn(){
+        turnNumber++;
+    }
+    public int getTurn(){
+        return turnNumber;
+    }
+    public String listLivingPlayers(){
+        String livingPlayers = new String();
+        for(int i = 0; i < players.length; i++){
+            if(players[i].isAlive()) livingPlayers += players[i].getName() + ", ";
+        }
+        return livingPlayers.substring(0,livingPlayers.length()-2);
+    }
+
     public void gameLoop(){
-        int turnNumber = 0;
-        addPlayersPhase();
+        //addPlayersPhase();
         assignRoles();
         tellRoles();
         morningPhase(turnNumber);//Used to tell players their role
@@ -43,7 +77,7 @@ public class Model
         do{//Do while loop... haven't seen much of you
             //But I use you because we won't have a winner first turn!
 
-            turnNumber++;
+            incrementTurn();
             morningPhase(turnNumber);//Used to tell players their role
             dayPhase();
             if(checkWinner() != null) break;
@@ -56,20 +90,24 @@ public class Model
         Scanner sc = new Scanner(System.in);
         sc.close();
     }
-    public Player getCurrentPlayer(){
-        return currentPlayer;
-    }
 
     private void nightPhase(){
-        Player[] selection = new Player[PLAYER_COUNT];
         for(int i = 0; i < players.length; i++){
-
             if(players[i].isAlive()){
-                currentPlayer = players[i];
+                whoseTurn = players[i];
                 selection[i] = players[i].doActivity(players);
-                currentPlayer = null;
+                whoseTurn = null;
             }
         }
+        nightOver();
+    }
+    public void submitAction(Player actor, Player acted){
+        if(acted.isAlive()) {
+            int i = getPlayerIndex(actor);
+            selection[i] = acted;
+        }
+    }
+    public void nightOver(){
         for(int i = 0; i < players.length; i++){
             if(selection[i] != null){
                 nightHandler(players[i],selection[i]);
@@ -95,18 +133,24 @@ public class Model
         }
     }
     private void morningPhase(int turn){
-        System.out.print(Integer.toString(turn) + "\nGood morning!\nLiving players: ");
+        String goodMorning = "Good morning!\nLiving players: ";
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) System.out.print(players[i].name + ", ");
+            if(players[i].isAlive()) goodMorning += players[i].name + ", ";
         }
-        System.out.println("\n\nPress ENTER to continue...");
-        Scanner sc = new Scanner(System.in);
-        sc.nextLine();
+        goodMorning = goodMorning.substring(0,goodMorning.length()-2);
+        if(TEXT_MODE) {
+            System.out.println(goodMorning + "\n\n\nPress ENTER to continue...");
+            Scanner sc = new Scanner(System.in);
+            sc.nextLine();
+        }
+        else{
+            MessageDisplayerFX.display("Day " + turn, goodMorning, appLink);
+        }
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) {
-                currentPlayer = players[i];
+            if(players[i].isAlive()){
+                whoseTurn = players[i];
                 players[i].displayMessages();
-                currentPlayer = null;
+                whoseTurn = null;
             }
         }
     }
@@ -124,7 +168,8 @@ public class Model
 
     public void addPlayersPhase(){
         for(int i = 0; i < players.length; i++){
-            addPlayer(Player.tempCreate(i));//REPLACE THIS
+            //addPlayer(Player.create());//REPLACE THIS
+
         }
     }
 
@@ -146,12 +191,6 @@ public class Model
         }
         return a;
     }
-
-
-
-
-
-
 
     public boolean addPlayer(Player player){//Take a wild guess what this does
         for(int i = 0; i < PLAYER_COUNT; i++){//searches for a null spot and then puts the player in that spot
@@ -199,6 +238,14 @@ public class Model
                 }
             }
             rolesAssigned = true;
+            if(!TEXT_MODE && TEST_MODE){
+                for(int i = 0; i < players.length; i++){
+                    if(players[i] instanceof Detective) System.out.println(players[i].getName() + " is a detective.");
+                    else if(players[i] instanceof Innocent) System.out.println(players[i].getName() + " is an innocent.");
+                    else if(players[i] instanceof Murderer) System.out.println(players[i].getName() + " is a murderer.");
+                    else System.out.println(players[i].getName() + " has no role!");
+                }
+            }
             return true;
         }
         else{
@@ -239,15 +286,20 @@ public class Model
                 tally[workingIndex]++;
             }
         }
-        int threshold = getLivingPlayerCount()/2+1;//integer division always rounds down, so x/2+1 will always be
-        for(int i = 0; i < players.length; i++){//guaranteed to be the smallest number greater than half
+        final int threshold = getLivingPlayerCount()/2+1;//           integer division always rounds down, so x/2+1 will always be
+        final String kickedOffText = " got kicked off the train!";//  guaranteed to be the smallest number greater than half
+        final String goodLuck = " Good luck to them!";
+        for(int i = 0; i < players.length; i++){
             if(tally[i] >= threshold){//if the player's tally exceeds the threshold, return this player
                 clearVotes();//clear the votes after the votes have all been tallied
-                System.out.println(players[i].name + " got kicked off the train! Good luck to them!");
+                if(TEXT_MODE) System.out.println(players[i].name + kickedOffText + goodLuck);
+                else MessageDisplayerFX.display("Vote result",players[i].name + kickedOffText + goodLuck, appLink);
                 return players[i];
             }
         }
         clearVotes();
+        if(TEXT_MODE) System.out.println("Nobody" + kickedOffText);
+        else MessageDisplayerFX.display("Vote result","Nobody" + kickedOffText, appLink);
         return null;//if no player's tally exceeds the threshold, return null
     }
 
@@ -258,6 +310,14 @@ public class Model
             }
         }
         return -1;//error case
+    }
+    public Player getNextPlayer(Player player){
+        if(player == null) return players[0];
+        int i = getPlayerIndex(player);
+        i++;
+        if(i == players.length) return null;
+        else if(players[i].isAlive()) return players[i];
+        else return getNextPlayer(players[i]);//if the next player is dead, get the next next
     }
 
     public void clearVotes(){
@@ -283,22 +343,24 @@ public class Model
              players) {
             if (player instanceof Innocent && player.isAlive()){
                 livingInnocents++;
+                System.out.println(player.getName() + " is a living innocent. That makes " + livingInnocents);
             }
             if (player instanceof Murderer && player.isAlive()){
                 livingKillers++;
+                System.out.println(player.getName() + " is a living killer. That makes " + livingKillers);
             }
 
         }
         if (livingInnocents == 0 && livingKillers > 0){
-            System.out.println("Murderers won.");
+            System.out.println("Killers win");
             return Role.MURDERER;
         }
         else if (livingKillers == 0 && livingInnocents > 0){
-            System.out.println("Innocents won.");
+            System.out.println("Innos win");
             return Role.INNOCENT;
         }
         else if(livingKillers == 0 && livingInnocents == 0){
-            System.out.println("Nobody won.");
+            System.out.println("This game is empty");
             return Role.NONE;
         }
         return null;
@@ -358,10 +420,6 @@ public class Model
 //            System.out.println(player.name + " " + player.isAlive());
 //        }
 //        return Role.NONE;//In case something has gone very wrong
-    }
-
-    public void clearTransitionView(){
-        transitionView.closeStage();
     }
 
 }

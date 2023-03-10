@@ -170,6 +170,9 @@ public class Model
     public void addPlayersPhase(String[] playerNames){
         for(int i = 0; i < playerNames.length; i++) {
             System.out.println("1" + playerNames[i]);
+            if (playerNames[i] == null){
+                playerNames[i] = "Player " + i;
+            }
             addPlayer(new Player(playerNames[i]));
             System.out.println("2" + players[i].getName());
         }

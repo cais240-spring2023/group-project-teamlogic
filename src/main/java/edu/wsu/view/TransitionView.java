@@ -1,5 +1,6 @@
 package edu.wsu.view;
 
+import edu.wsu.App;
 import edu.wsu.controller.TransitionController;
 import edu.wsu.model.Model;
 import javafx.event.ActionEvent;
@@ -13,7 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class TransitionView {
-    @FXML
+    /*@FXML
     public Button takeTurn;
     @FXML
     public Label currentPlayerMessage;
@@ -26,21 +27,22 @@ public class TransitionView {
 
     Model model = new Model();
     Stage stage;
+    App app;
     TransitionController controller;
 
     public TransitionView(){
     }
 
     private void initialize(){
-        playerName.setText(model.getCurrentPlayer().getName());
-        currentPlayerMessage.setText("It is your turn: " + model.getCurrentPlayer().getName()
+        playerName.setText(model.whoseTurnIsIt().getName());
+        currentPlayerMessage.setText("It is your turn: " + model.whoseTurnIsIt().getName()
                 + " Click below to begin.");
         takeTurn.setOnAction(this::startTurn);
         //TODO: set the image
     }
     @FXML
-    public void startTurn(ActionEvent event){
-        controller.startTurn(event);
+    public void startTurn(ActionEvent event, App app){
+        controller.startTurn(event, app);
     }
 
     public void setController(TransitionController controller){
@@ -51,5 +53,5 @@ public class TransitionView {
         stage.close();
     }
 
-
+*/
 }

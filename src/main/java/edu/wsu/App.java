@@ -2,6 +2,7 @@ package edu.wsu;
 
 import edu.wsu.controller.MessageDisplayerFX;
 import edu.wsu.controller.PlayerSelectorFX;
+import edu.wsu.controller.TransitionController;
 import edu.wsu.model.Model;
 import edu.wsu.model.Player;
 import javafx.application.Application;
@@ -173,6 +174,8 @@ public class App extends Application {
         MessageDisplayerFX.display("Day "+m.getTurn(),goodMorning,this);
     }
     public void displayMessages(Player player){
+        //HERE
+        TransitionController.display(m.whoseTurnIsIt().getName(),this);
         if(player.displayMessages());
         else next();
     }
@@ -185,7 +188,11 @@ public class App extends Application {
         next();
     }
     public void getNightAction(Player player){
-        if(player.hasAction()) PlayerSelectorFX.choose(m.getPlayers(),player,player.getNightActionName(),this);
+        //HERE
+        TransitionController.display(m.whoseTurnIsIt().getName(), this);
+        if(player.hasAction()) {
+            PlayerSelectorFX.choose(m.getPlayers(), player, player.getNightActionName(), this);
+        }
         else next();
     }
     public void goodGame(Model.Role winners){

@@ -21,7 +21,7 @@ public class UsernameInput{
 
 
     //Creates an array of names with the size of 12
-    public static String[] playerName = new String[6];
+    public static String[] playerName = new String[12];
 
     //Index of the array used to assign names to slots
     public static int currentIndex = 0;

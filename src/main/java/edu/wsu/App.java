@@ -3,13 +3,17 @@ package edu.wsu;
 import edu.wsu.controller.MessageDisplayerFX;
 import edu.wsu.controller.PlayerSelectorFX;
 import edu.wsu.controller.TransitionController;
+import edu.wsu.controller.UsernameInput;
 import edu.wsu.model.Model;
 import edu.wsu.model.Player;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -18,13 +22,12 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
+
     private Scene currentlyShowing;
     private Stage stage;
-
     private Order currentlyOn;
     private boolean skipVoting = true;
     private Player whoseTurn = null;
-    private Model m;
 
     @Override
     public void start(Stage stage){
@@ -58,6 +61,13 @@ public class App extends Application {
         vbox.setAlignment(Pos.CENTER);
         root.setCenter(vbox);
 
+        Label nameLabel = new Label("Enter Name");
+        TextField nameField = new TextField();
+        Button submitButton = new Button("Submit");
+        Button exitButton = new Button("Done");
+        VBox root2 = new VBox(10, nameLabel, nameField, submitButton, exitButton);
+        root.setPadding(new Insets(10));
+
         Scene scene = new Scene(root, 400, 350);
 
         stage.setTitle("Nestor's Murder Mystery");
@@ -65,6 +75,8 @@ public class App extends Application {
         currentlyShowing = scene;
         this.stage = stage;
         stage.show();
+
+
     }
 
     public void changeScene(Scene scene){
@@ -72,28 +84,25 @@ public class App extends Application {
         currentlyShowing = scene;
     }
 
-    public void test(){
-        MessageDisplayerFX.display("Test","Testing123",this);
-        MessageDisplayerFX.waiting();
-        MessageDisplayerFX.display("Test","Testing456",this);
-        MessageDisplayerFX.waiting();
-    }
 
-    public void startGame(){
-        m = new Model();
+    public void startGame() {
+        Model m = new Model();
         m.setAppLink(this);
-        //Add players
-        m.assignRoles();
-        m.tellRoles();
-        currentlyOn = Order.GOOD_MORNING;
-        doNext();
+        UsernameInput.namer(m,this); //this is where the new players should get the names
     }
 
-    public static enum Order{
+    public void beginGame(Model model){
+        model.assignRoles();
+        model.tellRoles();
+        currentlyOn = Order.GOOD_MORNING;
+        doNext(model);
+    }
+
+    public enum Order{
         GOOD_MORNING,DISPLAY_MESSAGES,VOTE,THROW_OFF,NIGHT_ACTION,END,CLOSE
     }
 
-    public void next(){
+    public void next(Model m){
         Model.Role winners;
         switch(currentlyOn){
             case GOOD_MORNING:
@@ -116,7 +125,7 @@ public class App extends Application {
                 if(whoseTurn == null){
                     winners = m.checkWinner();
                     currentlyOn = Order.THROW_OFF;
-                    if(winners != null) goodGame(winners);
+                    if(winners != null) goodGame(winners, m);
                 }
                 break;
             case THROW_OFF:
@@ -129,7 +138,7 @@ public class App extends Application {
                     winners = m.checkWinner();
                     m.incrementTurn();
                     currentlyOn = Order.GOOD_MORNING;
-                    if(winners != null) goodGame(winners);
+                    if(winners != null) goodGame(winners, m);
                 }
                 break;
             case END:
@@ -146,61 +155,57 @@ public class App extends Application {
         }
     }
 
-    public void doNext(){
+    public void doNext(Model m){
         switch(currentlyOn){
             case GOOD_MORNING:
                 System.out.println("Good morning");
-                goodMorning();
+                goodMorning(m);
                 break;
             case DISPLAY_MESSAGES:
                 System.out.println("Display messages");
-                displayMessages(whoseTurn);
+                displayMessages(whoseTurn, m);
                 break;
             case VOTE:
                 System.out.println("Vote");
-                getVote(whoseTurn);
+                getVote(whoseTurn, m);
                 break;
             case THROW_OFF:
                 System.out.println("Throw off");
                 Player victim = m.tallyVotes();
                 if(victim != null) {
                     victim.kill();
-                    thrownOff(victim);
+                    thrownOff(victim, m);
                 }
                 break;
             case NIGHT_ACTION:
                 System.out.println("Night action");
-                getNightAction(whoseTurn);
+                getNightAction(whoseTurn, m);
                 break;
             case CLOSE: Platform.exit();
         }
     }
 
-    public void goodMorning(){
+    public void goodMorning(Model m){
         String goodMorning = "Good morning!\nLiving Players: " + m.listLivingPlayers();
-        MessageDisplayerFX.display("Day "+m.getTurn(),goodMorning,this);
+        MessageDisplayerFX.display("Day "+m.getTurn(),goodMorning,this, m);
     }
-    public void displayMessages(Player player){
-        //HERE
-        if(player.displayMessages());
-        else next();
+    public void displayMessages(Player player, Model m){
+        if(player.displayMessages(m));
+        else next(m);
     }
-    public void getVote(Player player){
-        PlayerSelectorFX.choose(m.getPlayers(),player,"vote against",this);
+    public void getVote(Player player, Model m){
+        PlayerSelectorFX.choose(m.getPlayers(),player,"vote against",this,m);
     }
-    public void receive(Player player, Player choice, String purpose){
+    public void receive(Player player, Player choice, String purpose, Model m){
         if(purpose == "vote against") m.receiveVote(player, choice);
         else m.submitAction(player,choice);
-        next();
+        next(m);
     }
-    public void getNightAction(Player player){
-        //HERE
-        if(player.hasAction()) {
-            PlayerSelectorFX.choose(m.getPlayers(), player, player.getNightActionName(), this);
-        }
-        else next();
+    public void getNightAction(Player player, Model m){
+        if(player.hasAction()) PlayerSelectorFX.choose(m.getPlayers(),player,player.getNightActionName(),this, m);
+        else next(m);
     }
-    public void goodGame(Model.Role winners){
+    public void goodGame(Model.Role winners, Model m){
         System.out.println("Good game");
         currentlyOn = Order.END;
         String winnerString = "";
@@ -215,10 +220,10 @@ public class App extends Application {
                 winnerString = "Nobody";
         }
         winnerString += " won!";
-        MessageDisplayerFX.display("Winners",winnerString,this);
+        MessageDisplayerFX.display("Winners",winnerString,this, m);
         System.out.println(winnerString);
     }
-    public void thrownOff(Player player){
-        MessageDisplayerFX.display("Player killed!",player.getName() + " was thrown off the train. Good luck to them!",this);
+    public void thrownOff(Player player, Model m){
+        MessageDisplayerFX.display("Player killed!",player.getName() + " was thrown off the train. Good luck to them!",this, m);
     }
 }

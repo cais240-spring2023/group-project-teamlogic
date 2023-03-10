@@ -1,11 +1,12 @@
 package edu.wsu.model;
 
 import edu.wsu.App;
-import edu.wsu.controller.MessageDisplayer;
 import edu.wsu.controller.MessageDisplayerFX;
 
 import java.util.Random;
 import java.util.Scanner;
+
+import static edu.wsu.controller.UsernameInput.playerName;
 
 
 public class Model
@@ -13,8 +14,9 @@ public class Model
     private Player whoseTurn;//Set to point to a player when waiting to receive votes or night actions, null otherwise
 
     private static App appLink;
+
     public Player[] players;
-    private static final int PLAYER_COUNT = 6;
+    private static final int PLAYER_COUNT = 12;
     public static final int MAX_TURNS = 30;
     public Murderer murderer;//pointer to one of the players
     public Detective detective;//pointer also
@@ -29,6 +31,9 @@ public class Model
     private Player[] selection = new Player[PLAYER_COUNT];
     private int turnNumber = 0;
 
+    App a = new App();
+
+
 
 
     public enum Role{
@@ -40,11 +45,7 @@ public class Model
     }
 
     public Model(){
-        String[] names = new String[]{"joe", "tim", "bob", "alan", "kenneth", "mari"};
         players = new Player[PLAYER_COUNT];
-        for (int i = 0; i < players.length; i++) {
-            players[i] = new Player(names[i]);
-        }
         rolesAssigned = false;
     }
 
@@ -144,12 +145,12 @@ public class Model
             sc.nextLine();
         }
         else{
-            MessageDisplayerFX.display("Day " + turn, goodMorning, appLink);
+            MessageDisplayerFX.display("Day " + turn, goodMorning, appLink, this);
         }
         for(int i = 0; i < players.length; i++){
             if(players[i].isAlive()){
                 whoseTurn = players[i];
-                players[i].displayMessages();
+                players[i].displayMessages(this);
                 whoseTurn = null;
             }
         }
@@ -165,11 +166,20 @@ public class Model
             chosen.kill();
         }
     }
-
-    public void addPlayersPhase(){
+    //make userNames from the input be put into names for players
+    public void addPlayersPhase(String[] playerNames){
+        for(int i = 0; i < playerNames.length; i++) {
+            System.out.println("1" + playerNames[i]);
+            if (playerNames[i] == null){
+                playerNames[i] = "Player " + i;
+            }
+            addPlayer(new Player(playerNames[i]));
+            System.out.println("2" + players[i].getName());
+        }
+    }
+    public void printAllPlayerNames(){
         for(int i = 0; i < players.length; i++){
-            //addPlayer(Player.create());//REPLACE THIS
-
+            System.out.println(players[i].getName());
         }
     }
 
@@ -214,13 +224,22 @@ public class Model
         }
     }
 
-    private Role[] defaultRoles(){
-        return new Role[] {Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.DETECTIVE,Role.MURDERER};
+    private Role[] defaultRoles(int count){
+        Role[] fullList = new Role[] {Role.INNOCENT,Role.DETECTIVE,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.MURDERER,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT};
+        Role[] shortList = new Role[count];
+        for(int i = 0; i < count; i++){
+            shortList[i] = fullList[i];
+        }
+        return shortList;
     }
 
     public boolean assignRoles(){
         if(!rolesAssigned){
-            Role[] roleList = defaultRoles();
+            int count = 0;
+            for(int i = 0; i < players.length; i++){
+                if(players[i] != null) count++;
+            }
+            Role[] roleList = defaultRoles(count);
             shuffle(roleList);
             for(int i = 0; i < PLAYER_COUNT; i++){
                 switch(roleList[i]){
@@ -293,13 +312,13 @@ public class Model
             if(tally[i] >= threshold){//if the player's tally exceeds the threshold, return this player
                 clearVotes();//clear the votes after the votes have all been tallied
                 if(TEXT_MODE) System.out.println(players[i].name + kickedOffText + goodLuck);
-                else MessageDisplayerFX.display("Vote result",players[i].name + kickedOffText + goodLuck, appLink);
+                else MessageDisplayerFX.display("Vote result",players[i].name + kickedOffText + goodLuck, appLink, this);
                 return players[i];
             }
         }
         clearVotes();
         if(TEXT_MODE) System.out.println("Nobody" + kickedOffText);
-        else MessageDisplayerFX.display("Vote result","Nobody" + kickedOffText, appLink);
+        else MessageDisplayerFX.display("Vote result","Nobody" + kickedOffText, appLink, this);
         return null;//if no player's tally exceeds the threshold, return null
     }
 

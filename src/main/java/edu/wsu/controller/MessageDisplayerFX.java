@@ -1,6 +1,7 @@
 package edu.wsu.controller;
 
 import edu.wsu.App;
+import edu.wsu.model.Model;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,11 +15,11 @@ import java.util.concurrent.CountDownLatch;
 
 public class MessageDisplayerFX {
 
-    public static Scene newScene(String name, String messages, App app){
+    public static Scene newScene(String name, String messages, App app, Model m){
         StackPane root = new StackPane();
         Button close = new Button();
         close.setText("Okay");
-        close.setOnAction(event -> {app.next();});
+        close.setOnAction(event -> {app.next(m);});
         StackPane.setAlignment(close, Pos.BOTTOM_CENTER);
         Label text = new Label();
         text.setText(name + "...\n" + messages);
@@ -27,8 +28,8 @@ public class MessageDisplayerFX {
         return new Scene(root,300,250);
     }
 
-    public static void display(String name, String messages, App app){
-        app.changeScene(newScene(name, messages, app));
+    public static void display(String name, String messages, App app, Model m){
+        app.changeScene(newScene(name, messages, app, m));
     }
     public static boolean waiting(){
         Scanner sc = new Scanner(System.in);

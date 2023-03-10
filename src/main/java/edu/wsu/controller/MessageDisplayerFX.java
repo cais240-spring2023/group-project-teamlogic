@@ -25,7 +25,7 @@ public class MessageDisplayerFX {
         text.setText(name + "...\n" + messages);
         root.getChildren().add(text);
         root.getChildren().add(close);
-        return new Scene(root,300,250);
+        return new Scene(root,600,500);
     }
 
     public static void display(String name, String messages, App app, Model m){

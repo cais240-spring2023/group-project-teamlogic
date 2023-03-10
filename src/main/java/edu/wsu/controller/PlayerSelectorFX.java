@@ -116,7 +116,7 @@ public class PlayerSelectorFX {
         root.getChildren().add(text);
         root.getChildren().add(grid);
         root.getChildren().add(skip);
-        return new Scene(root,300,250);
+        return new Scene(root,600,500);
     }
 
     public static void choose(Player[] players, Player chooser, String purpose, App app,Model m){

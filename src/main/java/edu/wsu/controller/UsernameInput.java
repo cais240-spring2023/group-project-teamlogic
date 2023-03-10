@@ -79,7 +79,7 @@ public class UsernameInput{
         currentIndex++; // increment the index
         nameField.clear(); // clear the text field
         System.out.println("Name added: " + input); //Just making sure the name got processed
-        if(currentIndex > 12){
+        if(currentIndex >= 12){
             System.out.println("No more room");
             m.addPlayersPhase(playerName);
             a.beginGame(m);

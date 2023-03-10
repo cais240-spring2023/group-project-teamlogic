@@ -16,7 +16,7 @@ public class Model
     private static App appLink;
 
     public Player[] players;
-    private static final int PLAYER_COUNT = 6;
+    private static final int PLAYER_COUNT = 12;
     public static final int MAX_TURNS = 30;
     public Murderer murderer;//pointer to one of the players
     public Detective detective;//pointer also
@@ -221,13 +221,22 @@ public class Model
         }
     }
 
-    private Role[] defaultRoles(){
-        return new Role[] {Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.DETECTIVE,Role.MURDERER};
+    private Role[] defaultRoles(int count){
+        Role[] fullList = new Role[] {Role.INNOCENT,Role.DETECTIVE,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.MURDERER,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT};
+        Role[] shortList = new Role[count];
+        for(int i = 0; i < count; i++){
+            shortList[i] = fullList[i];
+        }
+        return shortList;
     }
 
     public boolean assignRoles(){
         if(!rolesAssigned){
-            Role[] roleList = defaultRoles();
+            int count = 0;
+            for(int i = 0; i < players.length; i++){
+                if(players[i] != null) count++;
+            }
+            Role[] roleList = defaultRoles(count);
             shuffle(roleList);
             for(int i = 0; i < PLAYER_COUNT; i++){
                 switch(roleList[i]){

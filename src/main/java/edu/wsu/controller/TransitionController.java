@@ -38,7 +38,7 @@ public class TransitionController
         //Label playerName = new Label();
         //playerName.setText(name);
         Label currentPlayerMessage = new Label();
-        currentPlayerMessage.setText("It is your turn: " + name + " Click below to begin.");
+        currentPlayerMessage.setText("It is your turn: " + name + "\nClick below to begin.");
         Button takeTurn = new Button();
         takeTurn.setText("Take turn");
         takeTurn.setOnAction(event -> {app.doNext();});

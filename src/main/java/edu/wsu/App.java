@@ -136,7 +136,14 @@ public class App extends Application {
                 currentlyOn = Order.CLOSE;
                 break;
         }
-        doNext();
+        switch(currentlyOn){
+            case DISPLAY_MESSAGES: case NIGHT_ACTION:
+
+                TransitionController.display(whoseTurn.getName(),this);
+                break;
+            default:
+                doNext();
+        }
     }
 
     public void doNext(){
@@ -175,7 +182,6 @@ public class App extends Application {
     }
     public void displayMessages(Player player){
         //HERE
-        TransitionController.display(m.whoseTurnIsIt().getName(),this);
         if(player.displayMessages());
         else next();
     }
@@ -189,7 +195,6 @@ public class App extends Application {
     }
     public void getNightAction(Player player){
         //HERE
-        TransitionController.display(m.whoseTurnIsIt().getName(), this);
         if(player.hasAction()) {
             PlayerSelectorFX.choose(m.getPlayers(), player, player.getNightActionName(), this);
         }

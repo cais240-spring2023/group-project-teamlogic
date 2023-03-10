@@ -13,7 +13,8 @@ public class Player implements PlayerInterface{
     private boolean alive;
     private Player killer;
     private Player visited;
-    private String messages = "";
+    private final String NO_MAIL = "You have no mail.";
+    private String messages = "You have no mail.";
     private boolean input = true;//for testing
     private static App appLink;
 
@@ -22,6 +23,9 @@ public class Player implements PlayerInterface{
     }
     public boolean hasAction(){
         return false;
+    }
+    public void visited(Player p){
+        visited = p;
     }
 
 
@@ -104,7 +108,7 @@ public class Player implements PlayerInterface{
     }
     @Override
     public void hear(String message){
-        if(messages.equals("")){
+        if(messages.equals(NO_MAIL)){
             messages = message;
         }
         else{
@@ -113,7 +117,7 @@ public class Player implements PlayerInterface{
     }
     @Override
     public void clearMessages(){
-        messages = "";
+        messages = "You have no mail.";
     }
     public static void clear(){
         for(int i = 0; i < 1000; i++) {

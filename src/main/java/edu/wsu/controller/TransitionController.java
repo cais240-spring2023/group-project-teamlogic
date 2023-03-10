@@ -33,7 +33,7 @@ public class TransitionController
     public TransitionController(){
     }
 
-    public static Scene newScene(String name, App app){
+    public static Scene newScene(String name, App app, Model m){
         StackPane root = new StackPane();
         //Label playerName = new Label();
         //playerName.setText(name);
@@ -41,7 +41,7 @@ public class TransitionController
         currentPlayerMessage.setText("It is your turn: " + name + "\nClick below to begin.");
         Button takeTurn = new Button();
         takeTurn.setText("Take turn");
-        takeTurn.setOnAction(event -> {app.doNext();});
+        takeTurn.setOnAction(event -> {app.doNext(m);});
         StackPane.setAlignment(takeTurn, Pos.BOTTOM_CENTER);
         //root.getChildren().add(playerName);
         root.getChildren().add(currentPlayerMessage);
@@ -49,7 +49,7 @@ public class TransitionController
         return new Scene(root,300,250);
     }
 
-    public static void display(String name, App app){
-        app.changeScene(newScene(name, app));
+    public static void display(String name, App app, Model m){
+        app.changeScene(newScene(name, app, m));
     }
 }

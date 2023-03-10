@@ -106,7 +106,7 @@ public class PlayerSelectorFX {
             for(int r = 0; r < 6; r++){
                 int i = c*6+r;
                 if(i >= players.length) break;
-                if(players[i].isAlive()){
+                if(players[i] != null && players[i].isAlive()){
                     grid.add(buttons[i],c,r);
                     buttons[i].setText(players[i].getName());
                 }

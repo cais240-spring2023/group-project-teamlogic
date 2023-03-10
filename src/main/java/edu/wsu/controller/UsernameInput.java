@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -37,6 +38,18 @@ public class UsernameInput{
     public static Scene newScene(Model m, App a) {
         VBox root = new VBox(10, nameLabel, nameField, submitButton, exitButton);
         root.setPadding(new Insets(10));
+
+        //Daniil coded this I just copied it
+        nameField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER){
+                if(nameField.getText().equals("")){
+                    m.addPlayersPhase(playerName);
+                    a.beginGame(m);
+                }
+                String input = nameField.getText();
+                nameGetter(input, m, a);
+            }
+        });
 
         submitButton.setOnAction(e ->{
             String input = nameField.getText();

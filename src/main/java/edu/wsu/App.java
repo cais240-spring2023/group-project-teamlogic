@@ -148,10 +148,10 @@ public class App extends Application {
         switch(currentlyOn){
             case DISPLAY_MESSAGES: case NIGHT_ACTION:
 
-                TransitionController.display(whoseTurn.getName(),this);
+                TransitionController.display(whoseTurn.getName(),this, m);
                 break;
             default:
-                doNext();
+                doNext(m);
         }
     }
 
@@ -198,12 +198,15 @@ public class App extends Application {
     }
     public void receive(Player player, Player choice, String purpose, Model m){
         if(purpose == "vote against") m.receiveVote(player, choice);
-        else m.submitAction(player,choice);
+        else{
+            m.submitAction(player,choice);
+            player.visited(choice);
+        }
         next(m);
     }
     public void getNightAction(Player player, Model m){
         if(player.hasAction()) PlayerSelectorFX.choose(m.getPlayers(),player,player.getNightActionName(),this, m);
-        else next(m);
+        else MessageDisplayerFX.display(player.getName(),"You sleep soundly in your cabin... hopefully you wake up tomorrow!",this,m);
     }
     public void goodGame(Model.Role winners, Model m){
         System.out.println("Good game");

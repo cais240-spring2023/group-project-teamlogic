@@ -346,7 +346,7 @@ public class Model
     public int getLivingPlayerCount(){
         int tally = 0;
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()){
+            if(players[i] != null && players[i].isAlive()){
                 tally++;
             }
         }

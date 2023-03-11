@@ -106,7 +106,7 @@ public class PlayerSelectorFX {
             for(int r = 0; r < 6; r++){
                 int i = c*6+r;
                 if(i >= players.length) break;
-                if(players[i].isAlive()){
+                if(players[i] != null && players[i].isAlive()){
                     grid.add(buttons[i],c,r);
                     buttons[i].setText(players[i].getName());
                 }
@@ -116,7 +116,7 @@ public class PlayerSelectorFX {
         root.getChildren().add(text);
         root.getChildren().add(grid);
         root.getChildren().add(skip);
-        return new Scene(root,300,250);
+        return new Scene(root,600,500);
     }
 
     public static void choose(Player[] players, Player chooser, String purpose, App app,Model m){

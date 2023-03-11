@@ -64,7 +64,7 @@ public class Model
     public String listLivingPlayers(){
         String livingPlayers = new String();
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) livingPlayers += players[i].getName() + ", ";
+            if(players[i] != null && players[i].isAlive()) livingPlayers += players[i].getName() + ", ";
         }
         return livingPlayers.substring(0,livingPlayers.length()-2);
     }
@@ -169,12 +169,9 @@ public class Model
     //make userNames from the input be put into names for players
     public void addPlayersPhase(String[] playerNames){
         for(int i = 0; i < playerNames.length; i++) {
-            System.out.println("1" + playerNames[i]);
-            if (playerNames[i] == null){
-                playerNames[i] = "Player " + i;
+            if (playerNames[i] != null){
+                addPlayer(new Player(playerNames[i]));
             }
-            addPlayer(new Player(playerNames[i]));
-            System.out.println("2" + players[i].getName());
         }
     }
     public void printAllPlayerNames(){
@@ -241,7 +238,7 @@ public class Model
             }
             Role[] roleList = defaultRoles(count);
             shuffle(roleList);
-            for(int i = 0; i < PLAYER_COUNT; i++){
+            for(int i = 0; i < roleList.length; i++){
                 switch(roleList[i]){
                     case INNOCENT:
                         players[i] = players[i].setInnocent();
@@ -262,7 +259,7 @@ public class Model
                     if(players[i] instanceof Detective) System.out.println(players[i].getName() + " is a detective.");
                     else if(players[i] instanceof Innocent) System.out.println(players[i].getName() + " is an innocent.");
                     else if(players[i] instanceof Murderer) System.out.println(players[i].getName() + " is a murderer.");
-                    else System.out.println(players[i].getName() + " has no role!");
+                    else if(players[i] != null) System.out.println(players[i].getName() + " has no role!");
                 }
             }
             return true;
@@ -281,8 +278,8 @@ public class Model
         return null;
     }
     public void tellRoles(){
-        for(int i = 0; i < PLAYER_COUNT; i++){
-            players[i].tellRole();
+        for(int i = 0; i < players.length; i++){
+            if(players[i] != null) players[i].tellRole();
         }
     }
 
@@ -335,6 +332,7 @@ public class Model
         int i = getPlayerIndex(player);
         i++;
         if(i == players.length) return null;
+        else if(players[i] == null) return null;
         else if(players[i].isAlive()) return players[i];
         else return getNextPlayer(players[i]);//if the next player is dead, get the next next
     }
@@ -348,7 +346,7 @@ public class Model
     public int getLivingPlayerCount(){
         int tally = 0;
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()){
+            if(players[i] != null && players[i].isAlive()){
                 tally++;
             }
         }

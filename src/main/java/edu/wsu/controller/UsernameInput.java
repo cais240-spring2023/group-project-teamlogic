@@ -46,8 +46,10 @@ public class UsernameInput{
                     m.addPlayersPhase(playerName);
                     a.beginGame(m);
                 }
-                String input = nameField.getText();
-                nameGetter(input, m, a);
+                else {
+                    String input = nameField.getText();
+                    nameGetter(input, m, a);
+                }
             }
         });
 

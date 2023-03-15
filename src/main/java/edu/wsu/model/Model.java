@@ -38,6 +38,15 @@ public class Model
 
     public enum Role{
         NONE, INNOCENT, MURDERER, DETECTIVE;
+        public static String[] getStrings(){
+            return new String[] {"Innocent","Murderer","Detective"};
+        }
+        public static Role[] getAll(){
+            return new Role[] {INNOCENT,MURDERER,DETECTIVE};
+        }
+        public static Role get(int i){
+            return getAll()[i];
+        }
     }
     public static void setAppLink(App app){
         Player.setAppLink(app);
@@ -198,6 +207,13 @@ public class Model
         }
         return a;
     }
+    public int countPlayers(){
+        int count = 0;
+        for(int i = 0; i < PLAYER_COUNT; i++){
+            if(players[i] != null) count++;
+        }
+        return count;
+    }
 
     public boolean addPlayer(Player player){//Take a wild guess what this does
         for(int i = 0; i < PLAYER_COUNT; i++){//searches for a null spot and then puts the player in that spot
@@ -222,7 +238,7 @@ public class Model
     }
 
     private Role[] defaultRoles(int count){
-        Role[] fullList = new Role[] {Role.INNOCENT,Role.DETECTIVE,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.MURDERER,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT};
+        Role[] fullList = new Role[] {Role.INNOCENT,Role.DETECTIVE,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.MURDERER};
         Role[] shortList = new Role[count];
         for(int i = 0; i < count; i++){
             shortList[i] = fullList[i];
@@ -328,7 +344,8 @@ public class Model
         return -1;//error case
     }
     public Player getNextPlayer(Player player){
-        if(player == null) return players[0];
+        if(player == null && players[0].isAlive()) return players[0];
+        else if(player == null) return getNextPlayer(players[0]);
         int i = getPlayerIndex(player);
         i++;
         if(i == players.length) return null;
@@ -351,6 +368,10 @@ public class Model
             }
         }
         return tally;
+    }
+
+    public void clearPlayers(){//DO NOT USE EVER
+        players = new Player[PLAYER_COUNT];
     }
 
     public Role checkWinner(){

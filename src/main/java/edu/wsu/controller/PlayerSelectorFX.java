@@ -97,7 +97,8 @@ public class PlayerSelectorFX {
 
         Button skip = new Button();
         skip.setText("Skip");
-        skip.setOnAction(event -> {app.next(m );});
+        skip.setPrefWidth(2*BUTTON_WIDTH);
+        skip.setOnAction(event -> {app.next(m);});
 
         Label text = new Label();
         text.setText(chooser.getName() + ", select a player to " + purpose);
@@ -116,6 +117,7 @@ public class PlayerSelectorFX {
         root.getChildren().add(text);
         root.getChildren().add(grid);
         root.getChildren().add(skip);
+        root.setAlignment(Pos.CENTER);
         return new Scene(root,600,500);
     }
 

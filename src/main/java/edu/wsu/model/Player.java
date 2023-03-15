@@ -179,4 +179,7 @@ public class Player implements PlayerInterface{
     public void disableInput(){
         input = false;
     }
+    public String roleString(){
+        return "nobody!";
+    }
 }

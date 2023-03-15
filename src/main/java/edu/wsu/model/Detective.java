@@ -45,4 +45,8 @@ public class Detective extends Innocent{
     public boolean hasAction(){
         return true;
     }
+    @Override
+    public String roleString(){
+        return "a detective.";
+    }
 }

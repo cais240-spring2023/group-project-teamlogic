@@ -52,4 +52,8 @@ public class Murderer extends Player{
     public boolean hasAction(){
         return true;
     }
+    @Override
+    public String roleString(){
+        return "a murderer!";
+    }
 }

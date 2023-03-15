@@ -1,9 +1,6 @@
 package edu.wsu;
 
-import edu.wsu.controller.MessageDisplayerFX;
-import edu.wsu.controller.PlayerSelectorFX;
-import edu.wsu.controller.TransitionController;
-import edu.wsu.controller.UsernameInput;
+import edu.wsu.controller.*;
 import edu.wsu.model.Model;
 import edu.wsu.model.Player;
 import javafx.application.Application;
@@ -71,6 +68,10 @@ public class App extends Application {
         roleList.setPrefWidth(BUTTON_WIDTH);
         roleList.setOnAction(event -> {System.out.println(TUTORIAL);});
 
+        Button debugMode = new Button("Debug Mode");
+        debugMode.setPrefWidth(BUTTON_WIDTH);
+        debugMode.setOnAction(event -> {DebugMode.debug(this);});
+
 
 
         BorderPane root = new BorderPane();
@@ -80,6 +81,7 @@ public class App extends Application {
         vbox.getChildren().add(server);
         vbox.getChildren().add(client);
         vbox.getChildren().add(roleList);
+        vbox.getChildren().add(debugMode);
         vbox.setAlignment(Pos.CENTER);
         root.setCenter(vbox);
 
@@ -120,6 +122,13 @@ public class App extends Application {
         doNext(model);
     }
 
+    public void beginGameFromDebugging(Model model){
+
+        model.tellRoles();
+        currentlyOn = Order.GOOD_MORNING;
+        doNext(model);
+    }
+
     public enum Order{
         GOOD_MORNING,DISPLAY_MESSAGES,VOTE,THROW_OFF,NIGHT_ACTION,END,CLOSE
     }
@@ -153,6 +162,7 @@ public class App extends Application {
             case THROW_OFF:
                 whoseTurn = m.getNextPlayer(null);
                 currentlyOn = Order.NIGHT_ACTION;
+                break;
             case NIGHT_ACTION:
                 whoseTurn = m.getNextPlayer(whoseTurn);
                 if(whoseTurn == null){
@@ -251,6 +261,6 @@ public class App extends Application {
         System.out.println(winnerString);
     }
     public void thrownOff(Player player, Model m){
-        MessageDisplayerFX.display("Player killed!",player.getName() + " was thrown off the train. Good luck to them!",this, m);
+        MessageDisplayerFX.display("Player killed!",player.getName() + " was thrown off the train. Good luck to them!\n\nThey were " + player.roleString(),this, m);
     }
 }

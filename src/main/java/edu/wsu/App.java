@@ -19,27 +19,6 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
-    private final String TUTORIAL = "\n\n\n\nThis is a social deduction game.\n" +
-            "Every player will be assigned a role, and the goal of the game is to deduce which roles\n" +
-            "are present in the game, and which players have which role.\n" +
-            "Each play can take actions at night based on their role, and every afternoon they can\n" +
-            "vote players they think are suspicious, or they think get in their way, off the train.\n\n\n" +
-            "There are three teams: Innocents, Murderers, and Neutrals.\n\n" +
-            "The innocents take actions which serve the greater good at night. They win when there are\n" +
-            "no more murderers threatening them.\n\n" +
-            "The murderers take actions which kill innocent passengers, or help other murderers get\n" +
-            "away with their crimes. They win when there are no more innocent passengers left to stop\n" +
-            "their reign of terror.\n\n" +
-            "Neutral roles throw a wrench into the dichotomy, with special win conditions independent\n" +
-            "of eliminating either side. They can win both with the murderers or the innocents.\n\n\n" +
-            "ROLE LIST:\n\n" +
-            "(I) NORMIE\n" +
-            "The normie can take no action at night.\n\n" +
-            "(I) DETECTIVE\n" +
-            "The detective can look for clues at night. The next morning, they will know who the person\n" +
-            "they visited, themselves visited.\n\n" +
-            "(M) MURDERER\n" +
-            "The murderer will kill one person at night.\n\n";
 
     private Scene currentlyShowing;
     private Stage stage;
@@ -64,9 +43,8 @@ public class App extends Application {
         Button client = new Button("Connect to server");
         client.setPrefWidth(BUTTON_WIDTH);
 
-        Button roleList = new Button("Tutorial");
+        Button roleList = new Button("View Role List");
         roleList.setPrefWidth(BUTTON_WIDTH);
-        roleList.setOnAction(event -> {System.out.println(TUTORIAL);});
 
         Button debugMode = new Button("Debug Mode");
         debugMode.setPrefWidth(BUTTON_WIDTH);
@@ -92,7 +70,7 @@ public class App extends Application {
         VBox root2 = new VBox(10, nameLabel, nameField, submitButton, exitButton);
         root.setPadding(new Insets(10));
 
-        Scene scene = new Scene(root, 600, 500);
+        Scene scene = new Scene(root, 400, 350);
 
         stage.setTitle("Nestor's Murder Mystery");
         stage.setScene(scene);
@@ -178,11 +156,9 @@ public class App extends Application {
                 break;
         }
         switch(currentlyOn){
-            case DISPLAY_MESSAGES:
-                TransitionController.display(whoseTurn.getName(), "read your messages",this, m);
-                break;
-            case NIGHT_ACTION:
-                TransitionController.display(whoseTurn.getName(),"prepare for bed",this, m);
+            case DISPLAY_MESSAGES: case NIGHT_ACTION:
+
+                TransitionController.display(whoseTurn.getName(),this, m);
                 break;
             default:
                 doNext(m);
@@ -232,15 +208,12 @@ public class App extends Application {
     }
     public void receive(Player player, Player choice, String purpose, Model m){
         if(purpose == "vote against") m.receiveVote(player, choice);
-        else{
-            m.submitAction(player,choice);
-            player.visited(choice);
-        }
+        else m.submitAction(player,choice);
         next(m);
     }
     public void getNightAction(Player player, Model m){
         if(player.hasAction()) PlayerSelectorFX.choose(m.getPlayers(),player,player.getNightActionName(),this, m);
-        else MessageDisplayerFX.display(player.getName(),"You sleep soundly in your cabin... hopefully you wake up tomorrow!",this,m);
+        else next(m);
     }
     public void goodGame(Model.Role winners, Model m){
         System.out.println("Good game");

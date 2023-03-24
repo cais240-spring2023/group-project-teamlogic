@@ -3,6 +3,7 @@ package edu.wsu;
 import edu.wsu.controller.*;
 import edu.wsu.model.Model;
 import edu.wsu.model.Player;
+import edu.wsu.view.MessageDisplayerFX;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -70,7 +71,8 @@ public class App extends Application {
 
         Button debugMode = new Button("Debug Mode");
         debugMode.setPrefWidth(BUTTON_WIDTH);
-        debugMode.setOnAction(event -> {DebugMode.debug(this);});
+        debugMode.setOnAction(event -> {
+            DebugMode.debug(this);});
 
 
 
@@ -228,7 +230,7 @@ public class App extends Application {
         else next(m);
     }
     public void getVote(Player player, Model m){
-        PlayerSelectorFX.choose(m.getPlayers(),player,"vote against",this,m);
+        PlayerSelector.choose(m.getPlayers(),player,"vote against",this,m);
     }
     public void receive(Player player, Player choice, String purpose, Model m){
         if(purpose == "vote against") m.receiveVote(player, choice);
@@ -239,7 +241,7 @@ public class App extends Application {
         next(m);
     }
     public void getNightAction(Player player, Model m){
-        if(player.hasAction()) PlayerSelectorFX.choose(m.getPlayers(),player,player.getNightActionName(),this, m);
+        if(player.hasAction()) PlayerSelector.choose(m.getPlayers(),player,player.getNightActionName(),this, m);
         else MessageDisplayerFX.display(player.getName(),"You sleep soundly in your cabin... hopefully you wake up tomorrow!",this,m);
     }
     public void goodGame(Model.Role winners, Model m){

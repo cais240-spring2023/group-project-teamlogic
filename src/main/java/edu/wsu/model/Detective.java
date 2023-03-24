@@ -1,7 +1,5 @@
 package edu.wsu.model;
 
-import edu.wsu.controller.PlayerSelector;
-
 public class Detective extends Innocent{
     //I thought it would be wise to split these off into different classes
     //rather than handling it all in one class
@@ -35,7 +33,7 @@ public class Detective extends Innocent{
         }
     }
     public Player panelBasedActivityHandler(Player[] players){
-        return PlayerSelector.selectPlayer(players, name,"investigate", true);
+        return null;
     }
 
     @Override

@@ -19,12 +19,6 @@ public class Detective extends Innocent{
         hear("You are a detective.");
     }
 
-    @Override
-    public Player activityHandler(Player[] players){
-        if(Model.TEXT_MODE) return textBasedActivityHandler(players);
-        else return panelBasedActivityHandler(players);
-    }
-
     public Player textBasedActivityHandler(Player[] players){
         System.out.println(name + ", select a player to investigate.\n");
         Player selected;
@@ -48,5 +42,17 @@ public class Detective extends Innocent{
     @Override
     public String roleString(){
         return "a detective.";
+    }
+    @Override
+    public void nightHandler(Player acted){
+        Player p = acted.getVisited();
+        String name;
+        if(p == null){
+            name = "nobody!";
+        }
+        else{
+            name = p.getName();
+        }
+        hear(acted.getName() + " visited " + name);
     }
 }

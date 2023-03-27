@@ -11,12 +11,15 @@ public class Player implements PlayerInterface{
     protected ArrayList<String> actions;
     protected String name;//What the player is called :)
     private boolean alive;
+    private int deadFor = 0;//0 if alive, or during the night they got murdered. Increments by 1 every morning they're dead.
     private Player killer;
     private Player visited;
     private final String NO_MAIL = "You have no mail.";
     private String messages = "You have no mail.";
     private boolean input = true;//for testing
     private static App appLink;
+    private boolean isImmune = false;//If the model handles the doctor healing you before
+    private boolean cleaned = false;
 
     public String getNightActionName(){
         return "";
@@ -25,7 +28,26 @@ public class Player implements PlayerInterface{
         return false;
     }
     public void visited(Player p){
-        visited = p;
+        if(!cleaned) visited = p;
+    }
+    public void clean(){
+        visited = null;
+        cleaned = true;
+    }
+
+    public void onMorning(){
+        if(!isAlive()) deadFor++;
+        isImmune = false;
+        cleaned = false;
+    }
+    public boolean justDied(){
+        return deadFor == 0 && !isAlive();
+    }
+    public void setImmune(){
+        isImmune = true;
+    }
+    public boolean isImmune(){
+        return isImmune();
     }
 
 
@@ -60,8 +82,11 @@ public class Player implements PlayerInterface{
     }
     @Override
     public void killedBy(Player murderer){
-        alive = false;
-        killer = murderer;
+        if(!isImmune) {
+            alive = false;
+            killer = murderer;
+        }
+        else hear(Doctor.healString());
     }
     @Override
     public boolean isAlive(){
@@ -87,8 +112,7 @@ public class Player implements PlayerInterface{
     }
     @Override
     public Player doActivity(Player[] players){
-        visited = activityHandler(players);
-        return visited;
+        return null;
     }
     @Override
     public Player activityHandler(Player[] players){
@@ -135,6 +159,7 @@ public class Player implements PlayerInterface{
         else return false;
     }
     public void panelMessages(Model m){
+        messages = messages.replace("$",Integer.toString(Model.MAX_TURNS-Model.m.getTurn()));
         MessageDisplayerFX.display(name,messages,appLink, m);
     }
     public void textMessages(){//This should be replaced when FXML is working
@@ -175,11 +200,20 @@ public class Player implements PlayerInterface{
     public Detective setDetective(){
         return new Detective(name);
     }
+    public Doctor setDoctor(){
+        return new Doctor(name);
+    }
+    public Engineer setEngineer(){
+        return new Engineer(name);
+    }
     @Override
     public void disableInput(){
         input = false;
     }
     public String roleString(){
         return "nobody!";
+    }
+    public void nightHandler(Player acted){
+        //do nothing
     }
 }

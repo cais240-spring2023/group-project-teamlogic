@@ -2,9 +2,6 @@ package edu.wsu.controller;
 
 import edu.wsu.App;
 import edu.wsu.model.Model;
-import edu.wsu.model.Player;
-import edu.wsu.model.Players;
-import javafx.application.Application;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -13,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 
 //ignore this for sprint 1

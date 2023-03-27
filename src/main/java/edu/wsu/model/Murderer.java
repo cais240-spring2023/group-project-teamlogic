@@ -24,12 +24,9 @@ public class Murderer extends Player{
         hear("You are the murderer!");
     }
 
-
-
     @Override
-    public Player activityHandler(Player[] players){
-        if(Model.TEXT_MODE) return textBasedActivityHandler(players);
-        else return panelBasedActivityHandler(players);
+    public void nightHandler(Player acted){
+        acted.killedBy(this);
     }
 
     public Player textBasedActivityHandler(Player[] players){

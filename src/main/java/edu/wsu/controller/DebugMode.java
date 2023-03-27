@@ -1,10 +1,7 @@
 package edu.wsu.controller;
 
 import edu.wsu.App;
-import edu.wsu.model.Innocent;
-import edu.wsu.model.Murderer;
-import edu.wsu.model.Detective;
-import edu.wsu.model.Model;
+import edu.wsu.model.*;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -132,6 +129,12 @@ public class DebugMode {
                         break;
                     case DETECTIVE:
                         m.addPlayer(new Detective(name));
+                        break;
+                    case DOCTOR:
+                        m.addPlayer(new Doctor(name));
+                        break;
+                    case ENGINEER:
+                        m.addPlayer(new Engineer(name));
                         break;
                 }
             }

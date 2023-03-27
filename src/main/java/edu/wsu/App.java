@@ -154,14 +154,14 @@ public class App extends Application {
             case VOTE:
                 whoseTurn = m.getNextPlayer(whoseTurn);
                 if(whoseTurn == null){
-                    winners = m.checkWinner();
                     currentlyOn = Order.THROW_OFF;
-                    if(winners != null) goodGame(winners, m);
                 }
                 break;
             case THROW_OFF:
                 whoseTurn = m.getNextPlayer(null);
                 currentlyOn = Order.NIGHT_ACTION;
+                winners = m.checkWinner();
+                if(winners != null) goodGame(winners, m);
                 break;
             case NIGHT_ACTION:
                 whoseTurn = m.getNextPlayer(whoseTurn);
@@ -171,6 +171,7 @@ public class App extends Application {
                     m.incrementTurn();
                     currentlyOn = Order.GOOD_MORNING;
                     if(winners != null) goodGame(winners, m);
+                    if(m.getTurn() >= Model.MAX_TURNS) goodGame(Model.Role.INNOCENT,m);
                 }
                 break;
             case END:
@@ -208,6 +209,7 @@ public class App extends Application {
                 Player victim = m.tallyVotes();
                 if(victim != null) {
                     victim.kill();
+                    victim.onMorning();//Sets deadFor to 1 so that the doctor can't save them
                     thrownOff(victim, m);
                 }
                 break;
@@ -222,6 +224,7 @@ public class App extends Application {
     public void goodMorning(Model m){
         String goodMorning = "Good morning!\nLiving Players: " + m.listLivingPlayers();
         MessageDisplayerFX.display("Day "+m.getTurn(),goodMorning,this, m);
+        m.onMorning();
     }
     public void displayMessages(Player player, Model m){
         if(player.displayMessages(m));

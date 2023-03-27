@@ -1,7 +1,7 @@
 package edu.wsu.model;
 
 import edu.wsu.App;
-import edu.wsu.controller.MessageDisplayerFX;
+import edu.wsu.view.MessageDisplayerFX;
 
 import java.util.Random;
 import java.util.Scanner;

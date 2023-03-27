@@ -1,7 +1,5 @@
 package edu.wsu.model;
 
-import edu.wsu.controller.PlayerSelector;
-
 import java.util.ArrayList;
 
 public class Murderer extends Player{
@@ -39,7 +37,7 @@ public class Murderer extends Player{
         }
     }
     public Player panelBasedActivityHandler(Player[] players){
-        return PlayerSelector.selectPlayer(players,name,"kill", true);
+        return null;
     }
 
     @Override

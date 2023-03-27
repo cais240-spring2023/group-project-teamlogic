@@ -1,8 +1,7 @@
 package edu.wsu.model;
 
 import edu.wsu.App;
-import edu.wsu.controller.MessageDisplayerFX;
-import edu.wsu.controller.PlayerSelector;
+import edu.wsu.view.MessageDisplayerFX;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -108,7 +107,7 @@ public class Player implements PlayerInterface{
         }
     }
     public Player panelVote(Player[] players){
-        return PlayerSelector.selectPlayer(players, name,"vote against", true);
+        return null;
     }
     @Override
     public Player doActivity(Player[] players){

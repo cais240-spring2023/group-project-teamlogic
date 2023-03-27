@@ -1,4 +1,4 @@
-package edu.wsu.controller;
+package edu.wsu.view;
 
 import edu.wsu.App;
 import edu.wsu.model.Model;
@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class PlayerSelectorFX {
@@ -119,9 +118,5 @@ public class PlayerSelectorFX {
         root.getChildren().add(skip);
         root.setAlignment(Pos.CENTER);
         return new Scene(root,600,500);
-    }
-
-    public static void choose(Player[] players, Player chooser, String purpose, App app,Model m){
-        app.changeScene(newScene(players,chooser,purpose,app, m));
     }
 }

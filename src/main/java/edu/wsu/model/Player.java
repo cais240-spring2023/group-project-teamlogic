@@ -37,6 +37,9 @@ public class Player implements PlayerInterface{
     public void silence(){
         silenced = 2;
     }
+    public boolean isSilenced(){
+        return silenced != 0;
+    }
 
     public void onMorning(){
         if(!isAlive()) deadFor++;

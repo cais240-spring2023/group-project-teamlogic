@@ -2,26 +2,17 @@ package edu.wsu.view;
 
 import edu.wsu.App;
 import edu.wsu.model.Model;
-<<<<<<< Updated upstream:src/main/java/edu/wsu/view/MessageDisplayerFX.java
-=======
-
->>>>>>> Stashed changes:src/main/java/edu/wsu/controller/MessageDisplayerFX.java
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-<<<<<<< Updated upstream:src/main/java/edu/wsu/view/MessageDisplayerFX.java
 
-=======
->>>>>>> Stashed changes:src/main/java/edu/wsu/controller/MessageDisplayerFX.java
 import java.util.Scanner;
 
+public class MessageDisplayerFX {
 
-public class MessageDisplayerFX{
-
-
-    public static Scene createScene(String name, String messages, App app, Model m) {
+    public static Scene newScene(String name, String messages, App app, Model m){
         StackPane root = new StackPane();
         Button close = new Button();
         close.setText("Okay");
@@ -35,16 +26,12 @@ public class MessageDisplayerFX{
     }
 
     public static void display(String name, String messages, App app, Model m){
-        app.changeScene(createScene(name, messages, app, m));
+        app.changeScene(newScene(name, messages, app, m));
     }
-
-
-
     public static boolean waiting(){
         Scanner sc = new Scanner(System.in);
         sc.nextLine();
         return true;
     }
-
 
 }

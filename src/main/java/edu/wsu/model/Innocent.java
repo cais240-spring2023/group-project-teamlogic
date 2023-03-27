@@ -19,13 +19,9 @@ public class Innocent extends Player{
     public void tellRole(){
         hear("You are an innocent passenger!");
     }
-<<<<<<< Updated upstream
     @Override
     public String roleString(){
         return "a normie.";
     }
-=======
-
->>>>>>> Stashed changes
 }
 

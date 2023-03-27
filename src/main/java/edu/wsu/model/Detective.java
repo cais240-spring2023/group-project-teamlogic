@@ -1,7 +1,6 @@
 package edu.wsu.model;
 
 public class Detective extends Innocent{
-    private ArrayList<Object> actions;
     //I thought it would be wise to split these off into different classes
     //rather than handling it all in one class
     //

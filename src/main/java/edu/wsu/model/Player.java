@@ -6,21 +6,11 @@ import edu.wsu.view.MessageDisplayerFX;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-<<<<<<< Updated upstream
-public class Player implements PlayerInterface {
-    protected ArrayList<String> actions;
-=======
 public class Player implements PlayerInterface{
->>>>>>> Stashed changes
+    protected ArrayList<String> actions;
     protected String name;//What the player is called :)
     private boolean alive;
-<<<<<<< Updated upstream
     private int deadFor = 0;//0 if alive, or during the night they got murdered. Increments by 1 every morning they're dead.
-=======
-
-    private boolean silenced;
-    private Player pillow;
->>>>>>> Stashed changes
     private Player killer;
     private Player visited;
     private final String NO_MAIL = "You have no mail.";
@@ -30,11 +20,10 @@ public class Player implements PlayerInterface{
     private boolean isImmune = false;//If the model handles the doctor healing you before
     private boolean cleaned = false;
 
-    public String getNightActionName() {
+    public String getNightActionName(){
         return "";
     }
-
-    public boolean hasAction() {
+    public boolean hasAction(){
         return false;
     }
     public void visited(Player p){
@@ -60,20 +49,18 @@ public class Player implements PlayerInterface{
         return isImmune();
     }
 
-<<<<<<< Updated upstream
 
-    public Player(String name) {//use this not Player()
+
+    public Player(String name){//use this not Player()
         this.name = name;
         alive = true;
         this.actions = new ArrayList<>();
         actions.add("vote");
         actions.add("skip");
     }
-
-    public static void setAppLink(App app) {
+    public static void setAppLink(App app){
         appLink = app;
     }
-
     public ArrayList<String> getActions() {
         return actions;
     }
@@ -81,192 +68,119 @@ public class Player implements PlayerInterface{
     public void setActions(ArrayList<String> actions) {
         this.actions = actions;
     }
-
-
-=======
-    public Player(){//should never be called
-        name = "Jimbo";
+    @Override
+    public void tellRole(){//should never be called
+    }
+    @Override
+    public void revive(){
         alive = true;
     }
-    public Player(String name){//use this not Player()
-        this.name = name;
-        alive = true;
-    }
-
-    public static Player create(String playerName){//This should be entirely replaced when we have FXML working
-        int i = 0;
-       while(i < PrimaryController.names.size()){
-            String name = PrimaryController.names.get(i);
-            i++;
-        }
-        return new Player();
-    }
->>>>>>> Stashed changes
     @Override
-    public void tellRole() {//should never be called
-    }
-
-    @Override
-    public void revive() {
-        alive = true;
-    }
-
-    @Override
-    public void kill() {
+    public void kill(){
         alive = false;
     }
-
     @Override
-<<<<<<< Updated upstream
     public void killedBy(Player murderer){
         if(!isImmune) {
             alive = false;
             killer = murderer;
         }
         else hear(Doctor.healString());
-=======
-    public void killedBy(Player murderer) {
-        alive = false;
-        killer = murderer;
->>>>>>> Stashed changes
     }
     @Override
-    public void silencedBy(Player silencer){
-        silenced = true;
-        pillow = silencer;
-    }
-
-    @Override
-    public boolean isAlive() {
+    public boolean isAlive(){
         return alive;
     }
 
     @Override
-    public Player vote(Player[] players) {//this MUST be a living player, add a check to make sure it only returns living players!
-        if (Model.TEXT_MODE) return textVote(players);
+    public Player vote(Player[] players){//this MUST be a living player, add a check to make sure it only returns living players!
+        if(Model.TEXT_MODE) return textVote(players);
         else return panelVote(players);
     }
-
-    public Player textVote(Player[] players) {
+    public Player textVote(Player[] players){
         System.out.println(name + ", select who to vote to kill.");
         Player selected;
-        while (true) {
+        while(true) {
             selected = textBasedPlayerSelector(players);
-            if (selected == null) return null;
-            if (selected.isAlive()) return selected;
+            if(selected == null) return null;
+            if(selected.isAlive()) return selected;
         }
     }
-<<<<<<< Updated upstream
     public Player panelVote(Player[] players){
         return null;
-=======
-
-    public Player panelVote(Player[] players) {
-        return PlayerSelector.selectPlayer(players, name, "vote against", true);
->>>>>>> Stashed changes
     }
-
     @Override
-<<<<<<< Updated upstream
     public Player doActivity(Player[] players){
         return null;
-=======
-    public Player doActivity(Player[] players) {
-        visited = activityHandler(players);
-        return visited;
->>>>>>> Stashed changes
     }
-
     @Override
-    public Player activityHandler(Player[] players) {
+    public Player activityHandler(Player[] players){
         return null;
     }
-
     @Override
-    public boolean nameIs(String name) {
+    public boolean nameIs(String name){
         return this.name.equals(name);
     }
-
     @Override
-    public String getName() {
+    public String getName(){
         return name;
     }
-
     @Override
-    public Player getVisited() {
+    public Player getVisited(){
         return visited;
     }
-
     @Override
-<<<<<<< Updated upstream
     public void hear(String message){
         if(messages.equals(NO_MAIL)){
-=======
-    public void hear(String message) {
-        if (messages.equals("")) {
->>>>>>> Stashed changes
             messages = message;
-        } else {
+        }
+        else{
             messages = messages + "\n" + message;
         }
     }
-
     @Override
-<<<<<<< Updated upstream
     public void clearMessages(){
         messages = "You have no mail.";
-=======
-    public void clearMessages() {
-        messages = "";
->>>>>>> Stashed changes
     }
-
-    public static void clear() {
-        for (int i = 0; i < 1000; i++) {
+    public static void clear(){
+        for(int i = 0; i < 1000; i++) {
             System.out.println("");//trolled
         }
     }
-
     @Override
-    public boolean displayMessages(Model m) {
-        if (!messages.equals("")) {
+    public boolean displayMessages(Model m){
+        if(!messages.equals("")) {
             if (Model.TEXT_MODE) textMessages();
             else panelMessages(m);
             clearMessages();
             return true;
-        } else return false;
+        }
+        else return false;
     }
-<<<<<<< Updated upstream
     public void panelMessages(Model m){
         messages = messages.replace("$",Integer.toString(Model.MAX_TURNS-Model.m.getTurn()));
         MessageDisplayerFX.display(name,messages,appLink, m);
-=======
-
-    public void panelMessages(Model m) {
-        MessageDisplayerFX.display(name, messages, appLink, m);
->>>>>>> Stashed changes
     }
-
-    public void textMessages() {//This should be replaced when FXML is working
+    public void textMessages(){//This should be replaced when FXML is working
         clear();
         System.out.println(name + ", your messages...\n\n");
         System.out.println(messages);
-        if (input) {
+        if(input) {
             Scanner sc = new Scanner(System.in);
             System.out.println("\n\nPress ENTER to continue...");
             sc.nextLine();
         }
     }
 
-    protected Player textBasedPlayerSelector(Player[] players) {//This should be replaced when we have FXML
+    protected Player textBasedPlayerSelector(Player[] players){//This should be replaced when we have FXML
         Scanner sc = new Scanner(System.in);
-        while (true) {
+        while(true) {
             String name = sc.nextLine();//Allows player to input a name
-            if (name.equals("")) {
+            if(name.equals("")){
                 return null;
             }
-            for (int i = 0; i < players.length; i++) {
-                if (players[i].nameIs(name)) {//Identifies a player with this name
+            for(int i = 0; i < players.length; i++){
+                if(players[i].nameIs(name)){//Identifies a player with this name
                     return players[i];//Success, this is our guy
                 }
             }
@@ -274,53 +188,31 @@ public class Player implements PlayerInterface{
     }
 
     @Override
-    public Innocent setInnocent() {
+    public Innocent setInnocent(){
         return new Innocent(name);
     }
-
     @Override
-    public Murderer setMurderer() {
+    public Murderer setMurderer(){
         return new Murderer(name);
     }
-
     @Override
-    public Detective setDetective() {
+    public Detective setDetective(){
         return new Detective(name);
     }
-<<<<<<< Updated upstream
     public Doctor setDoctor(){
         return new Doctor(name);
     }
     public Engineer setEngineer(){
         return new Engineer(name);
     }
-=======
-
     @Override
-    public Silencer setSilencer(){
-        return new Silencer(name);}
-
-
->>>>>>> Stashed changes
-    @Override
-    public void disableInput() {
+    public void disableInput(){
         input = false;
     }
-<<<<<<< Updated upstream
     public String roleString(){
         return "nobody!";
     }
     public void nightHandler(Player acted){
         //do nothing
-=======
-
-<<<<<<< Updated upstream
-    public void silencedBy(Player actor) {
-=======
-    @Override
-    public ArrayList<String> getAction() {
-        return null;
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     }
 }

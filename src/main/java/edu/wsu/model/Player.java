@@ -19,6 +19,7 @@ public class Player implements PlayerInterface{
     private static App appLink;
     private boolean isImmune = false;//If the model handles the doctor healing you before
     private boolean cleaned = false;
+    private int silenced = 0;
 
     public String getNightActionName(){
         return "";
@@ -33,12 +34,16 @@ public class Player implements PlayerInterface{
         visited = null;
         cleaned = true;
     }
+    public void silence(){
+        silenced = 2;
+    }
 
     public void onMorning(){
         if(!isAlive()) deadFor++;
         isImmune = false;
         cleaned = false;
-    }
+        if(silenced != 0) silenced--;//Silenced will be set to 2, and then subtracted each morning. That way it clears
+    }//After a full day of being silenced.
     public boolean justDied(){
         return deadFor == 0 && !isAlive();
     }

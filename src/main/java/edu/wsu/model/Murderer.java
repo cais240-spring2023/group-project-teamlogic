@@ -3,6 +3,7 @@ package edu.wsu.model;
 import java.util.ArrayList;
 
 public class Murderer extends Player{
+    private final ArrayList<Object> actions;
     //I thought it would be wise to split these off into different classes
     //rather than handling it all in one class
     //
@@ -27,6 +28,7 @@ public class Murderer extends Player{
         acted.killedBy(this);
     }
 
+
     public Player textBasedActivityHandler(Player[] players){
         System.out.println(name + ", select a player to MURDER!\n");
         Player selected;
@@ -47,8 +49,13 @@ public class Murderer extends Player{
     public boolean hasAction(){
         return true;
     }
+<<<<<<< Updated upstream
     @Override
     public String roleString(){
         return "a murderer!";
     }
+=======
+
+
+>>>>>>> Stashed changes
 }

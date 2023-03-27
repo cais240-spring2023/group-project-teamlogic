@@ -1,11 +1,26 @@
 package edu.wsu.model;
 
+<<<<<<< Updated upstream
 import edu.wsu.App;
 import edu.wsu.view.MessageDisplayerFX;
 
+=======
+import java.util.HashMap;
+import java.util.Map;
+>>>>>>> Stashed changes
 import java.util.Random;
 import java.util.Scanner;
 
+<<<<<<< Updated upstream
+=======
+import static edu.wsu.controller.UsernameInput.playerName;
+
+<<<<<<< Updated upstream
+=======
+import static edu.wsu.controller.PrimaryController.names;
+import static jdk.internal.org.jline.reader.impl.LineReaderImpl.CompletionType.List;
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
 public class Model
 {
@@ -30,8 +45,17 @@ public class Model
     private static App appLink;
 
     public Player[] players;
+<<<<<<< Updated upstream
     private static final int PLAYER_COUNT = 12;
     public static int MAX_TURNS = 16;
+=======
+    private static final int PLAYER_COUNT = 6;
+    public static final int MAX_TURNS = 30;
+    public Murderer murderer;//pointer to one of the players
+
+    public Silencer silencer;
+    public Detective detective;//pointer also
+>>>>>>> Stashed changes
     public boolean rolesAssigned;//keeps track of whether the roles were already assigned
     //                             because I can't directly access it the way I stored this information
 
@@ -48,6 +72,7 @@ public class Model
 
 
     public enum Role{
+<<<<<<< Updated upstream
         NONE, INNOCENT, MURDERER, DETECTIVE, DOCTOR, ENGINEER;
         public static String[] getStrings(){
             return new String[] {"Innocent","Murderer","Detective","Doctor","Engineer"};
@@ -58,6 +83,9 @@ public class Model
         public static Role get(int i){
             return getAll()[i];
         }
+=======
+        NONE, INNOCENT, MURDERER, DETECTIVE, SILENCER;
+>>>>>>> Stashed changes
     }
     public static void setAppLink(App app){
         Player.setAppLink(app);
@@ -150,15 +178,23 @@ public class Model
         if(actor instanceof Murderer){
             acted.killedBy(actor);
         }
+<<<<<<< Updated upstream
 
         //Separate evil and good roles, no else if here
 
+=======
+        if(actor instanceof Silencer){
+            acted.silencedBy(actor);
+        }
+>>>>>>> Stashed changes
         if(actor instanceof Detective){
             Player p = acted.getVisited();
             String name;
             if(p == null){
                 name = "nobody!";
             }
+
+
             else{
                 name = p.getName();
             }
@@ -215,7 +251,11 @@ public class Model
     }
     public void printAllPlayerNames(){
         for(int i = 0; i < players.length; i++){
+<<<<<<< Updated upstream
             System.out.println(players[i].getName());
+=======
+            addPlayer(Player.create(names.get(i)));
+>>>>>>> Stashed changes
         }
     }
 
@@ -267,6 +307,7 @@ public class Model
         }
     }
 
+<<<<<<< Updated upstream
     private Role[] defaultRoles(int count){
         Role[] fullList = new Role[] {Role.INNOCENT,Role.DETECTIVE,Role.MURDERER,Role.ENGINEER,Role.DOCTOR,Role.INNOCENT,Role.INNOCENT,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.MURDERER};
         Role[] shortList = new Role[count];
@@ -274,6 +315,10 @@ public class Model
             shortList[i] = fullList[i];
         }
         return shortList;
+=======
+    private Role[] defaultRoles(){
+        return new Role[] {Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.DETECTIVE,Role.MURDERER,Role.SILENCER};
+>>>>>>> Stashed changes
     }
 
     public boolean assignRoles(){
@@ -301,6 +346,10 @@ public class Model
                     case ENGINEER:
                         players[i] = players[i].setEngineer();
                         break;
+                    case SILENCER:
+                        silencer = players[i].setSilencer();
+                        players[i] = silencer;
+                        break;
                 }
             }
             rolesAssigned = true;
@@ -309,7 +358,12 @@ public class Model
                     if(players[i] instanceof Detective) System.out.println(players[i].getName() + " is a detective.");
                     else if(players[i] instanceof Innocent) System.out.println(players[i].getName() + " is an innocent.");
                     else if(players[i] instanceof Murderer) System.out.println(players[i].getName() + " is a murderer.");
+<<<<<<< Updated upstream
                     else if(players[i] != null) System.out.println(players[i].getName() + " has no role!");
+=======
+                    else if(players[i] instanceof Silencer) System.out.println(players[i].getName() + " is a silencer");
+                    else System.out.println(players[i].getName() + " has no role!");
+>>>>>>> Stashed changes
                 }
             }
             return true;
@@ -343,6 +397,7 @@ public class Model
         votes[targetIndex] = target;
         return true;
     }
+<<<<<<< Updated upstream
     public Player tallyVotes(){
         int[] tally = new int[votes.length];//should be initialized to 0
         int workingIndex;
@@ -361,13 +416,44 @@ public class Model
                 if(TEXT_MODE) System.out.println(players[i].name + kickedOffText + goodLuck);
                 else MessageDisplayerFX.display("Vote result",players[i].name + kickedOffText + goodLuck, appLink, this);
                 return players[i];
+=======
+    public String tallyVotes() {
+        // Method to tally votes and return the majority vote
+        // Method to tally votes and return the majority vote
+            public static String getMajorityVote(List<String> votes) {
+                Map<String, Integer> voteCounts = new HashMap<>();
+                for (Player vote : votes) {
+                    voteCounts.put(String.valueOf(vote), voteCounts.getOrDefault(vote, 0) + 1);
+                }
+                int maxVotes = 0;
+                String tallyVotes = null;
+                for (Map.Entry<String, Integer> entry : voteCounts.entrySet()) {
+                    String vote = entry.getKey();
+                    int count = entry.getValue();
+                    if (count > maxVotes) {
+                        maxVotes = count;
+                        tallyVotes = vote;
+                    } else if (count == maxVotes) {
+                        // if there is a draw, return null
+                        tallyVotes = null;
+                    }
+                }
+                return tallyVotes;
+>>>>>>> Stashed changes
             }
+
+
         }
+<<<<<<< Updated upstream
         clearVotes();
         if(TEXT_MODE) System.out.println("Nobody" + kickedOffText);
         else MessageDisplayerFX.display("Vote result","Nobody" + kickedOffText, appLink, this);
         return null;//if no player's tally exceeds the threshold, return null
     }
+=======
+
+
+>>>>>>> Stashed changes
 
     public int getPlayerIndex(Player player){//Take a wild guess which this function does :)
         for(int i = 0; i < players.length; i++){

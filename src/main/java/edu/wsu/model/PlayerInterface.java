@@ -1,8 +1,11 @@
 package edu.wsu.model;
 
+import java.util.ArrayList;
+
 public interface PlayerInterface
 {
- /**
+
+  /**
   * Tells a player what role they are assigned at the start of a game.
   */
  public void tellRole();
@@ -24,6 +27,10 @@ public interface PlayerInterface
   * @param murderer
   */
  public void killedBy(Player murderer);
+
+ public void silencedBy();
+
+ void silencedBy(Player silencer);
 
  /**
   * Checks to see if the player is alive or dead.
@@ -91,5 +98,13 @@ public interface PlayerInterface
   * @return The new player assigned with the detective role.
   */
  public Detective setDetective();
+
+ Silencer setSilencer();
+
  public void disableInput();
+
+<<<<<<< Updated upstream
+=======
+    ArrayList<String> getAction();
+>>>>>>> Stashed changes
 }

@@ -48,12 +48,12 @@ public class Model
 
 
     public enum Role{
-        NONE, INNOCENT, MURDERER, DETECTIVE, DOCTOR, ENGINEER;
+        NONE, INNOCENT, MURDERER, DETECTIVE, DOCTOR, ENGINEER, SILENCER, JANITOR, TRICKSTER;
         public static String[] getStrings(){
-            return new String[] {"Innocent","Murderer","Detective","Doctor","Engineer"};
+            return new String[] {"Innocent","Murderer","Detective","Doctor","Engineer", "Silencer","Janitor","Trickster"};
         }
         public static Role[] getAll(){
-            return new Role[] {INNOCENT,MURDERER,DETECTIVE,DOCTOR,ENGINEER};
+            return new Role[] {INNOCENT,MURDERER,DETECTIVE,DOCTOR,ENGINEER,SILENCER,JANITOR,TRICKSTER};
         }
         public static Role get(int i){
             return getAll()[i];

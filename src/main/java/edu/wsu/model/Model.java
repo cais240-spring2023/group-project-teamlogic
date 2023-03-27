@@ -13,7 +13,7 @@ public class Model
 
     HOW TO ADD A NEW ROLE
 
-     1. Create a new class
+     1. Create a new class with at least a night handler function, constructor, hasAction, night action name, role string, and tell role
      2. Add a night handler override function to this new class
      3. Add the Role to the Role Enum
      4. Add the Role to the Role List, so that it can be assigned

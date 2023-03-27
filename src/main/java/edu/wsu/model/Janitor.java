@@ -4,4 +4,5 @@ public class Janitor extends Murderer{
     public Janitor(String name) {
         super(name);
     }
+
 }

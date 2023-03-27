@@ -233,7 +233,8 @@ public class App extends Application {
         else next(m);
     }
     public void getVote(Player player, Model m){
-        PlayerSelector.choose(m.getPlayers(),player,"vote against",this,m);
+        if(player.isSilenced()) MessageDisplayerFX.display(player.getName(), "You have been silenced.",this,m);
+        else PlayerSelector.choose(m.getPlayers(),player,"vote against",this,m);
     }
     public void receive(Player player, Player choice, String purpose, Model m){
         if(purpose == "vote against") m.receiveVote(player, choice);

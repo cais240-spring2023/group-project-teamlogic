@@ -33,7 +33,7 @@ public class OldApp extends Application {
 
 
     int currentPlayer = 0;
-    Model game = new Model();
+    Model game = ModelSingleton.getInstance();
 
 
     ObservableList<Player> players;

@@ -2,6 +2,7 @@ package edu.wsu.controller;
 
 import edu.wsu.App;
 import edu.wsu.model.Model;
+import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Player;
 import edu.wsu.model.Players;
 import javafx.application.Application;
@@ -23,7 +24,6 @@ public class UsernameInput{
 
     //Creates an array of names with the size of 12
     public static String[] playerName = new String[12];
-
     //Index of the array used to assign names to slots
     public static int currentIndex = 0;
     //Label to instruct the user to input the name
@@ -32,8 +32,12 @@ public class UsernameInput{
     public static TextField nameField = new TextField();
     //Button to submit the name into the array
     private static Button submitButton = new Button("Submit");
-
     private static Button exitButton = new Button("Done");
+    Model model;
+
+    public UsernameInput(){
+        model = ModelSingleton.getInstance();
+    }
 
     public static Scene newScene(Model m, App a) {
         VBox root = new VBox(10, nameLabel, nameField, submitButton, exitButton);
@@ -44,7 +48,7 @@ public class UsernameInput{
             if (event.getCode() == KeyCode.ENTER){
                 if(nameField.getText().equals("")){
                     m.addPlayersPhase(playerName);
-                    a.beginGame(m);
+                    a.beginGame();
                 }
                 else {
                     String input = nameField.getText();
@@ -62,7 +66,7 @@ public class UsernameInput{
         exitButton.setOnAction(e ->{
 
             m.addPlayersPhase(playerName);
-            a.beginGame(m);
+            a.beginGame();
         });
 
         Scene scene = new Scene(root, 400, 350);
@@ -84,7 +88,7 @@ public class UsernameInput{
         if(currentIndex >= 12){
             System.out.println("No more room");
             m.addPlayersPhase(playerName);
-            a.beginGame(m);
+            a.beginGame();
         }
 
     }

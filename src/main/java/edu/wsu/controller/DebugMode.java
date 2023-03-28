@@ -2,6 +2,7 @@ package edu.wsu.controller;
 
 import edu.wsu.App;
 import edu.wsu.model.Innocent;
+import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Murderer;
 import edu.wsu.model.Detective;
 import edu.wsu.model.Model;
@@ -111,7 +112,7 @@ public class DebugMode {
         a.changeScene(newScene(a));
     }
     public static void start(App a){
-        Model m = new Model();
+        Model m = ModelSingleton.getInstance();
         String name;
         Model.Role role;
         int index;
@@ -138,7 +139,7 @@ public class DebugMode {
         }
         if(m.countPlayers() > 0) {
             m.setAppLink(a);
-            a.beginGameFromDebugging(m);
+            a.beginGameFromDebugging();
         }
     }
 }

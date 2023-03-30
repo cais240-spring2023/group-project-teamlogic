@@ -26,9 +26,6 @@ public class Detective extends Innocent{
             if(selected.isAlive()) return selected;
         }
     }
-    public Player panelBasedActivityHandler(Player[] players){
-        return null;
-    }
 
     @Override
     public String getNightActionName(){

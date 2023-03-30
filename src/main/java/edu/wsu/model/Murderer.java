@@ -27,19 +27,6 @@ public class Murderer extends Player{
         acted.killedBy(this);
     }
 
-    public Player textBasedActivityHandler(Player[] players){
-        System.out.println(name + ", select a player to MURDER!\n");
-        Player selected;
-        while(true) {
-            selected = textBasedPlayerSelector(players);
-            if(selected == null) return null;
-            if(selected.isAlive()) return selected;
-        }
-    }
-    public Player panelBasedActivityHandler(Player[] players){
-        return null;
-    }
-
     @Override
     public String getNightActionName(){
         return "murder";

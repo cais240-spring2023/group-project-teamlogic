@@ -3,12 +3,19 @@ package edu.wsu.view;
 import edu.wsu.App;
 import edu.wsu.model.Model;
 import edu.wsu.model.Player;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+
+import java.lang.reflect.Array;
 
 public class PlayerSelectorFX {
 
@@ -17,81 +24,35 @@ public class PlayerSelectorFX {
         final Player[] selection = {null};
         GridPane grid = new GridPane();
 
-        Button p1 = new Button();
-        p1.setOnAction(event -> {
-            if(players.length >= 1) selection[0] = players[0];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p1 = makeButton(players, 1, selection, 0, app, chooser, purpose, m);
 
-        Button p2 = new Button();
-        p2.setOnAction(event -> {
-            if(players.length >= 2) selection[0] = players[1];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p2 = makeButton(players, 2, selection, 1, app, chooser, purpose, m);
 
-        Button p3 = new Button();
-        p3.setOnAction(event -> {
-            if(players.length >= 3) selection[0] = players[2];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p3 = makeButton(players, 3, selection, 2, app, chooser, purpose, m);
 
-        Button p4 = new Button();
-        p4.setOnAction(event -> {
-            if(players.length >= 4) selection[0] = players[3];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p4 = makeButton(players, 4, selection, 3, app, chooser, purpose, m);
 
-        Button p5 = new Button();
-        p5.setOnAction(event -> {
-            if(players.length >= 5) selection[0] = players[4];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p5 = makeButton(players, 5, selection, 4, app, chooser, purpose, m);
 
-        Button p6 = new Button();
-        p6.setOnAction(event -> {
-            if(players.length >= 6) selection[0] = players[5];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p6 = makeButton(players, 6, selection, 5, app, chooser, purpose, m);
 
-        Button p7 = new Button();
-        p7.setOnAction(event -> {
-            if(players.length >= 7) selection[0] = players[6];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p7 = makeButton(players, 7, selection, 6, app, chooser, purpose, m);
 
-        Button p8 = new Button();
-        p8.setOnAction(event -> {
-            if(players.length >= 8) selection[0] = players[7];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p8 = makeButton(players, 8, selection, 7, app, chooser, purpose, m);
 
-        Button p9 = new Button();
-        p9.setOnAction(event -> {
-            if(players.length >= 9) selection[0] = players[8];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p9 = makeButton(players, 9, selection, 8, app, chooser, purpose, m);
 
-        Button p10 = new Button();
-        p10.setOnAction(event -> {
-            if(players.length >= 10) selection[0] = players[9];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p10 = makeButton(players, 10, selection, 9, app, chooser, purpose, m);
 
-        Button p11 = new Button();
-        p11.setOnAction(event -> {
-            if(players.length >= 11) selection[0] = players[10];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p11 = makeButton(players, 11, selection, 10, app, chooser, purpose, m);
 
-        Button p12 = new Button();
-        p12.setOnAction(event -> {
-            if(players.length >= 12) selection[0] = players[11];
-            app.receive(chooser,selection[0],purpose, m);
-        });
+        Button p12 = makeButton(players, 12, selection, 11, app, chooser, purpose, m);
 
         Button[] buttons = {p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12};
         for(int i = 0; i < buttons.length; i++){
-            buttons[i].setPrefWidth(BUTTON_WIDTH);
+            if (buttons[i] != null) {
+                buttons[i].setPrefWidth(BUTTON_WIDTH);
+            }
         }
 
         Button skip = new Button();
@@ -102,21 +63,56 @@ public class PlayerSelectorFX {
         Label text = new Label();
         text.setText(chooser.getName() + ", select a player to " + purpose);
 
-        for(int c = 0; c < 2; c++){
-            for(int r = 0; r < 6; r++){
-                int i = c*6+r;
-                if(i >= players.length) break;
-                if(players[i] != null && players[i].isAlive()){
-                    grid.add(buttons[i],c,r);
-                    buttons[i].setText(players[i].getName());
-                }
+        FlowPane train = new FlowPane(Orientation.HORIZONTAL);
+        train.setVgap(8);
+        train.setHgap(4);
+        train.setPrefWrapLength(30);
+        FlowPane[] cars = new FlowPane[4];
+        for (int i = 0; i < 4; i++) {
+            FlowPane car = new FlowPane(Orientation.VERTICAL);
+            car.setVgap(8);
+            car.setHgap(4);
+            car.setPadding(new Insets(10));
+            car.setBackground(Background.fill(Color.OLIVE));
+            car.setPrefWrapLength(30);
+            train.getChildren().add(car);
+            cars[i] = car;
+        }
+        for (int x = 0; x < players.length; x++) {
+            if (players[x] != null && players[x].isAlive()) {
+                int currentCar = x % 4;
+                cars[currentCar].getChildren().add(buttons[x]);
             }
         }
+        //        for(int col = 0; col < 2; col++){
+//            for(int row = 0; row < 6; row++){
+//                int i = col*6+row;
+//                if(i >= players.length) break;
+//                if(players[i] != null && players[i].isAlive()){
+//                    grid.add(buttons[i],col,row);
+//                    buttons[i].setText(players[i].getName());
+//                }
+//            }
+//        }
         VBox root = new VBox();
         root.getChildren().add(text);
-        root.getChildren().add(grid);
+        //root.getChildren().add(grid);
+        root.getChildren().add(train);
         root.getChildren().add(skip);
         root.setAlignment(Pos.CENTER);
         return new Scene(root,600,500);
+    }
+
+    private static Button makeButton(Player[] players, int x, Player[] selection, int x1, App app, Player chooser, String purpose, Model m) {
+        if (players[x1] == null){
+            return null;
+        }
+        Button p12 = new Button();
+        p12.setText(players[x1].getName());
+        p12.setOnAction(event -> {
+            if(players.length >= x) selection[0] = players[x1];
+            app.receive(chooser, selection[0], purpose, m);
+        });
+        return p12;
     }
 }

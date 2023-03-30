@@ -436,62 +436,6 @@ public class Model
             return Role.NONE;
         }
         return null;
-//        Role team = null;
-//        //Stores the team of the first living player it finds
-//        //into "team". Either this team has already won or
-//        //no team has yet.
-//        for(int i = 0; i < players.length; i++){
-//            if (players[i] == null){
-//                System.out.println(i);
-//                continue;
-//            }
-//            if (players[i].isAlive()) {
-//                if(players[i] instanceof Innocent){
-//                    //This will resolve true for Detectives and any other
-//                    //innocent roles we may define in the future,
-//                    //since Detective extends Innocent
-//                    team = Role.INNOCENT;
-//                    break;
-//                }
-//                else if(players[i] instanceof Murderer){
-//                    //Likewise, this will resolve true for any
-//                    //future evil roles if we're smart and make them
-//                    //extensions of the Murderer type
-//                    team = Role.MURDERER;
-//                    break;
-//                }
-//                else{
-//                    //Handle neutral roles
-//                    //DO NOT BREAK... neutral roles by definition win with innocents and murderers
-//                    //Probably won't ever actually need anything here
-//                }
-//            }
-//        }
-//        if(team == null){
-//            return Role.NONE;//If team is still null, it means everyone is dead. IDK who should win here!
-//        }
-//        switch(team){
-//            case INNOCENT:
-//                for(int i = 0; i < players.length; i++){
-//                    if(players[i].isAlive() && players[i] instanceof Murderer){
-//                        return Role.NONE;//Game has not ended
-//                    }
-//                }
-//                return Role.INNOCENT;//Will only return if no murderer are alive
-//            case MURDERER:
-//                for(int i = 0; i < players.length; i++){
-//                    if(players[i].isAlive() && players[i] instanceof Innocent){
-//                        return Role.NONE;//Game has not ended
-//                    }
-//                }
-//                return Role.MURDERER;//Will only return if no innocents are alive
-//        }
-//        System.out.println("hi");
-//        for (Player player:
-//             players) {
-//            System.out.println(player.name + " " + player.isAlive());
-//        }
-//        return Role.NONE;//In case something has gone very wrong
     }
 
 }

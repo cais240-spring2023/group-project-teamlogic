@@ -3,7 +3,6 @@ package edu.wsu.controller;
 import edu.wsu.App;
 import edu.wsu.model.Model;
 import edu.wsu.model.Player;
-import edu.wsu.model.Players;
 import edu.wsu.view.UsernameInputFX;
 import javafx.application.Application;
 

@@ -10,6 +10,7 @@ public class Player implements PlayerInterface{
     protected ArrayList<String> actions;
     protected String name;//What the player is called :)
     private boolean alive;
+
     private int deadFor = 0;//0 if alive, or during the night they got murdered. Increments by 1 every morning they're dead.
     private Player killer;
     private Player visited;
@@ -102,8 +103,12 @@ public class Player implements PlayerInterface{
 
     @Override
     public Player vote(Player[] players){//this MUST be a living player, add a check to make sure it only returns living players!
-        if(Model.TEXT_MODE) return textVote(players);
-        else return panelVote(players);
+        if (silenced == 0) {
+            return null;
+        } else {
+            if (Model.TEXT_MODE) return textVote(players);
+            else return panelVote(players);
+        }
     }
     public Player textVote(Player[] players){
         System.out.println(name + ", select who to vote to kill.");
@@ -137,6 +142,12 @@ public class Player implements PlayerInterface{
     public Player getVisited(){
         return visited;
     }
+
+    @Override
+    public int silencedBy(Player silencer) {
+        return silenced;
+    }
+
     @Override
     public void hear(String message){
         if(messages.equals(NO_MAIL)){
@@ -202,6 +213,9 @@ public class Player implements PlayerInterface{
     @Override
     public Murderer setMurderer(){
         return new Murderer(name);
+    }
+    public Silencer setSilencer(){
+        return new Silencer(name);
     }
     @Override
     public Detective setDetective(){

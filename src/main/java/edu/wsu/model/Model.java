@@ -304,6 +304,9 @@ public class Model
                     case JANITOR:
                         players[i] = players[i].setJanitor();
                         break;
+                    case SILENCER:
+                        players[i] = players[i].setSilencer();
+                        break;
                 }
             }
             rolesAssigned = true;

@@ -55,6 +55,9 @@ public class DebugMode {
                     case JANITOR:
                         m.addPlayer(new Janitor(name));
                         break;
+                    case SILENCER:
+                        m.addPlayer(new Silencer(name));
+                        break;
                 }
             }
         }

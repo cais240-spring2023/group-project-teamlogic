@@ -4,4 +4,6 @@ public class Trickster extends Player{
     public Trickster(String name) {
         super(name);
     }
+
+
 }

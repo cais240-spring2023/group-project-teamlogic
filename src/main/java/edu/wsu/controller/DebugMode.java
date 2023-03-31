@@ -19,13 +19,11 @@ public class DebugMode {
 
 
     private static Label[] labels;
-    private static ComboBox[] comboBoxes;
-    private static TextField[] textFields;
 
     public static void debug(App a){
         a.changeScene(DebugModeFX.newScene(a));
     }
-    public static void start(App a){
+    public static void start(App a, TextField[] textFields, ComboBox[] comboBoxes){
         Model m = new Model();
         String name;
         Model.Role role;

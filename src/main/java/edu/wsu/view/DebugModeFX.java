@@ -85,7 +85,7 @@ public class DebugModeFX {
         comboBoxes = new ComboBox[] {p1c,p2c,p3c,p4c,p5c,p6c,p7c,p8c,p9c,p10c,p11c,p12c};
 
         Button submit = new Button("Submit");
-        submit.setOnAction(event -> {DebugMode.start(a);});
+        submit.setOnAction(event -> {DebugMode.start(a,textFields,comboBoxes);});
 
         int i;
         for(int c = 0; c < 2; c++){

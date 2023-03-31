@@ -301,6 +301,9 @@ public class Model
                     case ENGINEER:
                         players[i] = players[i].setEngineer();
                         break;
+                    case JANITOR:
+                        players[i] = players[i].setJanitor();
+                        break;
                 }
             }
             rolesAssigned = true;

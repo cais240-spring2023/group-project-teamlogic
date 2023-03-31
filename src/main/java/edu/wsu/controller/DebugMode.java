@@ -52,6 +52,9 @@ public class DebugMode {
                     case ENGINEER:
                         m.addPlayer(new Engineer(name));
                         break;
+                    case JANITOR:
+                        m.addPlayer(new Janitor(name));
+                        break;
                 }
             }
         }

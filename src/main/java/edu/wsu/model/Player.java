@@ -213,6 +213,7 @@ public class Player implements PlayerInterface{
     public Engineer setEngineer(){
         return new Engineer(name);
     }
+    public Janitor setJanitor() { return new Janitor(name);}
     @Override
     public void disableInput(){
         input = false;

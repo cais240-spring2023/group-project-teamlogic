@@ -2,6 +2,8 @@ package edu.wsu.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ModelTest {
@@ -84,5 +86,21 @@ class ModelTest {
         model.receiveVote(model.players[5],model.players[0]);
         model.tallyVotes().kill();
         assertEquals(model.checkWinner(),Model.Role.INNOCENT);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shuffleTest(){
+        Model model = new Model();
+        final int HOW_MANY = 30;
+        int ran;
+        Random r = new Random();
+        for(int i = 0; i < HOW_MANY; i++){
+            ran = r.nextInt(9) + 4;
+            for(int a = 1; a <= ran; a++){
+                model.addPlayer(new Player("Player " + a));
+            }
+            model.assignRoles();
+            model.clearPlayers();
+        }
     }
 }

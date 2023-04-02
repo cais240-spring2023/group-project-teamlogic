@@ -1,17 +1,14 @@
-package edu.wsu.controller;
+package edu.wsu.view;
 
 import edu.wsu.App;
 import edu.wsu.model.Model;
-import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
 import java.util.Scanner;
-import java.util.concurrent.CountDownLatch;
 
 public class MessageDisplayerFX {
 
@@ -25,7 +22,7 @@ public class MessageDisplayerFX {
         text.setText(name + "...\n" + messages);
         root.getChildren().add(text);
         root.getChildren().add(close);
-        return new Scene(root,300,250);
+        return new Scene(root,600,500);
     }
 
     public static void display(String name, String messages, App app, Model m){

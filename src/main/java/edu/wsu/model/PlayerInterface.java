@@ -70,6 +70,8 @@ public interface PlayerInterface
   * @return A player that visited you during the night if anyone did.
   */
  public Player getVisited();
+
+ public int silencedBy(Player silencer);
  public void hear(String message);
  public void clearMessages();
  public boolean displayMessages(Model m);

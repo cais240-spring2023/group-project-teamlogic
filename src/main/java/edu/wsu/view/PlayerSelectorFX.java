@@ -1,4 +1,4 @@
-package edu.wsu.controller;
+package edu.wsu.view;
 
 import edu.wsu.App;
 import edu.wsu.model.Model;
@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class PlayerSelectorFX {
@@ -97,7 +96,8 @@ public class PlayerSelectorFX {
 
         Button skip = new Button();
         skip.setText("Skip");
-        skip.setOnAction(event -> {app.next(m );});
+        skip.setPrefWidth(2*BUTTON_WIDTH);
+        skip.setOnAction(event -> {app.next(m);});
 
         Label text = new Label();
         text.setText(chooser.getName() + ", select a player to " + purpose);
@@ -106,7 +106,7 @@ public class PlayerSelectorFX {
             for(int r = 0; r < 6; r++){
                 int i = c*6+r;
                 if(i >= players.length) break;
-                if(players[i].isAlive()){
+                if(players[i] != null && players[i].isAlive()){
                     grid.add(buttons[i],c,r);
                     buttons[i].setText(players[i].getName());
                 }
@@ -116,10 +116,7 @@ public class PlayerSelectorFX {
         root.getChildren().add(text);
         root.getChildren().add(grid);
         root.getChildren().add(skip);
-        return new Scene(root,300,250);
-    }
-
-    public static void choose(Player[] players, Player chooser, String purpose, App app,Model m){
-        app.changeScene(newScene(players,chooser,purpose,app, m));
+        root.setAlignment(Pos.CENTER);
+        return new Scene(root,600,500);
     }
 }

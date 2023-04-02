@@ -1,25 +1,37 @@
 package edu.wsu.model;
 
 import edu.wsu.App;
-import edu.wsu.controller.MessageDisplayerFX;
+import edu.wsu.view.MessageDisplayerFX;
 
 import java.util.Random;
 import java.util.Scanner;
 
-import static edu.wsu.controller.UsernameInput.playerName;
-
 
 public class Model
 {
+    /**
+
+    HOW TO ADD A NEW ROLE
+
+     1. Create a new class with at least a night handler function, constructor, hasAction, night action name, role string, and tell role
+     2. Add a night handler override function to this new class
+     3. Add the Role to the Role Enum
+     4. Add the Role to the Role List, so that it can be assigned
+     5. Add the Role to the Assign Roles function in model
+     6. Add an assign role function to the Player class
+     7. Add to debug mode
+
+
+
+    **/
+
     private Player whoseTurn;//Set to point to a player when waiting to receive votes or night actions, null otherwise
 
     private static App appLink;
 
     public Player[] players;
     private static final int PLAYER_COUNT = 12;
-    public static final int MAX_TURNS = 30;
-    public Murderer murderer;//pointer to one of the players
-    public Detective detective;//pointer also
+    public static int MAX_TURNS = 16;
     public boolean rolesAssigned;//keeps track of whether the roles were already assigned
     //                             because I can't directly access it the way I stored this information
 
@@ -30,14 +42,22 @@ public class Model
     public static final boolean TEST_MODE = true;
     private Player[] selection = new Player[PLAYER_COUNT];
     private int turnNumber = 0;
-
-    App a = new App();
+    public static Model m = null;
 
 
 
 
     public enum Role{
-        NONE, INNOCENT, MURDERER, DETECTIVE;
+        NONE, INNOCENT, MURDERER, DETECTIVE, DOCTOR, ENGINEER, SILENCER, JANITOR, TRICKSTER;
+        public static String[] getStrings(){
+            return new String[] {"Innocent","Murderer","Detective","Doctor","Engineer", "Silencer","Janitor","Trickster"};
+        }
+        public static Role[] getAll(){
+            return new Role[] {INNOCENT,MURDERER,DETECTIVE,DOCTOR,ENGINEER,SILENCER,JANITOR,TRICKSTER};
+        }
+        public static Role get(int i){
+            return getAll()[i];
+        }
     }
     public static void setAppLink(App app){
         Player.setAppLink(app);
@@ -47,6 +67,7 @@ public class Model
     public Model(){
         players = new Player[PLAYER_COUNT];
         rolesAssigned = false;
+        m = this;
     }
 
     public Player whoseTurnIsIt(){
@@ -64,7 +85,7 @@ public class Model
     public String listLivingPlayers(){
         String livingPlayers = new String();
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()) livingPlayers += players[i].getName() + ", ";
+            if(players[i] != null && players[i].isAlive()) livingPlayers += players[i].getName() + ", ";
         }
         return livingPlayers.substring(0,livingPlayers.length()-2);
     }
@@ -111,16 +132,27 @@ public class Model
     public void nightOver(){
         for(int i = 0; i < players.length; i++){
             if(selection[i] != null){
-                nightHandler(players[i],selection[i]);
+                players[i].nightHandler(selection[i]);
             }
         }
         //Doing this for all players (not just murderer and detective) to future-proof this
         //In the future, other roles will have
     }
+
+    public void onMorning(){
+        for(int i = 0; i < players.length; i++){
+            if(players[i] != null) players[i].onMorning();
+        }
+    }
+
+    //NO LONGER USED
     public void nightHandler(Player actor, Player acted){//This is going to have to be replaced when we add more roles
         if(actor instanceof Murderer){
             acted.killedBy(actor);
         }
+
+        //Separate evil and good roles, no else if here
+
         if(actor instanceof Detective){
             Player p = acted.getVisited();
             String name;
@@ -131,6 +163,13 @@ public class Model
                 name = p.getName();
             }
             actor.hear(acted.getName() + " visited " + name);
+        }
+        else if(actor instanceof Doctor){
+            if(acted.justDied()){
+                acted.revive();//They didn't actually die, they got healed by the doctor lol
+                acted.hear(Doctor.healString());
+            }
+            else acted.setImmune();
         }
     }
     private void morningPhase(int turn){
@@ -169,12 +208,9 @@ public class Model
     //make userNames from the input be put into names for players
     public void addPlayersPhase(String[] playerNames){
         for(int i = 0; i < playerNames.length; i++) {
-            System.out.println("1" + playerNames[i]);
-            if (playerNames[i] == null){
-                playerNames[i] = "Player " + i;
+            if (playerNames[i] != null){
+                addPlayer(new Player(playerNames[i]));
             }
-            addPlayer(new Player(playerNames[i]));
-            System.out.println("2" + players[i].getName());
         }
     }
     public void printAllPlayerNames(){
@@ -201,6 +237,13 @@ public class Model
         }
         return a;
     }
+    public int countPlayers(){
+        int count = 0;
+        for(int i = 0; i < PLAYER_COUNT; i++){
+            if(players[i] != null) count++;
+        }
+        return count;
+    }
 
     public boolean addPlayer(Player player){//Take a wild guess what this does
         for(int i = 0; i < PLAYER_COUNT; i++){//searches for a null spot and then puts the player in that spot
@@ -225,7 +268,7 @@ public class Model
     }
 
     private Role[] defaultRoles(int count){
-        Role[] fullList = new Role[] {Role.INNOCENT,Role.DETECTIVE,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.MURDERER,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT};
+        Role[] fullList = new Role[] {Role.INNOCENT,Role.DETECTIVE,Role.MURDERER,Role.ENGINEER,Role.DOCTOR,Role.INNOCENT,Role.INNOCENT,Role.MURDERER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.MURDERER};
         Role[] shortList = new Role[count];
         for(int i = 0; i < count; i++){
             shortList[i] = fullList[i];
@@ -241,18 +284,28 @@ public class Model
             }
             Role[] roleList = defaultRoles(count);
             shuffle(roleList);
-            for(int i = 0; i < PLAYER_COUNT; i++){
+            for(int i = 0; i < roleList.length; i++){
                 switch(roleList[i]){
                     case INNOCENT:
                         players[i] = players[i].setInnocent();
                         break;
                     case MURDERER:
-                        murderer = players[i].setMurderer();
-                        players[i] = murderer;
+                        players[i] = players[i].setMurderer();
                         break;
                     case DETECTIVE:
-                        detective = players[i].setDetective();
-                        players[i] = detective;
+                        players[i] = players[i].setDetective();
+                        break;
+                    case DOCTOR:
+                        players[i] = players[i].setDoctor();
+                        break;
+                    case ENGINEER:
+                        players[i] = players[i].setEngineer();
+                        break;
+                    case JANITOR:
+                        players[i] = players[i].setJanitor();
+                        break;
+                    case SILENCER:
+                        players[i] = players[i].setSilencer();
                         break;
                 }
             }
@@ -262,7 +315,7 @@ public class Model
                     if(players[i] instanceof Detective) System.out.println(players[i].getName() + " is a detective.");
                     else if(players[i] instanceof Innocent) System.out.println(players[i].getName() + " is an innocent.");
                     else if(players[i] instanceof Murderer) System.out.println(players[i].getName() + " is a murderer.");
-                    else System.out.println(players[i].getName() + " has no role!");
+                    else if(players[i] != null) System.out.println(players[i].getName() + " has no role!");
                 }
             }
             return true;
@@ -281,8 +334,8 @@ public class Model
         return null;
     }
     public void tellRoles(){
-        for(int i = 0; i < PLAYER_COUNT; i++){
-            players[i].tellRole();
+        for(int i = 0; i < players.length; i++){
+            if(players[i] != null) players[i].tellRole();
         }
     }
 
@@ -331,10 +384,12 @@ public class Model
         return -1;//error case
     }
     public Player getNextPlayer(Player player){
-        if(player == null) return players[0];
+        if(player == null && players[0].isAlive()) return players[0];
+        else if(player == null) return getNextPlayer(players[0]);
         int i = getPlayerIndex(player);
         i++;
         if(i == players.length) return null;
+        else if(players[i] == null) return null;
         else if(players[i].isAlive()) return players[i];
         else return getNextPlayer(players[i]);//if the next player is dead, get the next next
     }
@@ -348,11 +403,15 @@ public class Model
     public int getLivingPlayerCount(){
         int tally = 0;
         for(int i = 0; i < players.length; i++){
-            if(players[i].isAlive()){
+            if(players[i] != null && players[i].isAlive()){
                 tally++;
             }
         }
         return tally;
+    }
+
+    public void clearPlayers(){//DO NOT USE EVER
+        players = new Player[PLAYER_COUNT];
     }
 
     public Role checkWinner(){

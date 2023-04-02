@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 public class TransitionView {
 
 
-    public static Scene newScene(String name, String purpose, App app, Model m){
+    public static Scene newScene(String name, String purpose, App app){
         StackPane root = new StackPane();
         //Label playerName = new Label();
         //playerName.setText(name);
@@ -26,7 +26,7 @@ public class TransitionView {
         currentPlayerMessage.setText("It is your turn to " + purpose + ", " + name + ".\nClick below to begin.");
         Button takeTurn = new Button();
         takeTurn.setText("Take turn");
-        takeTurn.setOnAction(event -> {app.doNext(m);});
+        takeTurn.setOnAction(event -> {app.doNext();});
         StackPane.setAlignment(takeTurn, Pos.BOTTOM_CENTER);
         //root.getChildren().add(playerName);
         root.getChildren().add(currentPlayerMessage);

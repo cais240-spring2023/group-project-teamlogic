@@ -24,7 +24,7 @@ public class DebugMode {
         a.changeScene(DebugModeFX.newScene(a));
     }
     public static void start(App a, TextField[] textFields, ComboBox[] comboBoxes){
-        Model m = new Model();
+        Model model = ModelSingleton.getInstance();
         String name;
         Model.Role role;
         int index;
@@ -38,29 +38,29 @@ public class DebugMode {
                 role = Model.Role.get(index);
                 switch(role){
                     case INNOCENT:
-                        m.addPlayer(new Innocent(name));
+                        model.addPlayer(new Innocent(name));
                         break;
                     case MURDERER:
-                        m.addPlayer(new Murderer(name));
+                        model.addPlayer(new Murderer(name));
                         break;
                     case DETECTIVE:
-                        m.addPlayer(new Detective(name));
+                        model.addPlayer(new Detective(name));
                         break;
                     case DOCTOR:
-                        m.addPlayer(new Doctor(name));
+                        model.addPlayer(new Doctor(name));
                         break;
                     case ENGINEER:
-                        m.addPlayer(new Engineer(name));
+                        model.addPlayer(new Engineer(name));
                         break;
                     case JANITOR:
-                        m.addPlayer(new Janitor(name));
+                        model.addPlayer(new Janitor(name));
                         break;
                 }
             }
         }
-        if(m.countPlayers() > 0) {
-            m.setAppLink(a);
-            a.beginGameFromDebugging(m);
+        if(model.countPlayers() > 0) {
+            model.setAppLink(a);
+            a.beginGameFromDebugging();
         }
     }
 }

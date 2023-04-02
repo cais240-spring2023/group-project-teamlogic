@@ -44,7 +44,7 @@ public class UsernameInput{
 
     public static void complete(Model m, App a){
         m.addPlayersPhase(playerName);
-        a.beginGame(m);
+        a.beginGame();
     }
 
     public static void namer(Model m, App a) {

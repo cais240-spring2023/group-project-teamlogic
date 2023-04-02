@@ -33,7 +33,7 @@ public class TransitionController
     public TransitionController(){
     }
 
-    public static void display(String name, String purpose, App app, Model m){
-        app.changeScene(TransitionView.newScene(name, purpose, app, m));
+    public static void display(String name, String purpose, App app){
+        app.changeScene(TransitionView.newScene(name, purpose, app));
     }
 }

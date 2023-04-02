@@ -2,7 +2,6 @@ package edu.wsu.controller;
 
 import edu.wsu.App;
 import edu.wsu.model.Model;
-import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Player;
 import edu.wsu.view.TransitionView;
 import javafx.event.ActionEvent;
@@ -20,7 +19,6 @@ import javafx.stage.Stage;
 
 public class TransitionController
 {
-    Model model;
     /*@FXML
     public static Button takeTurn;
     @FXML
@@ -33,26 +31,9 @@ public class TransitionController
     public Button exitButton;
 */
     public TransitionController(){
-        model = ModelSingleton.getInstance();
     }
 
-    public static Scene newScene(String name, App app){
-        StackPane root = new StackPane();
-        //Label playerName = new Label();
-        //playerName.setText(name);
-        Label currentPlayerMessage = new Label();
-        currentPlayerMessage.setText("It is your turn: " + name + "\nClick below to begin.");
-        Button takeTurn = new Button();
-        takeTurn.setText("Take turn");
-        takeTurn.setOnAction(event -> {app.doNext();});
-        StackPane.setAlignment(takeTurn, Pos.BOTTOM_CENTER);
-        //root.getChildren().add(playerName);
-        root.getChildren().add(currentPlayerMessage);
-        root.getChildren().add(takeTurn);
-        return new Scene(root,300,250);
-    }
-
-    public static void display(String name, App app){
-        app.changeScene(newScene(name, app));
+    public static void display(String name, String purpose, App app, Model m){
+        app.changeScene(TransitionView.newScene(name, purpose, app, m));
     }
 }

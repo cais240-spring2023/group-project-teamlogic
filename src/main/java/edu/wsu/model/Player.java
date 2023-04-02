@@ -1,8 +1,7 @@
 package edu.wsu.model;
 
 import edu.wsu.App;
-import edu.wsu.controller.MessageDisplayerFX;
-import edu.wsu.controller.PlayerSelector;
+import edu.wsu.view.MessageDisplayerFX;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -11,12 +10,16 @@ public class Player implements PlayerInterface{
     protected ArrayList<String> actions;
     protected String name;//What the player is called :)
     private boolean alive;
+    private int deadFor = 0;//0 if alive, or during the night they got murdered. Increments by 1 every morning they're dead.
     private Player killer;
     private Player visited;
     private final String NO_MAIL = "You have no mail.";
     private String messages = "You have no mail.";
     private boolean input = true;//for testing
     private static App appLink;
+    private boolean isImmune = false;//If the model handles the doctor healing you before
+    private boolean cleaned = false;
+    private int silenced = 0;
 
     public String getNightActionName(){
         return "";
@@ -25,7 +28,33 @@ public class Player implements PlayerInterface{
         return false;
     }
     public void visited(Player p){
-        visited = p;
+        if(!cleaned) visited = p;
+    }
+    public void clean(){
+        visited = null;
+        cleaned = true;
+    }
+    public void silence(){
+        silenced = 2;
+    }
+    public boolean isSilenced(){
+        return silenced != 0;
+    }
+
+    public void onMorning(){
+        if(!isAlive()) deadFor++;
+        isImmune = false;
+        cleaned = false;
+        if(silenced != 0) silenced--;//Silenced will be set to 2, and then subtracted each morning. That way it clears
+    }//After a full day of being silenced.
+    public boolean justDied(){
+        return deadFor == 0 && !isAlive();
+    }
+    public void setImmune(){
+        isImmune = true;
+    }
+    public boolean isImmune(){
+        return isImmune();
     }
 
 
@@ -60,8 +89,11 @@ public class Player implements PlayerInterface{
     }
     @Override
     public void killedBy(Player murderer){
-        alive = false;
-        killer = murderer;
+        if(!isImmune) {
+            alive = false;
+            killer = murderer;
+        }
+        else hear(Doctor.healString());
     }
     @Override
     public boolean isAlive(){
@@ -83,12 +115,11 @@ public class Player implements PlayerInterface{
         }
     }
     public Player panelVote(Player[] players){
-        return PlayerSelector.selectPlayer(players, name,"vote against", true);
+        return null;
     }
     @Override
     public Player doActivity(Player[] players){
-        visited = activityHandler(players);
-        return visited;
+        return null;
     }
     @Override
     public Player activityHandler(Player[] players){
@@ -135,6 +166,7 @@ public class Player implements PlayerInterface{
         else return false;
     }
     public void panelMessages(Model m){
+        messages = messages.replace("$",Integer.toString(Model.MAX_TURNS-Model.m.getTurn()));
         MessageDisplayerFX.display(name,messages,appLink, m);
     }
     public void textMessages(){//This should be replaced when FXML is working
@@ -175,11 +207,21 @@ public class Player implements PlayerInterface{
     public Detective setDetective(){
         return new Detective(name);
     }
+    public Doctor setDoctor(){
+        return new Doctor(name);
+    }
+    public Engineer setEngineer(){
+        return new Engineer(name);
+    }
+    public Janitor setJanitor() { return new Janitor(name);}
     @Override
     public void disableInput(){
         input = false;
     }
     public String roleString(){
         return "nobody!";
+    }
+    public void nightHandler(Player acted){
+        //do nothing
     }
 }

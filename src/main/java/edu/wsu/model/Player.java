@@ -216,6 +216,8 @@ public class Player implements PlayerInterface{
         return new Engineer(name);
     }
     public Janitor setJanitor() { return new Janitor(name);}
+    public Silencer setSilencer() { return new Silencer(name);}
+    public Trickster setTrickster(){ return new Trickster(name);}
     @Override
     public void disableInput(){
         input = false;

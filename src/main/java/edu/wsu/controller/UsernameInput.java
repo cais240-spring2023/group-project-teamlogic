@@ -4,6 +4,7 @@ import edu.wsu.App;
 import edu.wsu.model.Model;
 import edu.wsu.model.Player;
 import edu.wsu.view.ProfileSelectorFX;
+import edu.wsu.view.UsernameInputFX;
 import javafx.application.Application;
 
 import javafx.geometry.Insets;
@@ -48,7 +49,7 @@ public class UsernameInput{
     }
 
     public static void namer(Model m, App a) {
-        //a.changeScene(UsernameInputFX.newScene(m,a));
-        a.changeScene(ProfileSelectorFX.newScene(m,a));
+        if(a.DEBUG_MODE) a.changeScene(UsernameInputFX.newScene(m,a));
+        else a.changeScene(ProfileSelectorFX.newScene(m,a));
     }
 }

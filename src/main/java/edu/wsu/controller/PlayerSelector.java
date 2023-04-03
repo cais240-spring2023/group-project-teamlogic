@@ -5,11 +5,13 @@ import edu.wsu.model.Model;
 import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Player;
 
-import static edu.wsu.view.PlayerSelectorFX.newScene;
+import edu.wsu.view.PlayerSelectorFX;
+import edu.wsu.view.PlayerSelectorPics;
 
 public class PlayerSelector {
     public static void choose(Player[] players, Player chooser, String purpose, App app){
-        app.changeScene(newScene(players,chooser,purpose,app, ModelSingleton.getInstance()));
+        if(app.DEBUG_MODE) app.changeScene(PlayerSelectorFX.newScene(players,chooser,purpose,app, ModelSingleton.getInstance()));
+        else app.changeScene(PlayerSelectorPics.newScene(players,chooser,purpose,app,ModelSingleton.getInstance()));
     }
     public static void sendMessage(Player toPlayer, Player fromPlayer, String message, App app){
         toPlayer.hear(message);

@@ -22,6 +22,8 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
+    public boolean DEBUG_MODE = false;
+
     private final String TUTORIAL = "\n\n\n\nThis is a social deduction game.\n" +
             "Every player will be assigned a role, and the goal of the game is to deduce which roles\n" +
             "are present in the game, and which players have which role.\n" +
@@ -76,7 +78,9 @@ public class App extends Application {
         Button debugMode = new Button("Debug Mode");
         debugMode.setPrefWidth(BUTTON_WIDTH);
         debugMode.setOnAction(event -> {
-            DebugMode.debug(this);});
+            DEBUG_MODE = true;
+            DebugMode.debug(this);
+        });
 
 
 

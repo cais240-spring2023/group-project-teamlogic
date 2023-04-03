@@ -136,6 +136,7 @@ public class PlayerSelectorFX {
         }
         VBox root = new VBox();
         root.getChildren().add(text);
+        grid.setAlignment(Pos.CENTER);
         root.getChildren().add(grid);
         if(!purpose.equals("vote against")) root.getChildren().add(textField);
         root.getChildren().add(skip);

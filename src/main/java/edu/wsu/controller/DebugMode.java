@@ -55,6 +55,12 @@ public class DebugMode {
                     case JANITOR:
                         model.addPlayer(new Janitor(name));
                         break;
+                    case SILENCER:
+                        model.addPlayer(new Silencer(name));
+                        break;
+                    case TRICKSTER:
+                        model.addPlayer(new Trickster(name));
+                        break;
                 }
             }
         }

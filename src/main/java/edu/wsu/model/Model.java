@@ -141,35 +141,10 @@ public class Model
 
     public void onMorning(){
         for(int i = 0; i < players.length; i++){
-            if(players[i] != null) players[i].onMorning();
-        }
-    }
-
-    //NO LONGER USED
-    public void nightHandler(Player actor, Player acted){//This is going to have to be replaced when we add more roles
-        if(actor instanceof Murderer){
-            acted.killedBy(actor);
-        }
-
-        //Separate evil and good roles, no else if here
-
-        if(actor instanceof Detective){
-            Player p = acted.getVisited();
-            String name;
-            if(p == null){
-                name = "nobody!";
+            if(players[i] != null){
+                players[i].onMorning();
+                selection = new Player[PLAYER_COUNT];
             }
-            else{
-                name = p.getName();
-            }
-            actor.hear(acted.getName() + " visited " + name);
-        }
-        else if(actor instanceof Doctor){
-            if(acted.justDied()){
-                acted.revive();//They didn't actually die, they got healed by the doctor lol
-                acted.hear(Doctor.healString());
-            }
-            else acted.setImmune();
         }
     }
     private void morningPhase(int turn){

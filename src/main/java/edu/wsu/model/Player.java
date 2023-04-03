@@ -48,13 +48,13 @@ public class Player implements PlayerInterface{
         if(silenced != 0) silenced--;//Silenced will be set to 2, and then subtracted each morning. That way it clears
     }//After a full day of being silenced.
     public boolean justDied(){
-        return deadFor == 0 && !isAlive();
+        return deadFor == 0 && !alive;
     }
     public void setImmune(){
         isImmune = true;
     }
     public boolean isImmune(){
-        return isImmune();
+        return isImmune;
     }
 
 
@@ -89,7 +89,9 @@ public class Player implements PlayerInterface{
     }
     @Override
     public void killedBy(Player murderer){
+        System.out.println(name + "is immune? " + isImmune);
         if(!isImmune) {
+            System.out.println(name + "is immune? TRUE");
             alive = false;
             killer = murderer;
         }

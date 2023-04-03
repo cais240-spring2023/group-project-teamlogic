@@ -30,6 +30,6 @@ public class Doctor extends Innocent {
             acted.revive();//They didn't actually die, they got healed by the doctor lol
             acted.hear(Doctor.healString());
         }
-        else acted.setImmune();
+        acted.setImmune();
     }
 }

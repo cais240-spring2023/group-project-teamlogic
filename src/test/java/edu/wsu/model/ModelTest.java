@@ -31,8 +31,6 @@ class ModelTest {
         model.addPlayer(new Innocent("Lucas"));
         model.addPlayer(new Innocent("Ivan"));
         model.addPlayer(new Detective("Gavin"));
-        model.nightHandler(model.players[0],model.players[1]);
-        model.nightHandler(model.players[5],model.players[0]);
         assertEquals(4,model.countInnocents());
         assertTrue(model.players[0].isAlive());
         assertFalse(model.players[1].isAlive());
@@ -52,11 +50,6 @@ class ModelTest {
         model.addPlayer(new Innocent("Lucas"));
         model.addPlayer(new Innocent("Ivan"));
         model.addPlayer(new Detective("Gavin"));
-        model.nightHandler(model.players[0],model.players[1]);
-        model.nightHandler(model.players[0],model.players[2]);
-        model.nightHandler(model.players[0],model.players[3]);
-        model.nightHandler(model.players[0],model.players[4]);
-        model.nightHandler(model.players[0],model.players[5]);
         assertEquals(model.checkWinner(),Model.Role.MURDERER);
         model = new Model();
         model.addPlayer(new Murderer("Daph"));

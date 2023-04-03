@@ -11,7 +11,7 @@ public class Silencer extends Murderer{
 
     @Override
     public String getNightActionName(){
-        return "silence";
+        return "silence, or ";
     }
     public boolean hasAction(){
         return true;

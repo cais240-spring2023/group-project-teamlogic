@@ -43,6 +43,7 @@ public class Model
     private Player[] selection = new Player[PLAYER_COUNT];
     private int turnNumber = 0;
     public static Model m = null;
+    private Player[] winners = new Player[PLAYER_COUNT];
 
 
 
@@ -386,6 +387,31 @@ public class Model
         players = new Player[PLAYER_COUNT];
     }
 
+    public Player[] getWinners(){
+        return winners;
+    }
+    public void addWinner(Player player){
+        for(int i = 0; i < winners.length; i++){
+            if(winners[i] == null){
+                winners[i] = player;
+                break;
+            }
+        }
+    }
+
+    public void innocentsWon(){
+        int offset = 0;
+        while(winners[offset] != null){
+            offset++;
+        }
+        for(int i = 0; i < players.length; i++){
+            if(players[i] != null && players[i] instanceof Innocent){
+                winners[offset] = players[i];
+                offset++;
+            }
+        }
+    }
+
     public Role checkWinner(){
         int livingInnocents = 0;
         int livingKillers = 0;
@@ -403,10 +429,21 @@ public class Model
         }
         if (livingInnocents == 0 && livingKillers > 0){
             System.out.println("Killers win");
+            int offset = 0;
+            while(winners[offset] != null){
+                offset++;
+            }
+            for(int i = 0; i < players.length; i++){
+                if(players[i] != null && players[i] instanceof Murderer){
+                    winners[offset] = players[i];
+                    offset++;
+                }
+            }
             return Role.MURDERER;
         }
         else if (livingKillers == 0 && livingInnocents > 0){
             System.out.println("Innos win");
+            innocentsWon();
             return Role.INNOCENT;
         }
         else if(livingKillers == 0 && livingInnocents == 0){

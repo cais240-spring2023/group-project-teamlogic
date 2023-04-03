@@ -11,7 +11,7 @@ public class Janitor extends Murderer{
 
     @Override
     public String getNightActionName(){
-        return "clean";
+        return "clean, or ";
     }
     public boolean hasAction(){
         return true;

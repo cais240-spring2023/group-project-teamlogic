@@ -4,6 +4,7 @@ import edu.wsu.controller.*;
 import edu.wsu.model.Model;
 import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Player;
+import edu.wsu.model.Trickster;
 import edu.wsu.view.MessageDisplayerFX;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -169,7 +170,7 @@ public class App extends Application {
                 whoseTurn = model.getNextPlayer(null);
                 currentlyOn = Order.NIGHT_ACTION;
                 winners = model.checkWinner();
-                if(winners != null) goodGame(winners);
+                if(winners != null) goodGame();
                 break;
             case NIGHT_ACTION:
                 whoseTurn = model.getNextPlayer(whoseTurn);
@@ -178,8 +179,11 @@ public class App extends Application {
                     winners = model.checkWinner();
                     model.incrementTurn();
                     currentlyOn = Order.GOOD_MORNING;
-                    if(winners != null) goodGame(winners);
-                    if(model.getTurn() >= Model.MAX_TURNS) goodGame(Model.Role.INNOCENT);
+                    if(winners != null) goodGame();
+                    if(model.getTurn() >= Model.MAX_TURNS){
+                        model.innocentsWon();
+                        goodGame();
+                    }
                 }
                 break;
             case END:
@@ -218,6 +222,7 @@ public class App extends Application {
                 if(victim != null) {
                     victim.kill();
                     victim.onMorning();//Sets deadFor to 1 so that the doctor can't save them
+                    if(victim instanceof Trickster) model.addWinner(victim);
                     thrownOff(victim);
                 }
                 break;
@@ -243,7 +248,7 @@ public class App extends Application {
         else PlayerSelector.choose(model.getPlayers(),player,"vote against",this);
     }
     public void receive(Player player, Player choice, String purpose){
-        if(purpose == "vote against") model.receiveVote(player, choice);
+        if(purpose.equals("vote against")) model.receiveVote(player, choice);
         else{
             model.submitAction(player,choice);
             player.visited(choice);
@@ -251,22 +256,23 @@ public class App extends Application {
         next();
     }
     public void getNightAction(Player player){
-        if(player.hasAction()) PlayerSelector.choose(model.getPlayers(),player,player.getNightActionName(),this);
-        else MessageDisplayerFX.display(player.getName(),"You sleep soundly in your cabin... hopefully you wake up tomorrow!",this,model);
+        PlayerSelector.choose(model.getPlayers(),player,player.getNightActionName(),this);
     }
-    public void goodGame(Model.Role winners){
+    public void goodGame(){
         System.out.println("Good game");
         currentlyOn = Order.END;
         String winnerString = "";
-        switch(winners){
-            case INNOCENT:
-                winnerString = "Innocents";
-                break;
-            case MURDERER:
-                winnerString = "Murderers";
-                break;
-            case NONE:
-                winnerString = "Nobody";
+        Player[] winners = model.getWinners();
+        for(int i = 0; i < winners.length; i++){
+            if(winners[i] != null){
+                if(i != 0){
+                    winnerString += ", ";
+                    if(i+1 >= winners.length || winners[i+1] == null){
+                        winnerString += "and ";
+                    }
+                }
+                winnerString += winners[i].getName();
+            }
         }
         winnerString += " won!";
         MessageDisplayerFX.display("Winners",winnerString,this, model);

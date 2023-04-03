@@ -42,7 +42,7 @@ public class Murderer extends Player{
 
     @Override
     public String getNightActionName(){
-        return "murder";
+        return "murder, or ";
     }
     public boolean hasAction(){
         return true;

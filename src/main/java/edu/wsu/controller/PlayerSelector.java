@@ -11,4 +11,9 @@ public class PlayerSelector {
     public static void choose(Player[] players, Player chooser, String purpose, App app){
         app.changeScene(newScene(players,chooser,purpose,app, ModelSingleton.getInstance()));
     }
+    public static void sendMessage(Player toPlayer, Player fromPlayer, String message, App app){
+        toPlayer.hear(message);
+        fromPlayer.visited(toPlayer);
+        app.next();
+    }
 }

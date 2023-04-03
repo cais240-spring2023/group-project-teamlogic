@@ -14,7 +14,7 @@ public class Doctor extends Innocent {
 
     @Override
     public String getNightActionName(){
-        return "heal";
+        return "heal, or ";
     }
     public boolean hasAction(){
         return true;

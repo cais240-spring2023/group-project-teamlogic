@@ -32,7 +32,7 @@ public class Detective extends Innocent{
 
     @Override
     public String getNightActionName(){
-        return "investigate";
+        return "investigate, or ";
     }
     public boolean hasAction(){
         return true;

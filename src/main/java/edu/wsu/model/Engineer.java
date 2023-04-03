@@ -15,7 +15,7 @@ public class Engineer extends Innocent{
 
     @Override
     public String getNightActionName(){
-        return "visit";
+        return "visit, or ";
     }
     public boolean hasAction(){
         return true;

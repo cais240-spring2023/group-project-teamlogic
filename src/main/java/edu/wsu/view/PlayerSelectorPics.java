@@ -57,7 +57,7 @@ public class PlayerSelectorPics {
         else vbox.getChildren().add(new Label(chooser.getName() + ", select a player to " + purpose + "send a message to."));
         grid.setAlignment(Pos.CENTER);
         vbox.getChildren().add(grid);
-        vbox.getChildren().add(textField);
+        if(!purpose.equals("vote against")) vbox.getChildren().add(textField);
         b = new Button("Skip");
         b.setPrefWidth(420);
         b.setOnAction(event -> app.next());

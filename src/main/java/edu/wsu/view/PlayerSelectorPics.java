@@ -63,6 +63,6 @@ public class PlayerSelectorPics {
         b.setOnAction(event -> app.next());
         vbox.getChildren().add(b);
         vbox.setAlignment(Pos.CENTER);
-        return new Scene(vbox,600,500);
+        return new Scene(vbox,600,600);
     }
 }

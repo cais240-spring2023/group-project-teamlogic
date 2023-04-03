@@ -45,6 +45,6 @@ public class ProfileSelectorFX {
             imageView.setImage(new Image("file:./src/main/resources/estor.png"));
                 });
         finish.setOnAction(event -> UsernameInput.complete(m,a));
-        return new Scene(root,500,600);
+        return new Scene(root,600,600);
     }
 }

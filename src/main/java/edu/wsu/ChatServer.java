@@ -2,6 +2,7 @@ package edu.wsu;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ChatServer {
     private ServerSocket serverSocket;
@@ -16,7 +17,13 @@ public class ChatServer {
             System.exit(1);
         }
     }
+    private static ArrayList<ClientHandler> clients = new ArrayList<>();
 
+    public static void broadcast(String message) {
+        for (ClientHandler client : clients) {
+            client.sendMessage(message);
+        }
+    }
     public void start() {
         while (true) {
             try {

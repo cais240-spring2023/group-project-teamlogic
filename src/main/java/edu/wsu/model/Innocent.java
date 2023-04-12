@@ -19,5 +19,9 @@ public class Innocent extends Player{
     public void tellRole(){
         hear("You are an innocent passenger!");
     }
+    @Override
+    public String roleString(){
+        return "a normie.";
+    }
 }
 

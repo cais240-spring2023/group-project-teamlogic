@@ -1,7 +1,5 @@
 package edu.wsu.model;
 
-import edu.wsu.controller.PlayerSelector;
-
 public class Detective extends Innocent{
     //I thought it would be wise to split these off into different classes
     //rather than handling it all in one class
@@ -19,12 +17,6 @@ public class Detective extends Innocent{
         hear("You are a detective.");
     }
 
-    @Override
-    public Player activityHandler(Player[] players){
-        if(Model.TEXT_MODE) return textBasedActivityHandler(players);
-        else return panelBasedActivityHandler(players);
-    }
-
     public Player textBasedActivityHandler(Player[] players){
         System.out.println(name + ", select a player to investigate.\n");
         Player selected;
@@ -35,14 +27,30 @@ public class Detective extends Innocent{
         }
     }
     public Player panelBasedActivityHandler(Player[] players){
-        return PlayerSelector.selectPlayer(players, name,"investigate", true);
+        return null;
     }
 
     @Override
     public String getNightActionName(){
-        return "investigate";
+        return "investigate, or ";
     }
     public boolean hasAction(){
         return true;
+    }
+    @Override
+    public String roleString(){
+        return "a detective.";
+    }
+    @Override
+    public void nightHandler(Player acted){
+        Player p = acted.getVisited();
+        String name;
+        if(p == null){
+            name = "nobody!";
+        }
+        else{
+            name = p.getName();
+        }
+        hear(acted.getName() + " visited " + name);
     }
 }

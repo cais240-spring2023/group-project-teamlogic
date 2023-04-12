@@ -6,6 +6,8 @@ import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Player;
 import edu.wsu.model.Trickster;
 import edu.wsu.view.MessageDisplayerFX;
+import edu.wsu.view.PlayerSelectorPics;
+import edu.wsu.view.PlayersList;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -21,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class App extends Application {
+    public static boolean inHotseat = true;
 
     public boolean DEBUG_MODE = false;
 
@@ -66,9 +69,19 @@ public class App extends Application {
         hotSeat.setOnAction(event -> {startGame();});
 
         Button server = new Button("Launch server");
+        server.setOnAction(event -> {
+            changeScene(PlayersList.newScene());
+            Server.runServer();
+            }
+        );
         server.setPrefWidth(BUTTON_WIDTH);
 
         Button client = new Button("Connect to server");
+        client.setOnAction(event ->{
+           inHotseat = false;
+           Client.launchClient();
+           startGame();
+        });
         client.setPrefWidth(BUTTON_WIDTH);
 
         Button roleList = new Button("Tutorial");

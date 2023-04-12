@@ -1,5 +1,6 @@
 package edu.wsu.view;
 
+import edu.wsu.controller.Client;
 import edu.wsu.controller.UsernameInput;
 import edu.wsu.model.Model;
 import edu.wsu.model.Player;
@@ -40,7 +41,12 @@ public class ProfileSelectorFX {
         });
         button.setOnAction(event ->{
 
-            UsernameInput.nameGetter(comboBox.getValue(),m,a);
+            if(App.inHotseat) {
+                UsernameInput.nameGetter(comboBox.getValue(), m, a);
+            }
+            else{
+                Client.sendMessage(comboBox.getValue());
+            }
             comboBox.getSelectionModel().clearSelection();
             imageView.setImage(new Image("file:./src/main/resources/estor.png"));
                 });

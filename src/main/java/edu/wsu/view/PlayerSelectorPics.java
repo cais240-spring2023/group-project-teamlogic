@@ -17,10 +17,10 @@ import javafx.scene.layout.VBox;
 
 public class PlayerSelectorPics {
 
-    public static Scene newScene(Player[] players, Player chooser, String purpose, App app, Model m){
+    public static Scene newScene(Player[] players, Player chooser, String purpose, App app){
         final int BUTTON_WIDTH = 75;
         final Player[] selection = {null};
-        m = ModelSingleton.getInstance();
+        Model m = ModelSingleton.getInstance();
         GridPane grid = new GridPane();
         VBox vbox;
         ImageView imageView;

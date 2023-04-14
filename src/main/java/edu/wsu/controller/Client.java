@@ -16,7 +16,7 @@ public class Client {
             socket = new Socket(hostName, portNumber);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            appLink.beginGame();
+            appLink.startGame();
         }
         catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to " + hostName);

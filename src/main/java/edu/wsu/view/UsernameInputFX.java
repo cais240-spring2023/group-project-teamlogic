@@ -33,7 +33,7 @@ public class UsernameInputFX {
         nameField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER){
                 if(nameField.getText().equals("")){
-                    UsernameInput.complete(m,a);
+                    UsernameInput.complete(a);
                 }
                 else {
                     String input = nameField.getText();
@@ -51,7 +51,7 @@ public class UsernameInputFX {
         });
 
         exitButton.setOnAction(e ->{
-            UsernameInput.complete(m,a);
+            UsernameInput.complete(a);
         });
 
         Scene scene = new Scene(root, 400, 350);

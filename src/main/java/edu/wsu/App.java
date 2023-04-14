@@ -6,7 +6,7 @@ import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Player;
 import edu.wsu.model.Trickster;
 import edu.wsu.view.MessageDisplayerFX;
-import edu.wsu.view.PlayerSelectorPics;
+import edu.wsu.view.Connector;
 import edu.wsu.view.PlayersList;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -70,7 +70,7 @@ public class App extends Application {
 
         Button server = new Button("Launch server");
         server.setOnAction(event -> {
-            changeScene(PlayersList.newScene());
+            changeScene(PlayersList.newScene(this));
             Server.runServer();
             }
         );
@@ -79,8 +79,7 @@ public class App extends Application {
         Button client = new Button("Connect to server");
         client.setOnAction(event ->{
            inHotseat = false;
-           Client.launchClient();
-           startGame();
+           changeScene(Connector.newScene(this));
         });
         client.setPrefWidth(BUTTON_WIDTH);
 
@@ -129,6 +128,7 @@ public class App extends Application {
     public void initializeModel(){
         model = ModelSingleton.getInstance();
     }
+    public Model getModel() {return model;}
 
 
     public void changeScene(Scene scene){
@@ -138,11 +138,11 @@ public class App extends Application {
 
 
     public void startGame() {
-        model.setAppLink(this);
         UsernameInput.namer(model,this); //this is where the new players should get the names
     }
 
     public void beginGame(){
+        Model.setAppLink(this);
         model.assignRoles();
         model.tellRoles();
         currentlyOn = Order.GOOD_MORNING;

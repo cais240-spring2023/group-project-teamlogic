@@ -12,23 +12,35 @@ public class Communicator extends Thread{
     private Socket socket;
     private boolean waiting;
     private String toSend = new String();
+    private String received;
+    private boolean sending = false;
+    private boolean receiving = false;
     private PrintWriter out;
     private BufferedReader in;
+    private SendTo sendTo;
     public Communicator(Socket socket){
         this.socket = socket;
         this.waiting = true;
     }
     public void run(){
+        System.out.println("Thread begun");
         try {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             while(waiting){
-                if(!toSend.isEmpty()){
+                if(sending && !toSend.isEmpty()){
                     out.println(toSend);
-                    toSend = new String();
+                    toSend = "";
+                    sending = true;
                 }
-                else{
-                    PlayersList.addName(in.readLine());
+                else if(receiving){
+                    received = in.readLine();
+                    receiving = false;
+                    switch(sendTo){
+                        case USERNAMES:
+                            PlayersList.addName(received);
+                            break;
+                    }
                 }
             }
         }
@@ -37,6 +49,11 @@ public class Communicator extends Thread{
         }
     }
     public void send(String message){
+        this.sending = true;
         this.toSend = message;
     }
+    public void receive(SendTo sendTo){
+        this.receiving = true;
+    }
+    public static enum SendTo{USERNAMES}
 }

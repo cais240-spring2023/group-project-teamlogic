@@ -1,6 +1,7 @@
 package edu.wsu.model;
 
 import edu.wsu.App;
+import edu.wsu.controller.Communicator;
 import edu.wsu.view.MessageDisplayerFX;
 
 import java.util.ArrayList;

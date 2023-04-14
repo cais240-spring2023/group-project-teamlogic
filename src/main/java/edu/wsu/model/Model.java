@@ -312,6 +312,14 @@ public class Model
         }
         return null;
     }
+    public Player getPlayer(int index){
+        try {
+            return players[index];
+        }
+        catch(ArrayIndexOutOfBoundsException e){
+            return null;
+        }
+    }
     public void tellRoles(){
         for(int i = 0; i < players.length; i++){
             if(players[i] != null) players[i].tellRole();

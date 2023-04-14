@@ -50,7 +50,7 @@ public class ProfileSelectorFX {
             comboBox.getSelectionModel().clearSelection();
             imageView.setImage(new Image("file:./src/main/resources/estor.png"));
                 });
-        finish.setOnAction(event -> UsernameInput.complete(m,a));
+        finish.setOnAction(event -> UsernameInput.complete(a));
         return new Scene(root,600,600);
     }
 }

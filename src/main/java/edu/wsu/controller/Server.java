@@ -10,23 +10,28 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+    static Communicator[] communicators = new Communicator[12];
+    static boolean filling = true;
+
     public static void runServer(){
         int portNumber = 4544;
-        try (
-                ServerSocket serverSocket = new ServerSocket(portNumber);
-                Socket clientSocket = serverSocket.accept();
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        ) {
-            // Receive the client's message
-            String name = in.readLine();
-            PlayersList.addName(name);
-
-            // Send a response to the client
-            out.println("Connected.");
+        try {
+            ServerSocket serverSocket = new ServerSocket(portNumber);
+            int i = 0;
+            while(filling){
+                communicators[i] = new Communicator(serverSocket.accept());
+                i++;
+            }
+            for(i = 0; i < communicators.length; i++){
+                if(communicators[i] != null) communicators[i].run();
+            }
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection");
             System.exit(1);
         }
     }
+    public static void launch(){
+        filling = false;
+    }
+
 }

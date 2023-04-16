@@ -61,6 +61,7 @@ public class App extends Application {
         Image nestor = new Image("file:./src/main/resources/nestor.png");
         ImageView nestorView = new ImageView(nestor);
 
+
         Button hotSeat = new Button("Hot Seat");
         hotSeat.setPrefWidth(BUTTON_WIDTH);
         hotSeat.setOnAction(event -> {startGame();});
@@ -103,7 +104,7 @@ public class App extends Application {
         root.setPadding(new Insets(10));
 
         Scene scene = new Scene(root, 600, 500);
-
+        scene.getStylesheets().addAll(this.getClass().getResource("/main/background.css").toExternalForm());
         stage.setTitle("Nestor's Murder Mystery");
         stage.setScene(scene);
         currentlyShowing = scene;

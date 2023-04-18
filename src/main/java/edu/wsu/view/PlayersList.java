@@ -1,6 +1,7 @@
 package edu.wsu.view;
 
 import edu.wsu.App;
+import edu.wsu.controller.Server;
 import edu.wsu.controller.UsernameInput;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,7 +19,10 @@ public class PlayersList {
         VBox vBox = new VBox();
         vBox.getChildren().add(label);
         Button b = new Button("Launch");
-        b.setOnAction(event -> UsernameInput.complete(a,names));
+        b.setOnAction(event -> {
+            UsernameInput.complete(a,names);
+            Server.launch();
+        });
         vBox.getChildren().add(b);
         vBox.setAlignment(Pos.CENTER);
         return new Scene(vBox,600,600);

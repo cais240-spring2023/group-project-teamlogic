@@ -43,7 +43,15 @@ public class Server {
             }
     }
     public static void launch(){
+        Model m = ModelSingleton.getInstance();
         filling = false;
+        String names = new String();
+        for(int i = 0; i < 12; i++){
+            if(m.getPlayer(i) != null) names += m.getPlayer(i).getName();
+        }
+        for(int i = 0; i < communicators.length; i++){
+            if(communicators[i] != null) communicators[i].send(names);
+        }
     }
     public Player getPlayer(Communicator communicator){
         Model model = ModelSingleton.getInstance();

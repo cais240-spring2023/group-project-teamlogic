@@ -26,15 +26,18 @@ public class ProfileSelectorFX {
         imageView.setFitHeight(280);
         imageView.setFitWidth(210);
         Button button  = new Button("Submit");
-        Button finish = new Button("Finished");
         comboBox.setPrefWidth(210);
         button.setPrefWidth(210);
-        finish.setPrefWidth(210);
         VBox root = new VBox();
         root.getChildren().add(comboBox);
         root.getChildren().add(imageView);
         root.getChildren().add(button);
-        root.getChildren().add(finish);
+        if(App.inHotseat){
+            Button finish = new Button("Finished");
+            finish.setPrefWidth(210);
+            root.getChildren().add(finish);
+            finish.setOnAction(event -> UsernameInput.complete(a));
+        }
         root.setAlignment(Pos.CENTER);
         comboBox.setOnAction(event -> {
             if(comboBox.getValue() != null) imageView.setImage(new Image("file:./src/main/resources/" + comboBox.getValue().toLowerCase() + ".png"));
@@ -46,11 +49,12 @@ public class ProfileSelectorFX {
             }
             else{
                 Client.sendMessage(comboBox.getValue());
+                a.changeScene(Waiting.newScene());
+                Client.receive();
             }
             comboBox.getSelectionModel().clearSelection();
             imageView.setImage(new Image("file:./src/main/resources/estor.png"));
                 });
-        finish.setOnAction(event -> UsernameInput.complete(a));
         return new Scene(root,600,600);
     }
 }

@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 public class Waiting {
-    public Scene newScene(){
+    public static Scene newScene(){
         Label l = new Label("Sit tight!");
         VBox vbox = new VBox();
         vbox.getChildren().add(l);

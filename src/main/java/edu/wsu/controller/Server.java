@@ -47,8 +47,9 @@ public class Server {
         filling = false;
         String names = new String();
         for(int i = 0; i < 12; i++){
-            if(m.getPlayer(i) != null) names += m.getPlayer(i).getName();
+            if(m.getPlayer(i) != null) names += m.getPlayer(i).getName() + " ";
         }
+        names = names.substring(0,names.length()-1);//cut off the final space
         for(int i = 0; i < communicators.length; i++){
             if(communicators[i] != null) communicators[i].send(names);
         }

@@ -1,6 +1,7 @@
 package edu.wsu.controller;
 
 import edu.wsu.view.PlayersList;
+import javafx.application.Platform;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +28,8 @@ public class Communicator extends Thread{
         try {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            receiving = true;
+            sendTo = SendTo.USERNAMES;
             while(waiting){
                 if(sending && !toSend.isEmpty()){
                     out.println(toSend);
@@ -38,7 +41,7 @@ public class Communicator extends Thread{
                     receiving = false;
                     switch(sendTo){
                         case USERNAMES:
-                            PlayersList.addName(received);
+                            Platform.runLater(() -> PlayersList.addName(received));
                             break;
                     }
                 }

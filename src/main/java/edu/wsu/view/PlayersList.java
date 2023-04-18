@@ -25,6 +25,7 @@ public class PlayersList {
     }
     public static void addName(String name){
         if(index < 12) {
+            System.out.println("Added " + name);
             names[index] = name;
             index++;
             if(index == 12) label.setText(label.getText() + "\n" + name + "\nALL SLOTS FILLED... PRESS LAUNCH TO BEGIN GAME");

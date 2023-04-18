@@ -18,20 +18,29 @@ public class Server {
 
     public static void runServer(){
         int portNumber = 4544;
-        try {
-            ServerSocket serverSocket = new ServerSocket(portNumber);
-            int i = 0;
-            while(filling){
-                communicators[i] = new Communicator(serverSocket.accept());
-                i++;
+            try {
+                ServerSocket serverSocket = new ServerSocket(portNumber);
+                Thread thread = new Thread(() -> {
+                    try {
+                        int i = 0;
+                        while (filling) {
+                            communicators[i] = new Communicator(serverSocket.accept());
+                            communicators[i].start();
+                            i++;
+                            if (i >= 12) filling = false;
+                        }
+                    }
+                    catch (IOException e) {
+                        System.err.println("Couldn't get I/O for the connection");
+                        System.exit(1);
+                    }
+                });
+                thread.start();
             }
-            for(i = 0; i < communicators.length; i++){
-                if(communicators[i] != null) communicators[i].start();
+            catch(IOException e){
+                System.err.println("Couldn't get I/O for the connection");
+                System.exit(1);
             }
-        } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection");
-            System.exit(1);
-        }
     }
     public static void launch(){
         filling = false;

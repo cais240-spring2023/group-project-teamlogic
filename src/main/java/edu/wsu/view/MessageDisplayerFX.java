@@ -16,7 +16,9 @@ public class MessageDisplayerFX {
         StackPane root = new StackPane();
         Button close = new Button();
         close.setText("Okay");
-        close.setOnAction(event -> {app.next();});
+        close.setOnAction(event -> {
+            if(App.inHotseat) app.next();
+        });
         StackPane.setAlignment(close, Pos.BOTTOM_CENTER);
         Label text = new Label();
         text.setText(name + "...\n" + messages);

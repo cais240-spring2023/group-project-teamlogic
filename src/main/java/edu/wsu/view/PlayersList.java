@@ -20,8 +20,7 @@ public class PlayersList {
         vBox.getChildren().add(label);
         Button b = new Button("Launch");
         b.setOnAction(event -> {
-            UsernameInput.complete(a,names);
-            Server.launch();
+            Server.launch(names);
         });
         vBox.getChildren().add(b);
         vBox.setAlignment(Pos.CENTER);

@@ -20,12 +20,15 @@ public class Communicator extends Thread{
     }
     public void run(){
         try {
+            System.out.println("Thread begun");
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             receive();
-            while(received.isEmpty()){}
-            PlayersList.addName(received);
-            received = "";
+            while(received.equals("")){
+                System.out.print("");//This has to be there or it breaks the program
+            }
+            System.out.println("---\n" + received);
+            Platform.runLater(() -> PlayersList.addName(received));
         }
         catch(IOException e){
 
@@ -35,10 +38,12 @@ public class Communicator extends Thread{
         out.println(message);
     }
     public void receive(){
+        System.out.println("On received");
         Thread thread = new Thread(() -> {
 
             try {
                 received = in.readLine();
+                System.out.println(received);
             }
             catch (IOException e) {
                 System.err.println("IO error");

@@ -33,6 +33,7 @@ public class Client {
     public static void beginGame(){
         appLink.changeScene(Waiting.newScene());
         String details = receive();//This will send name and role data
+        System.out.println(details);
         int index = Integer.parseInt(details.split("\n")[0]);
         String[] names = details.split("\n")[1].split(" ");
         String[] roles = details.split("\n")[2].split(" ");

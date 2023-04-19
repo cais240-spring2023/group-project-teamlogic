@@ -10,53 +10,42 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Communicator extends Thread{
-    private Socket socket;
+    private final Socket socket;
     private boolean waiting;
-    private String toSend = new String();
-    private String received;
-    private boolean sending = false;
-    private boolean receiving = false;
+    private String received = "";
     private PrintWriter out;
     private BufferedReader in;
-    private SendTo sendTo;
     public Communicator(Socket socket){
         this.socket = socket;
-        this.waiting = true;
     }
     public void run(){
         System.out.println("Thread begun");
         try {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            receiving = true;
-            sendTo = SendTo.USERNAMES;
-            while(waiting){
-                if(sending && !toSend.isEmpty()){
-                    out.println(toSend);
-                    toSend = "";
-                    sending = true;
-                }
-                else if(receiving){
-                    received = in.readLine();
-                    receiving = false;
-                    switch(sendTo){
-                        case USERNAMES:
-                            Platform.runLater(() -> PlayersList.addName(received));
-                            break;
-                    }
-                }
-            }
+            receive();
+            while(received.isEmpty()){}
+            PlayersList.addName(received);
+            received = "";
         }
         catch(IOException e){
 
         }
     }
     public void send(String message){
-        this.sending = true;
-        this.toSend = message;
+        out.println(message);
     }
-    public void receive(SendTo sendTo){
-        this.receiving = true;
+    public void receive(){
+        Thread thread = new Thread(() -> {
+
+            try {
+                received = in.readLine();
+            }
+            catch (IOException e) {
+                System.err.println("IO error");
+                System.exit(1);
+            }
+        });
+        thread.start();
     }
-    public static enum SendTo{USERNAMES}
 }

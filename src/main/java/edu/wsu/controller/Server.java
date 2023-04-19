@@ -5,6 +5,7 @@ import edu.wsu.model.Model;
 import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Player;
 import edu.wsu.view.PlayersList;
+import javafx.application.Platform;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class Server {
         Model m = ModelSingleton.getInstance();
         filling = false;
         for(int i = 0; i < communicators.length; i++){
-            if(communicators[i] != null) m.addPlayer(new Player(communicators[i].getName()));
+            if(communicators[i] != null) m.addPlayer(new Player(communicators[i].getPlayerName()));
         }
         String details = new String();
         m.assignRoles();
@@ -78,6 +79,7 @@ public class Server {
     }
 
     public static void nightPhase(){
+        System.out.println("Night phase");
         clearMessages();
         appLink.changeScene(PlayersList.newScene("Night inputs:"));
         for(int i = 0; i < communicators.length; i++){
@@ -90,33 +92,38 @@ public class Server {
                 for(int i = 0; i < messages.length; i++){
                     if(messages[i] != null && !temp[i]){
                         temp[i] = true;
-                        PlayersList.addName(messages[i]);
+                        int finalI = i;
+                        Platform.runLater(() -> PlayersList.addName(messages[finalI]));
                     }
                 }
             }
             nightHandler();
         });
-        thread.run();
+        thread.start();
     }
     public static void nightHandler(){
         Model model = ModelSingleton.getInstance();
-        String[] outMessages = new String[communicators.length];
-        for(int i = 0; i < messages.length; i++){
-            outMessages[i] = new String();
-        }
         for(int i = 0; i < messages.length; i++){//find all the mail the players sent to each other
             if(messages[i] != null && messages[i].split(" -> ").length == 3){
+                model.getPlayer(messages[i].split(" -> ")[0]).visited(model.getPlayer(messages[i].split(" -> ")[2]));
                 model.getPlayer(messages[i].split(" -> ")[2]).hear(messages[i].split(" -> ")[1]);
+                System.out.println("3 " + messages[i]);
+            }
+        }
+        for(int i = 0; i < messages.length; i++) {
+            if(messages[i] != null && messages[i].split(" -> ").length == 2){
+                model.getPlayer(messages[i].split(" -> ")[0]).visited(model.getPlayer(messages[i].split(" -> ")[1]));
             }
         }
         for(int i = 0; i < messages.length; i++) {//Night action handling
             if(messages[i] != null && messages[i].split(" -> ").length == 2){
-                model.getPlayer(messages[i].split(" -> ")[1]).nightHandler(model.getPlayer(messages[i].split(" -> ")[0]));
+                model.getPlayer(messages[i].split(" -> ")[0]).nightHandler(model.getPlayer(messages[i].split(" -> ")[1]));
+                System.out.println("2 " + messages[i]);
             }
         }
         String deadPlayers = "";
         for(int i = 0; i < communicators.length; i++){
-            if(!model.getPlayer(i).isAlive()) deadPlayers += model.getPlayer(i).getName() + ",";
+            if(model.getPlayer(i) != null && !model.getPlayer(i).isAlive()) deadPlayers += model.getPlayer(i).getName() + ",";
         }
         if(!deadPlayers.isEmpty()) deadPlayers = deadPlayers.substring(0,deadPlayers.length()-1);
         for(int i = 0; i < communicators.length; i++){

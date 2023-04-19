@@ -32,6 +32,7 @@ public class Communicator extends Thread{
                 System.out.print("");//This has to be there or it breaks the program
             }
             System.out.println("---\n" + received);
+            name = received;
             Platform.runLater(() -> PlayersList.addName(received));
         }
         catch(IOException e){

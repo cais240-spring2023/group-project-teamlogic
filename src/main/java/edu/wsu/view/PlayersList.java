@@ -15,6 +15,7 @@ public class PlayersList {
     private static String[] names;
     private static int index = 0;
     public static Scene newScene(String phase){
+        System.out.println("Players list");
         label = new Label();
         names = new String[12];
         Label phaseLabel = new Label(phase);

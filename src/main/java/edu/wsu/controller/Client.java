@@ -79,6 +79,9 @@ public class Client {
     public static void nightHandler(){
         String details = receive().replace('\t','\n');
         String[] deadPlayers = details.split(";")[0].split(",");
+        for(int i = 0; i < deadPlayers.length; i++){
+            System.out.println(deadPlayers[i]);
+        }
         String message = details.split(";")[1];
         player.hear(message);
         for(int i = 0; i < deadPlayers.length; i++){

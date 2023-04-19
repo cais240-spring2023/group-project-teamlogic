@@ -1,10 +1,11 @@
 package edu.wsu;
 
-import edu.wsu.controller.MessageDisplayerFX;
-import edu.wsu.controller.PlayerSelectorFX;
-import edu.wsu.controller.UsernameInput;
+import edu.wsu.controller.*;
 import edu.wsu.model.Model;
+import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Player;
+import edu.wsu.model.Trickster;
+import edu.wsu.view.MessageDisplayerFX;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -21,15 +22,40 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
+    public boolean DEBUG_MODE = false;
+
+    private final String TUTORIAL = "\n\n\n\nThis is a social deduction game.\n" +
+            "Every player will be assigned a role, and the goal of the game is to deduce which roles\n" +
+            "are present in the game, and which players have which role.\n" +
+            "Each play can take actions at night based on their role, and every afternoon they can\n" +
+            "vote players they think are suspicious, or they think get in their way, off the train.\n\n\n" +
+            "There are three teams: Innocents, Murderers, and Neutrals.\n\n" +
+            "The innocents take actions which serve the greater good at night. They win when there are\n" +
+            "no more murderers threatening them.\n\n" +
+            "The murderers take actions which kill innocent passengers, or help other murderers get\n" +
+            "away with their crimes. They win when there are no more innocent passengers left to stop\n" +
+            "their reign of terror.\n\n" +
+            "Neutral roles throw a wrench into the dichotomy, with special win conditions independent\n" +
+            "of eliminating either side. They can win both with the murderers or the innocents.\n\n\n" +
+            "ROLE LIST:\n\n" +
+            "(I) NORMIE\n" +
+            "The normie can take no action at night.\n\n" +
+            "(I) DETECTIVE\n" +
+            "The detective can look for clues at night. The next morning, they will know who the person\n" +
+            "they visited, themselves visited.\n\n" +
+            "(M) MURDERER\n" +
+            "The murderer will kill one person at night.\n\n";
 
     private Scene currentlyShowing;
     private Stage stage;
     private Order currentlyOn;
     private boolean skipVoting = true;
     private Player whoseTurn = null;
+    private Model model;
 
     @Override
     public void start(Stage stage){
+        initializeModel();
         final int BUTTON_WIDTH = 125;
 
         Image nestor = new Image("file:./src/main/resources/nestor.png");
@@ -45,8 +71,16 @@ public class App extends Application {
         Button client = new Button("Connect to server");
         client.setPrefWidth(BUTTON_WIDTH);
 
-        Button roleList = new Button("View Role List");
+        Button roleList = new Button("Tutorial");
         roleList.setPrefWidth(BUTTON_WIDTH);
+        roleList.setOnAction(event -> {System.out.println(TUTORIAL);});
+
+        Button debugMode = new Button("Debug Mode");
+        debugMode.setPrefWidth(BUTTON_WIDTH);
+        debugMode.setOnAction(event -> {
+            DEBUG_MODE = true;
+            DebugMode.debug(this);
+        });
 
 
 
@@ -57,6 +91,7 @@ public class App extends Application {
         vbox.getChildren().add(server);
         vbox.getChildren().add(client);
         vbox.getChildren().add(roleList);
+        vbox.getChildren().add(debugMode);
         vbox.setAlignment(Pos.CENTER);
         root.setCenter(vbox);
 
@@ -67,7 +102,7 @@ public class App extends Application {
         VBox root2 = new VBox(10, nameLabel, nameField, submitButton, exitButton);
         root.setPadding(new Insets(10));
 
-        Scene scene = new Scene(root, 400, 350);
+        Scene scene = new Scene(root, 600, 500);
 
         stage.setTitle("Nestor's Murder Mystery");
         stage.setScene(scene);
@@ -78,6 +113,11 @@ public class App extends Application {
 
     }
 
+    public void initializeModel(){
+        model = ModelSingleton.getInstance();
+    }
+
+
     public void changeScene(Scene scene){
         if(currentlyShowing != null) stage.setScene(scene);
         currentlyShowing = scene;
@@ -85,137 +125,164 @@ public class App extends Application {
 
 
     public void startGame() {
-        Model m = new Model();
-        m.setAppLink(this);
-        UsernameInput.namer(m,this); //this is where the new players should get the names
+        model.setAppLink(this);
+        UsernameInput.namer(model,this); //this is where the new players should get the names
     }
 
-    public void beginGame(Model model){
+    public void beginGame(){
         model.assignRoles();
         model.tellRoles();
         currentlyOn = Order.GOOD_MORNING;
-        doNext(model);
+        doNext();
+    }
+
+    public void beginGameFromDebugging(){
+        model.tellRoles();
+        currentlyOn = Order.GOOD_MORNING;
+        doNext();
     }
 
     public enum Order{
         GOOD_MORNING,DISPLAY_MESSAGES,VOTE,THROW_OFF,NIGHT_ACTION,END,CLOSE
     }
 
-    public void next(Model m){
+    public void next(){
         Model.Role winners;
         switch(currentlyOn){
             case GOOD_MORNING:
                 currentlyOn = Order.DISPLAY_MESSAGES;
-                whoseTurn = m.getNextPlayer(null);
+                whoseTurn = model.getNextPlayer(null);
                 break;
             case DISPLAY_MESSAGES:
-                whoseTurn = m.getNextPlayer(whoseTurn);
+                whoseTurn = model.getNextPlayer(whoseTurn);
                 if(whoseTurn == null){
                     if(skipVoting){
                         currentlyOn = Order.NIGHT_ACTION;
                         skipVoting = false;
                     }
                     else currentlyOn = Order.VOTE;
-                    whoseTurn = m.getNextPlayer(null);
+                    whoseTurn = model.getNextPlayer(null);
                 }
                 break;
             case VOTE:
-                whoseTurn = m.getNextPlayer(whoseTurn);
+                whoseTurn = model.getNextPlayer(whoseTurn);
                 if(whoseTurn == null){
-                    winners = m.checkWinner();
                     currentlyOn = Order.THROW_OFF;
-                    if(winners != null) goodGame(winners, m);
                 }
                 break;
             case THROW_OFF:
-                whoseTurn = m.getNextPlayer(null);
+                whoseTurn = model.getNextPlayer(null);
                 currentlyOn = Order.NIGHT_ACTION;
+                winners = model.checkWinner();
+                if(winners != null) goodGame();
+                break;
             case NIGHT_ACTION:
-                whoseTurn = m.getNextPlayer(whoseTurn);
+                whoseTurn = model.getNextPlayer(whoseTurn);
                 if(whoseTurn == null){
-                    m.nightOver();
-                    winners = m.checkWinner();
-                    m.incrementTurn();
+                    model.nightOver();
+                    winners = model.checkWinner();
+                    model.incrementTurn();
                     currentlyOn = Order.GOOD_MORNING;
-                    if(winners != null) goodGame(winners, m);
+                    if(winners != null) goodGame();
+                    if(model.getTurn() >= Model.MAX_TURNS){
+                        model.innocentsWon();
+                        goodGame();
+                    }
                 }
                 break;
             case END:
                 currentlyOn = Order.CLOSE;
                 break;
         }
-        doNext(m);
+        switch(currentlyOn){
+            case DISPLAY_MESSAGES:
+                TransitionController.display(whoseTurn.getName(), "read your messages",this);
+                break;
+            case NIGHT_ACTION:
+                TransitionController.display(whoseTurn.getName(),"prepare for bed",this);
+                break;
+            default:
+                doNext();
+        }
     }
 
-    public void doNext(Model m){
+    public void doNext(){
         switch(currentlyOn){
             case GOOD_MORNING:
                 System.out.println("Good morning");
-                goodMorning(m);
+                goodMorning();
                 break;
             case DISPLAY_MESSAGES:
                 System.out.println("Display messages");
-                displayMessages(whoseTurn, m);
+                displayMessages(whoseTurn);
                 break;
             case VOTE:
                 System.out.println("Vote");
-                getVote(whoseTurn, m);
+                getVote(whoseTurn);
                 break;
             case THROW_OFF:
                 System.out.println("Throw off");
-                Player victim = m.tallyVotes();
+                Player victim = model.tallyVotes();
                 if(victim != null) {
                     victim.kill();
-                    thrownOff(victim, m);
+                    victim.onMorning();//Sets deadFor to 1 so that the doctor can't save them
+                    if(victim instanceof Trickster) model.addWinner(victim);
+                    thrownOff(victim);
                 }
                 break;
             case NIGHT_ACTION:
                 System.out.println("Night action");
-                getNightAction(whoseTurn, m);
+                getNightAction(whoseTurn);
                 break;
             case CLOSE: Platform.exit();
         }
     }
 
-    public void goodMorning(Model m){
-        String goodMorning = "Good morning!\nLiving Players: " + m.listLivingPlayers();
-        MessageDisplayerFX.display("Day "+m.getTurn(),goodMorning,this, m);
+    public void goodMorning(){
+        String goodMorning = "Good morning!\nLiving Players: " + model.listLivingPlayers();
+        MessageDisplayerFX.display("Day "+model.getTurn(),goodMorning,this, model);
+        model.onMorning();
     }
-    public void displayMessages(Player player, Model m){
-        if(player.displayMessages(m));
-        else next(m);
+    public void displayMessages(Player player){
+        if(player.displayMessages(model));
+        else next();
     }
-    public void getVote(Player player, Model m){
-        PlayerSelectorFX.choose(m.getPlayers(),player,"vote against",this,m);
+    public void getVote(Player player){
+        if(player.isSilenced()) MessageDisplayerFX.display(player.getName(), "You have been silenced.",this,model);
+        else PlayerSelector.choose(model.getPlayers(),player,"vote against",this);
     }
-    public void receive(Player player, Player choice, String purpose, Model m){
-        if(purpose == "vote against") m.receiveVote(player, choice);
-        else m.submitAction(player,choice);
-        next(m);
+    public void receive(Player player, Player choice, String purpose){
+        if(purpose.equals("vote against")) model.receiveVote(player, choice);
+        else{
+            model.submitAction(player,choice);
+            player.visited(choice);
+        }
+        next();
     }
-    public void getNightAction(Player player, Model m){
-        if(player.hasAction()) PlayerSelectorFX.choose(m.getPlayers(),player,player.getNightActionName(),this, m);
-        else next(m);
+    public void getNightAction(Player player){
+        PlayerSelector.choose(model.getPlayers(),player,player.getNightActionName(),this);
     }
-    public void goodGame(Model.Role winners, Model m){
+    public void goodGame(){
         System.out.println("Good game");
         currentlyOn = Order.END;
         String winnerString = "";
-        switch(winners){
-            case INNOCENT:
-                winnerString = "Innocents";
-                break;
-            case MURDERER:
-                winnerString = "Murderers";
-                break;
-            case NONE:
-                winnerString = "Nobody";
+        Player[] winners = model.getWinners();
+        for(int i = 0; i < winners.length; i++){
+            if(winners[i] != null){
+                if(i != 0){
+                    winnerString += ", ";
+                    if(i+1 >= winners.length || winners[i+1] == null){
+                        winnerString += "and ";
+                    }
+                }
+                winnerString += winners[i].getName();
+            }
         }
         winnerString += " won!";
-        MessageDisplayerFX.display("Winners",winnerString,this, m);
+        MessageDisplayerFX.display("Winners",winnerString,this, model);
         System.out.println(winnerString);
     }
-    public void thrownOff(Player player, Model m){
-        MessageDisplayerFX.display("Player killed!",player.getName() + " was thrown off the train. Good luck to them!",this, m);
+    public void thrownOff(Player player){
+        MessageDisplayerFX.display("Player killed!",player.getName() + " was thrown off the train. Good luck to them!\n\nThey were " + player.roleString(),this, model);
     }
 }

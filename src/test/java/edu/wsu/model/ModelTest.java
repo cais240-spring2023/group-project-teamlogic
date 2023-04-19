@@ -2,6 +2,8 @@ package edu.wsu.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ModelTest {
@@ -29,8 +31,6 @@ class ModelTest {
         model.addPlayer(new Innocent("Lucas"));
         model.addPlayer(new Innocent("Ivan"));
         model.addPlayer(new Detective("Gavin"));
-        model.nightHandler(model.players[0],model.players[1]);
-        model.nightHandler(model.players[5],model.players[0]);
         assertEquals(4,model.countInnocents());
         assertTrue(model.players[0].isAlive());
         assertFalse(model.players[1].isAlive());
@@ -50,11 +50,6 @@ class ModelTest {
         model.addPlayer(new Innocent("Lucas"));
         model.addPlayer(new Innocent("Ivan"));
         model.addPlayer(new Detective("Gavin"));
-        model.nightHandler(model.players[0],model.players[1]);
-        model.nightHandler(model.players[0],model.players[2]);
-        model.nightHandler(model.players[0],model.players[3]);
-        model.nightHandler(model.players[0],model.players[4]);
-        model.nightHandler(model.players[0],model.players[5]);
         assertEquals(model.checkWinner(),Model.Role.MURDERER);
         model = new Model();
         model.addPlayer(new Murderer("Daph"));
@@ -84,5 +79,21 @@ class ModelTest {
         model.receiveVote(model.players[5],model.players[0]);
         model.tallyVotes().kill();
         assertEquals(model.checkWinner(),Model.Role.INNOCENT);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shuffleTest(){
+        Model model = new Model();
+        final int HOW_MANY = 30;
+        int ran;
+        Random r = new Random();
+        for(int i = 0; i < HOW_MANY; i++){
+            ran = r.nextInt(9) + 4;
+            for(int a = 1; a <= ran; a++){
+                model.addPlayer(new Player("Player " + a));
+            }
+            model.assignRoles();
+            model.clearPlayers();
+        }
     }
 }

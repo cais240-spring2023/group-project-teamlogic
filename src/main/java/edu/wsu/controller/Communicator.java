@@ -15,8 +15,12 @@ public class Communicator extends Thread{
     private String received = "";
     private PrintWriter out;
     private BufferedReader in;
+    private String name;
     public Communicator(Socket socket){
         this.socket = socket;
+    }
+    public String getPlayerName(){
+        return name;
     }
     public void run(){
         try {

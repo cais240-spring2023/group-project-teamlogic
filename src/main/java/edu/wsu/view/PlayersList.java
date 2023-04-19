@@ -11,20 +11,24 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
 public class PlayersList {
-    private static Label label = new Label();
-    private static String[] names = new String[12];
+    private static Label label;
+    private static String[] names;
     private static int index = 0;
     public static Scene newScene(String phase){
+        label = new Label();
+        names = new String[12];
         Label phaseLabel = new Label(phase);
         label.setTextAlignment(TextAlignment.CENTER);
         VBox vBox = new VBox();
         vBox.getChildren().add(phaseLabel);
         vBox.getChildren().add(label);
-        Button b = new Button("Launch");
-        b.setOnAction(event -> {
-            Server.launch(names);
-        });
-        vBox.getChildren().add(b);
+        if(phase.equals("Joined players...")) {
+            Button b = new Button("Launch");
+            b.setOnAction(event -> {
+                Server.launch();
+            });
+            vBox.getChildren().add(b);
+        }
         vBox.setAlignment(Pos.CENTER);
         return new Scene(vBox,600,600);
     }

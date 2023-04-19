@@ -17,6 +17,7 @@ public class Server {
     static Communicator[] communicators = new Communicator[12];
     private static String[] messages = new String[12];
     private static int received;
+    private static boolean[] temp;
     private static int playerCount;
     private static boolean filling = true;
     private static App appLink;
@@ -48,11 +49,11 @@ public class Server {
                 System.exit(1);
             }
     }
-    public static void launch(String[] names){
+    public static void launch(){
         Model m = ModelSingleton.getInstance();
         filling = false;
-        for(int i = 0; i < names.length; i++){
-            if(names[i] != null) m.addPlayer(new Player(names[i]));
+        for(int i = 0; i < communicators.length; i++){
+            if(communicators[i] != null) m.addPlayer(new Player(communicators[i].getName()));
         }
         String details = new String();
         m.assignRoles();
@@ -77,19 +78,60 @@ public class Server {
     }
 
     public static void nightPhase(){
-        appLink.changeScene(PlayersList.newScene("Received night input from..."));
+        clearMessages();
+        appLink.changeScene(PlayersList.newScene("Night inputs:"));
         for(int i = 0; i < communicators.length; i++){
-            communicators[i].receive();
+            if(communicators[i] != null) communicators[i].receive();
         }
-        while(received < playerCount){
-            System.out.print("");
+        temp = new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false};
+        Thread thread = new Thread(() -> {
+            while(received < playerCount){
+                System.out.print("");
+                for(int i = 0; i < messages.length; i++){
+                    if(messages[i] != null && !temp[i]){
+                        temp[i] = true;
+                        PlayersList.addName(messages[i]);
+                    }
+                }
+            }
+            nightHandler();
+        });
+        thread.run();
+    }
+    public static void nightHandler(){
+        Model model = ModelSingleton.getInstance();
+        String[] outMessages = new String[communicators.length];
+        for(int i = 0; i < messages.length; i++){
+            outMessages[i] = new String();
         }
+        for(int i = 0; i < messages.length; i++){//find all the mail the players sent to each other
+            if(messages[i] != null && messages[i].split(" -> ").length == 3){
+                model.getPlayer(messages[i].split(" -> ")[2]).hear(messages[i].split(" -> ")[1]);
+            }
+        }
+        for(int i = 0; i < messages.length; i++) {//Night action handling
+            if(messages[i] != null && messages[i].split(" -> ").length == 2){
+                model.getPlayer(messages[i].split(" -> ")[1]).nightHandler(model.getPlayer(messages[i].split(" -> ")[0]));
+            }
+        }
+        String deadPlayers = "";
+        for(int i = 0; i < communicators.length; i++){
+            if(!model.getPlayer(i).isAlive()) deadPlayers += model.getPlayer(i).getName() + ",";
+        }
+        if(!deadPlayers.isEmpty()) deadPlayers = deadPlayers.substring(0,deadPlayers.length()-1);
+        for(int i = 0; i < communicators.length; i++){
+            if(communicators[i] != null){
+                communicators[i].send(deadPlayers + ";" + model.getPlayer(i).getMessages().replace('\n','\t'));
+            }
+        }
+
     }
     public static void receive(String message, Communicator communicator){
         int i = 0;
         while(communicators[i] != communicator){
             i++;
         }
+        System.out.println(message);
         messages[i] = message;
         received++;
     }

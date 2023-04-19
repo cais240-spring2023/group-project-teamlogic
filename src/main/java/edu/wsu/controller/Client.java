@@ -74,7 +74,18 @@ public class Client {
         MessageDisplayerFX.display(player.getName()+".","Day " + model.getTurn() + "\nGood morning!\nLiving Players: "+model.listLivingPlayers()+"\n\nYour messages:\n"+player.getMessages(),appLink,model);
     }
     public static void nightPhase(){
-        appLink.changeScene(PlayerSelectorPics.newScene(model.getPlayers(),player,"doesn't matter lol",appLink));
+        appLink.changeScene(PlayerSelectorPics.newScene(model.getPlayers(),player,player.getNightActionName(),appLink));
+    }
+    public static void nightHandler(){
+        String details = receive().replace('\t','\n');
+        String[] deadPlayers = details.split(";")[0].split(",");
+        String message = details.split(";")[1];
+        player.hear(message);
+        for(int i = 0; i < deadPlayers.length; i++){
+            model.getPlayer(i).kill();
+        }
+        model.incrementTurn();
+        goodMorning();
     }
     public static void sendMessage(String message){
         try{

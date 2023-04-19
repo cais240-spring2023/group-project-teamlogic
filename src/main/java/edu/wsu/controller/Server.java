@@ -47,21 +47,22 @@ public class Server {
         Model m = ModelSingleton.getInstance();
         filling = false;
         for(int i = 0; i < names.length; i++){
-            m.addPlayer(new Player(names[i]));
+            if(names[i] != null) m.addPlayer(new Player(names[i]));
         }
         String details = new String();
         m.assignRoles();
+        System.out.println(m.getPlayer(0).getName());
         for(int i = 0; i < 12; i++){
             if(m.getPlayer(i) != null) details += m.getPlayer(i).getName() + " ";
         }
         details = details.substring(0,details.length()-1);//cut off the final space
-        details += "\n";
+        details += ";";
         for(int i = 0; i < 12; i++){
             if(m.getPlayer(i) != null) details += m.getPlayer(i).roleName() + " ";
         }
         details = details.substring(0,details.length()-1);//cut off the final space
         for (int i = 0; i < 12; i++) {
-            if (communicators[i] != null) communicators[i].send(i + "\n" + details);
+            if (communicators[i] != null) communicators[i].send(i + ";" + details);
         }
     }
     public Player getPlayer(Communicator communicator){

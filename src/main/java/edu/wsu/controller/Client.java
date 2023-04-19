@@ -34,9 +34,9 @@ public class Client {
         appLink.changeScene(Waiting.newScene());
         String details = receive();//This will send name and role data
         System.out.println(details);
-        int index = Integer.parseInt(details.split("\n")[0]);
-        String[] names = details.split("\n")[1].split(" ");
-        String[] roles = details.split("\n")[2].split(" ");
+        int index = Integer.parseInt(details.split(";")[0]);
+        String[] names = details.split(";")[1].split(" ");
+        String[] roles = details.split(";")[2].split(" ");
         for(int i = 0; i < names.length; i++){
             switch(roles[i]){
                 case "Innocent":

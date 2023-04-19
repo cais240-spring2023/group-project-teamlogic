@@ -85,7 +85,7 @@ public class Client {
         String message = details.split(";")[1];
         player.hear(message);
         for(int i = 0; i < deadPlayers.length; i++){
-            model.getPlayer(deadPlayers[i]).kill();
+            if(model.getPlayer(deadPlayers[i]) != null) model.getPlayer(deadPlayers[i]).kill();
             System.out.println("Killing" + model.getPlayer(deadPlayers[i]));
         }
         model.incrementTurn();

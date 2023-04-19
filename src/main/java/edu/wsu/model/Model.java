@@ -307,7 +307,7 @@ public class Model
     public Player getPlayer(String playerName){
         for (Player player:
              players) {
-            if (player.nameIs(playerName)){
+            if (player != null && player.nameIs(playerName)){
                 return player;
             }
         }

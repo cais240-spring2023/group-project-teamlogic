@@ -1,10 +1,5 @@
 package edu.wsu;
 
-import edu.wsu.controller.MessageDisplayer;
-import edu.wsu.controller.MessageDisplayerFX;
-import edu.wsu.controller.PlayerSelector;
-import edu.wsu.model.Player;
-
 
 //This is for arbitrarily executing instructions
 //Nothing substantive should happen here.

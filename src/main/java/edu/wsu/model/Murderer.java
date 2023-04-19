@@ -1,7 +1,5 @@
 package edu.wsu.model;
 
-import edu.wsu.controller.PlayerSelector;
-
 import java.util.ArrayList;
 
 public class Murderer extends Player{
@@ -24,12 +22,9 @@ public class Murderer extends Player{
         hear("You are the murderer!");
     }
 
-
-
     @Override
-    public Player activityHandler(Player[] players){
-        if(Model.TEXT_MODE) return textBasedActivityHandler(players);
-        else return panelBasedActivityHandler(players);
+    public void nightHandler(Player acted){
+        acted.killedBy(this);
     }
 
     public Player textBasedActivityHandler(Player[] players){
@@ -42,12 +37,12 @@ public class Murderer extends Player{
         }
     }
     public Player panelBasedActivityHandler(Player[] players){
-        return PlayerSelector.selectPlayer(players,name,"kill", true);
+        return null;
     }
 
     @Override
     public String getNightActionName(){
-        return "murder";
+        return "murder, or ";
     }
     public boolean hasAction(){
         return true;

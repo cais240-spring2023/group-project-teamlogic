@@ -33,23 +33,7 @@ public class TransitionController
     public TransitionController(){
     }
 
-    public static Scene newScene(String name, String purpose, App app, Model m){
-        StackPane root = new StackPane();
-        //Label playerName = new Label();
-        //playerName.setText(name);
-        Label currentPlayerMessage = new Label();
-        currentPlayerMessage.setText("It is your turn to " + purpose + ", " + name + ".\nClick below to begin.");
-        Button takeTurn = new Button();
-        takeTurn.setText("Take turn");
-        takeTurn.setOnAction(event -> {app.doNext(m);});
-        StackPane.setAlignment(takeTurn, Pos.BOTTOM_CENTER);
-        //root.getChildren().add(playerName);
-        root.getChildren().add(currentPlayerMessage);
-        root.getChildren().add(takeTurn);
-        return new Scene(root,600,500);
-    }
-
-    public static void display(String name, String purpose, App app, Model m){
-        app.changeScene(newScene(name, purpose, app, m));
+    public static void display(String name, String purpose, App app){
+        app.changeScene(TransitionView.newScene(name, purpose, app));
     }
 }

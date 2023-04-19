@@ -9,6 +9,6 @@ public class Waiting {
         Label l = new Label("Sit tight!");
         VBox vbox = new VBox();
         vbox.getChildren().add(l);
-        return new Scene(l,500,600);
+        return new Scene(vbox,500,600);
     }
 }

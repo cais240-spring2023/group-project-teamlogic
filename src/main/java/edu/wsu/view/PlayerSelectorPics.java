@@ -1,6 +1,7 @@
 package edu.wsu.view;
 
 import edu.wsu.App;
+import edu.wsu.controller.Client;
 import edu.wsu.controller.PlayerSelector;
 import edu.wsu.model.Model;
 import edu.wsu.model.ModelSingleton;
@@ -42,8 +43,15 @@ public class PlayerSelectorPics {
                     b.setPrefWidth(105);
                     b.setOnAction(event -> {
                                 selection[0] = players[index];
-                                if(textField.getText().equals("")) app.receive(chooser,selection[0],purpose);
-                                else PlayerSelector.sendMessage(selection[0],chooser,textField.getText(),app);
+                                if(App.inHotseat) {
+                                    if (textField.getText().equals("")) app.receive(chooser, selection[0], purpose);
+                                    else PlayerSelector.sendMessage(selection[0], chooser, textField.getText(), app);
+                                }
+                                else{
+                                    if (textField.getText().equals("")) Client.sendMessage(chooser.getName() + " -> " + selection[0].getName());
+                                    else Client.sendMessage(chooser.getName() + " -> " + textField.getText() + " -> " + selection[0].getName());
+                                    app.changeScene(Waiting.newScene());
+                                }
                             }
                     );
                     vbox.getChildren().add(imageView);

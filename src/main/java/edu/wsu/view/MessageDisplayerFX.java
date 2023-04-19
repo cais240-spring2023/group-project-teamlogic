@@ -1,6 +1,7 @@
 package edu.wsu.view;
 
 import edu.wsu.App;
+import edu.wsu.controller.Client;
 import edu.wsu.model.Model;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,6 +19,16 @@ public class MessageDisplayerFX {
         close.setText("Okay");
         close.setOnAction(event -> {
             if(App.inHotseat) app.next();
+            else{
+                if(name.charAt(name.length()-1) == '.'){
+                    if(m.getTurn() == 0){
+                        Client.nightPhase();
+                    }
+                    else{
+
+                    }
+                }
+            }
         });
         StackPane.setAlignment(close, Pos.BOTTOM_CENTER);
         Label text = new Label();

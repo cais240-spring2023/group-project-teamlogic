@@ -14,9 +14,11 @@ public class PlayersList {
     private static Label label = new Label();
     private static String[] names = new String[12];
     private static int index = 0;
-    public static Scene newScene(App a){
+    public static Scene newScene(String phase){
+        Label phaseLabel = new Label(phase);
         label.setTextAlignment(TextAlignment.CENTER);
         VBox vBox = new VBox();
+        vBox.getChildren().add(phaseLabel);
         vBox.getChildren().add(label);
         Button b = new Button("Launch");
         b.setOnAction(event -> {

@@ -38,12 +38,12 @@ public class Communicator extends Thread{
         out.println(message);
     }
     public void receive(){
-        System.out.println("On received");
+        System.out.println("Receiving...");
         Thread thread = new Thread(() -> {
 
             try {
                 received = in.readLine();
-                System.out.println(received);
+                Server.receive(received,this);
             }
             catch (IOException e) {
                 System.err.println("IO error");

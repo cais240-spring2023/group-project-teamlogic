@@ -3,6 +3,7 @@ package edu.wsu.controller;
 import edu.wsu.App;
 import edu.wsu.model.*;
 import edu.wsu.view.MessageDisplayerFX;
+import edu.wsu.view.PlayerSelectorPics;
 import edu.wsu.view.ProfileSelectorFX;
 import edu.wsu.view.Waiting;
 
@@ -70,7 +71,10 @@ public class Client {
         goodMorning();
     }
     public static void goodMorning(){
-        MessageDisplayerFX.display(player.getName(),"Good morning!\nLiving Players: "+model.listLivingPlayers()+"\n\nYour messages:\n"+player.getMessages(),appLink,model);
+        MessageDisplayerFX.display(player.getName()+".","Day " + model.getTurn() + "\nGood morning!\nLiving Players: "+model.listLivingPlayers()+"\n\nYour messages:\n"+player.getMessages(),appLink,model);
+    }
+    public static void nightPhase(){
+        appLink.changeScene(PlayerSelectorPics.newScene(model.getPlayers(),player,"doesn't matter lol",appLink));
     }
     public static void sendMessage(String message){
         try{

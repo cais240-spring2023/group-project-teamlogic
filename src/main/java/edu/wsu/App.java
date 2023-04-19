@@ -70,8 +70,8 @@ public class App extends Application {
 
         Button server = new Button("Launch server");
         server.setOnAction(event -> {
-            changeScene(PlayersList.newScene(this));
-            Server.runServer();
+            changeScene(PlayersList.newScene("Joined players..."));
+            Server.runServer(this);
             }
         );
         server.setPrefWidth(BUTTON_WIDTH);

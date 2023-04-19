@@ -15,9 +15,14 @@ import java.net.Socket;
 
 public class Server {
     static Communicator[] communicators = new Communicator[12];
-    static boolean filling = true;
+    private static String[] messages = new String[12];
+    private static int received;
+    private static int playerCount;
+    private static boolean filling = true;
+    private static App appLink;
 
-    public static void runServer(){
+    public static void runServer(App a){
+        appLink = a;
         int portNumber = 4544;
             try {
                 ServerSocket serverSocket = new ServerSocket(portNumber);
@@ -61,10 +66,38 @@ public class Server {
             if(m.getPlayer(i) != null) details += m.getPlayer(i).roleName() + " ";
         }
         details = details.substring(0,details.length()-1);//cut off the final space
+        playerCount = 0;
         for (int i = 0; i < 12; i++) {
-            if (communicators[i] != null) communicators[i].send(i + ";" + details);
+            if (communicators[i] != null){
+                communicators[i].send(i + ";" + details);
+                playerCount++;
+            }
+        }
+        nightPhase();
+    }
+
+    public static void nightPhase(){
+        appLink.changeScene(PlayersList.newScene("Received night input from..."));
+        for(int i = 0; i < communicators.length; i++){
+            communicators[i].receive();
+        }
+        while(received < playerCount){
+            System.out.print("");
         }
     }
+    public static void receive(String message, Communicator communicator){
+        int i = 0;
+        while(communicators[i] != communicator){
+            i++;
+        }
+        messages[i] = message;
+        received++;
+    }
+    public static void clearMessages(){
+        received = 0;
+        messages = new String[12];
+    }
+
     public Player getPlayer(Communicator communicator){
         Model model = ModelSingleton.getInstance();
         int index = -1;

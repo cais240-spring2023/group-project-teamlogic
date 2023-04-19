@@ -51,4 +51,6 @@ public class Murderer extends Player{
     public String roleString(){
         return "a murderer!";
     }
+    @Override
+    public String roleName(){ return "Murderer";}
 }

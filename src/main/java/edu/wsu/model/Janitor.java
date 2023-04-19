@@ -24,4 +24,6 @@ public class Janitor extends Murderer{
     public void nightHandler(Player acted){
         acted.clean();
     }
+    @Override
+    public String roleName(){ return "Janitor";}
 }

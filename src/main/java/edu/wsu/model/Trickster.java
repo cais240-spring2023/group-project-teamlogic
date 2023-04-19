@@ -14,4 +14,6 @@ public class Trickster extends Player{
     public String roleString(){
         return "a trickster.";
     }
+    @Override
+    public String roleName(){ return "Trickster";}
 }

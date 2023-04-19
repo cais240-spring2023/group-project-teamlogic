@@ -24,4 +24,6 @@ public class Silencer extends Murderer{
     public void nightHandler(Player acted){
         acted.silence();
     }
+    @Override
+    public String roleName(){ return "Silencer";}
 }

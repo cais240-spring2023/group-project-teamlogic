@@ -20,6 +20,7 @@ public class Model
      5. Add the Role to the Assign Roles function in model
      6. Add an assign role function to the Player class
      7. Add to debug mode
+     8. Add to Client
 
 
 

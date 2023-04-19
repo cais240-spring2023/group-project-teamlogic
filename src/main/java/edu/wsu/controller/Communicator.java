@@ -19,7 +19,6 @@ public class Communicator extends Thread{
         this.socket = socket;
     }
     public void run(){
-        System.out.println("Thread begun");
         try {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

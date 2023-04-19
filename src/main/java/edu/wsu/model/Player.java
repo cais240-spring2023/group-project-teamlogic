@@ -57,6 +57,7 @@ public class Player implements PlayerInterface{
     public boolean isImmune(){
         return isImmune;
     }
+    public String roleName(){ return ""; }
 
 
 
@@ -167,6 +168,11 @@ public class Player implements PlayerInterface{
             return true;
         }
         else return false;
+    }
+    public String getMessages(){
+        String m = messages;
+        messages = "";
+        return m;
     }
     public void panelMessages(Model m){
         messages = messages.replace("$",Integer.toString(Model.MAX_TURNS-Model.m.getTurn()));

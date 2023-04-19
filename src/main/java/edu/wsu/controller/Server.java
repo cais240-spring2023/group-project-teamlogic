@@ -1,5 +1,6 @@
 package edu.wsu.controller;
 
+import edu.wsu.App;
 import edu.wsu.model.Model;
 import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Player;
@@ -46,12 +47,18 @@ public class Server {
         Model m = ModelSingleton.getInstance();
         filling = false;
         String names = new String();
+        m.assignRoles();
         for(int i = 0; i < 12; i++){
             if(m.getPlayer(i) != null) names += m.getPlayer(i).getName() + " ";
         }
         names = names.substring(0,names.length()-1);//cut off the final space
-        for(int i = 0; i < communicators.length; i++){
-            if(communicators[i] != null) communicators[i].send(names);
+        names += "\n";
+        for(int i = 0; i < 12; i++){
+            if(m.getPlayer(i) != null) names += m.getPlayer(i).roleName() + " ";
+        }
+        names = names.substring(0,names.length()-1);//cut off the final space
+        for (int i = 0; i < 12; i++) {
+            if (communicators[i] != null) communicators[i].send(i + "\n" + names);
         }
     }
     public Player getPlayer(Communicator communicator){

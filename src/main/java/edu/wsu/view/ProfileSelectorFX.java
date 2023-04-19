@@ -49,8 +49,7 @@ public class ProfileSelectorFX {
             }
             else{
                 Client.sendMessage(comboBox.getValue());
-                a.changeScene(Waiting.newScene());
-                Client.receive();
+                Client.beginGame();
             }
             comboBox.getSelectionModel().clearSelection();
             imageView.setImage(new Image("file:./src/main/resources/estor.png"));

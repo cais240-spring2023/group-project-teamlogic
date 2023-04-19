@@ -23,5 +23,7 @@ public class Innocent extends Player{
     public String roleString(){
         return "a normie.";
     }
+    @Override
+    public String roleName(){ return "Innocent";}
 }
 

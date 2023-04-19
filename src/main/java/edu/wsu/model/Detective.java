@@ -53,4 +53,6 @@ public class Detective extends Innocent{
         }
         hear(acted.getName() + " visited " + name);
     }
+    @Override
+    public String roleName(){ return "Detective";}
 }

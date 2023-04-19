@@ -131,7 +131,60 @@ public class Server {
                 communicators[i].send(deadPlayers + ";" + model.getPlayer(i).getMessages().replace('\n','\t'));
             }
         }
-
+        model.incrementTurn();
+        if(model.checkWinner() != null) voting();
+    }
+    public static void voting(){
+        System.out.println("Voting");
+        clearMessages();
+        appLink.changeScene(PlayersList.newScene("Votes:"));
+        for(int i = 0; i < communicators.length; i++){
+            if(communicators[i] != null) communicators[i].receive();
+        }
+        temp = new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false};
+        Thread thread = new Thread(() -> {
+            while(received < playerCount){
+                System.out.print("");
+                for(int i = 0; i < messages.length; i++){
+                    if(messages[i] != null && !temp[i]){
+                        temp[i] = true;
+                        int finalI = i;
+                        Platform.runLater(() -> PlayersList.addName(messages[finalI]));
+                    }
+                }
+            }
+            voteCounting();
+        });
+        thread.start();
+    }
+    public static void voteCounting(){
+        Model model = ModelSingleton.getInstance();
+        int[] votes = new int[communicators.length];
+        for(int i = 0; i < communicators.length; i++){
+            votes[i] = 0;
+        }
+        int totalVotes = 0;
+        for(int i = 0; i < messages.length; i++){
+            if(messages[i] != null){
+                totalVotes++;
+                votes[model.getPlayerIndex(model.getPlayer(messages[i].split(" -> ")[1]))]++;
+            }
+        }
+        for(int i = 0; i < votes.length; i++){
+            if(votes[i] < totalVotes / 2){
+                for(int j = 0; j < communicators.length; j++){
+                    communicators[j].send(model.getPlayer(i).getName());
+                }
+                totalVotes = Integer.MAX_VALUE;//a little control thing so I don't have to make a boolean
+                break;
+            }
+        }
+        if(totalVotes != Integer.MAX_VALUE){
+            for(int j = 0; j < communicators.length; j++){
+                communicators[j].send("None");
+            }
+        }
+        if(model.checkWinner() != null) nightPhase();
     }
     public static void receive(String message, Communicator communicator){
         int i = 0;

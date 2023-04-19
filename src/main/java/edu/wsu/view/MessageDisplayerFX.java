@@ -3,6 +3,7 @@ package edu.wsu.view;
 import edu.wsu.App;
 import edu.wsu.controller.Client;
 import edu.wsu.model.Model;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,13 +21,19 @@ public class MessageDisplayerFX {
         close.setOnAction(event -> {
             if(App.inHotseat) app.next();
             else{
-                if(name.charAt(name.length()-1) == '.'){
+                if(name.charAt(name.length()-1) == '.'){//This will be true during good morning
                     if(m.getTurn() == 0){
                         Client.nightPhase();
                     }
                     else{
-
+                        Client.voting();
                     }
+                }
+                else if(name.charAt(name.length()-1) == ' '){
+                    Client.nightPhase();
+                }
+                else{
+                    Platform.exit();
                 }
             }
         });

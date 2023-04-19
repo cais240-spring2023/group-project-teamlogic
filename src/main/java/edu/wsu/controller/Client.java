@@ -74,7 +74,28 @@ public class Client {
         MessageDisplayerFX.display(player.getName()+".","Day " + model.getTurn() + "\nGood morning!\nLiving Players: "+model.listLivingPlayers()+"\n\nYour messages:\n"+player.getMessages(),appLink,model);
     }
     public static void nightPhase(){
+        if(model.checkWinner() != null) goodGame();
         appLink.changeScene(PlayerSelectorPics.newScene(model.getPlayers(),player,player.getNightActionName(),appLink));
+    }
+    public static void voting(){
+        if(model.checkWinner() != null) goodGame();
+        appLink.changeScene(PlayerSelectorPics.newScene(model.getPlayers(),player,"vote against",appLink));
+    }
+    public static void voteHandler(){
+        String details = receive();
+        if(details.equals("None")) MessageDisplayerFX.display(" ","Nobody was voted off the train.",appLink,model);
+        else{
+            Player p = model.getPlayer(details);
+            MessageDisplayerFX.display("Player killed! ",p.getName() + " was thrown off the train. Good luck to them!\n\nThey were " + p.roleString(),appLink, model);
+        }
+    }
+    public static void goodGame(){
+        Player[] winners = model.getWinners();
+        String winnerString = new String();
+        for(int i = 0; i < winners.length; i++){
+            if(winners[i] != null) winnerString += winners[i].getName() + " ";
+        }
+        MessageDisplayerFX.display("Good game!\nWinners",winnerString,appLink,model);
     }
     public static void nightHandler(){
         String details = receive().replace('\t','\n');

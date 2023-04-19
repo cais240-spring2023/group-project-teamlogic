@@ -4,19 +4,25 @@ import edu.wsu.App;
 import edu.wsu.model.Model;
 import edu.wsu.controller.DebugMode;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.stage.Screen;
+
 public class DebugModeFX {
 
 
     private static Label[] labels;
     private static ComboBox[] comboBoxes;
     private static TextField[] textFields;
+    static Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+    static double screenWidth = screenBounds.getWidth();
+    static double screenHeight = screenBounds.getHeight();
     public static Scene newScene(App a){
         Label text = new Label("So it's come to this...");
         GridPane g = new GridPane();
@@ -96,7 +102,17 @@ public class DebugModeFX {
                 g.add(comboBoxes[i],c*3+2,r);
             }
         }
+        BackgroundImage cityBackground = new BackgroundImage(new Image("file:./src/main/resources/city background.png",screenWidth, screenHeight,false,true),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+                BackgroundSize.DEFAULT);
+
+        BackgroundImage cityBackground2 = new BackgroundImage(
+                new Image("file:./src/main/resources/city background.png", screenWidth, screenHeight, false, true),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+                BackgroundSize.DEFAULT);
+        Background cityBackgroundBG = new Background(cityBackground);
         VBox v = new VBox();
+        v.setBackground(cityBackgroundBG);
         v.getChildren().add(text);
         v.getChildren().add(g);
         v.getChildren().add(submit);

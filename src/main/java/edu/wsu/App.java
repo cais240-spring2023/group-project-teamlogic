@@ -10,14 +10,15 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class App extends Application {
@@ -53,6 +54,18 @@ public class App extends Application {
     private Player whoseTurn = null;
     private Model model;
 
+    Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+    double screenWidth = screenBounds.getWidth();
+    double screenHeight = screenBounds.getHeight();
+
+    BorderPane root = new BorderPane();
+    BackgroundImage cityBackground = new BackgroundImage(new Image("file:./src/main/resources/intro background.png",screenWidth, screenHeight,true,true),
+            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+            BackgroundSize.DEFAULT);
+
+
+
+
     @Override
     public void start(Stage stage){
         initializeModel();
@@ -60,7 +73,6 @@ public class App extends Application {
 
         Image nestor = new Image("file:./src/main/resources/nestor.png");
         ImageView nestorView = new ImageView(nestor);
-
 
         Button hotSeat = new Button("Hot Seat");
         hotSeat.setPrefWidth(BUTTON_WIDTH);
@@ -83,9 +95,8 @@ public class App extends Application {
             DebugMode.debug(this);
         });
 
+        root.setBackground(new Background(cityBackground));
 
-
-        BorderPane root = new BorderPane();
         VBox vbox = new VBox();
         vbox.getChildren().add(nestorView);
         vbox.getChildren().add(hotSeat);
@@ -104,7 +115,7 @@ public class App extends Application {
         root.setPadding(new Insets(10));
 
         Scene scene = new Scene(root, 600, 500);
-        scene.getStylesheets().addAll(this.getClass().getResource("/main/background.css").toExternalForm());
+
         stage.setTitle("Nestor's Murder Mystery");
         stage.setScene(scene);
         currentlyShowing = scene;
@@ -120,8 +131,10 @@ public class App extends Application {
 
 
     public void changeScene(Scene scene){
-        if(currentlyShowing != null) stage.setScene(scene);
-        currentlyShowing = scene;
+        if(currentlyShowing != null) {
+            stage.setScene(scene);
+            currentlyShowing = scene;
+        }
     }
 
 

@@ -13,21 +13,31 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+
+import static edu.wsu.view.DebugModeFX.screenBounds;
+
 
 public class PlayerSelectorPics {
+    static double screenWidth = screenBounds.getWidth();
+    static double screenHeight = screenBounds.getHeight();
+    static BackgroundImage cityBackground = new BackgroundImage(new Image("file:./src/main/resources/night city.png",screenWidth, screenHeight,false,true),
+            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+            BackgroundSize.DEFAULT);
+    static Background cityBackgroundBG = new Background(cityBackground);
 
-    public static Scene newScene(Player[] players, Player chooser, String purpose, App app){
-        final int BUTTON_WIDTH = 75;
-        final Player[] selection = {null};
-        Model m = ModelSingleton.getInstance();
-        GridPane grid = new GridPane();
-        VBox vbox;
-        ImageView imageView;
-        Button b;
-        TextField textField = new TextField();
-        textField.setPrefWidth(420);
+    public static Scene newScene(Player[] players, Player chooser, String purpose, App app) {
+        
+            final int BUTTON_WIDTH = 75;
+            final Player[] selection = {null};
+            Model m = ModelSingleton.getInstance();
+            GridPane grid = new GridPane();
+            VBox vbox;
+            ImageView imageView;
+            Button b;
+            TextField textField = new TextField();
+            textField.setPrefWidth(420);
+
 
 
         for(int r = 0; r < 4; r++){
@@ -78,6 +88,7 @@ public class PlayerSelectorPics {
             }
         });
         vbox.getChildren().add(b);
+        vbox.setBackground(cityBackgroundBG);
         vbox.setAlignment(Pos.CENTER);
         return new Scene(vbox,App.V0,App.V1);
     }

@@ -14,6 +14,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import edu.wsu.App;
 
+import static edu.wsu.view.PlayerSelectorFX.cityBackgroundBG;
+
 
 public class ProfileSelectorFX {
     static String[] names = {"Bertie","Brenden","Dan","Domino","Evan","Kenneth","Logan","Miner","Nick","Ruth","Spencer","Tim"};
@@ -21,14 +23,17 @@ public class ProfileSelectorFX {
     public static Scene newScene(Model m, App a) {
         ComboBox<String> comboBox = new ComboBox<>();
         for(int i = 0; i < names.length; i++) comboBox.getItems().add(names[i]);
-        Image image = App.getNullImage();
-        ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(280);
-        imageView.setFitWidth(210);
+
+          Image image = new Image("file:./src/main/resources/estor.png");
+          ImageView imageView = new ImageView(image);
+          imageView.setFitHeight(280);
+          imageView.setFitWidth(210);
+
         Button button  = new Button("Submit");
         comboBox.setPrefWidth(210);
         button.setPrefWidth(210);
         VBox root = new VBox();
+        root.setBackground(cityBackgroundBG);
         root.getChildren().add(comboBox);
         root.getChildren().add(imageView);
         root.getChildren().add(button);

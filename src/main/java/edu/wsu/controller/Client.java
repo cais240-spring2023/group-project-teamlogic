@@ -103,6 +103,7 @@ public class Client {
         }
     }
     public static void voteHandler(){
+        appLink.changeScene(Waiting.newScene());
         Thread thread = new Thread(() -> {
             String details = receive();
             if(details.equals("None")) Platform.runLater(() -> MessageDisplayerFX.display(" ","Nobody was voted off the train.",appLink,model));

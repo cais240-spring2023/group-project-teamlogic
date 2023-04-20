@@ -221,6 +221,13 @@ public class Model
         }
         return count;
     }
+    public int countLivingPlayers(){
+        int count = 0;
+        for(int i = 0; i < PLAYER_COUNT; i++){
+            if(players[i] != null && players[i].isAlive()) count++;
+        }
+        return count;
+    }
 
     public boolean addPlayer(Player player){//Take a wild guess what this does
         for(int i = 0; i < PLAYER_COUNT; i++){//searches for a null spot and then puts the player in that spot

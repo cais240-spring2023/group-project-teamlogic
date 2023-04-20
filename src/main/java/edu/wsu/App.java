@@ -23,9 +23,39 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class App extends Application {
+
+    /*
+    TO DO
+
+    2. Disallow duplicate names
+     */
+
     public static boolean inHotseat = true;
+    public static final int V0 = 500;
+    public static final int V1 = 600;
 
     public boolean DEBUG_MODE = false;
+
+    private static final Image[] images = new Image[12];
+    private static final Image nullImage = new Image("file:./src/main/resources/estor.png");
+    private static void loadImages(){
+        String[] names = {"Bertie","Brenden","Dan","Domino","Evan","Kenneth","Logan","Miner","Nick","Ruth","Spencer","Tim"};
+        for(int i = 0; i < names.length; i++){
+            images[i] = new Image("file:./src/main/resources/" + names[i].toLowerCase() + ".png");
+        }
+    }
+    public static Image getImage(String name){
+        String[] names = {"Bertie","Brenden","Dan","Domino","Evan","Kenneth","Logan","Miner","Nick","Ruth","Spencer","Tim"};
+        int i = 0;
+        while(!names[i].equals(name)){
+            i++;
+            if( i >= names.length) return nullImage;
+        }
+        return images[i];
+    }
+    public static Image getNullImage(){
+        return nullImage;
+    }
 
     private final String TUTORIAL = "\n\n\n\nThis is a social deduction game.\n" +
             "Every player will be assigned a role, and the goal of the game is to deduce which roles\n" +
@@ -59,6 +89,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage){
         initializeModel();
+        loadImages();
         final int BUTTON_WIDTH = 125;
 
         Image nestor = new Image("file:./src/main/resources/nestor.png");
@@ -114,7 +145,7 @@ public class App extends Application {
         VBox root2 = new VBox(10, nameLabel, nameField, submitButton, exitButton);
         root.setPadding(new Insets(10));
 
-        Scene scene = new Scene(root, 600, 500);
+        Scene scene = new Scene(root, 500, 600);
 
         stage.setTitle("Nestor's Murder Mystery");
         stage.setScene(scene);
@@ -123,6 +154,10 @@ public class App extends Application {
         stage.show();
 
 
+    }
+    @Override
+    public void stop(){
+        System.exit(0);
     }
 
     public void initializeModel(){

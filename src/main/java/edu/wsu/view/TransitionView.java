@@ -31,6 +31,6 @@ public class TransitionView {
         //root.getChildren().add(playerName);
         root.getChildren().add(currentPlayerMessage);
         root.getChildren().add(takeTurn);
-        return new Scene(root,600,600);
+        return new Scene(root,App.V0,App.V1);
     }
 }

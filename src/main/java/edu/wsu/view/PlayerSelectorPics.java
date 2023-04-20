@@ -36,7 +36,7 @@ public class PlayerSelectorPics {
                 if(players[i] != null && players[i].isAlive()){
                     vbox = new VBox();
                     final int index = i;
-                    imageView = new ImageView(new Image("file:./src/main/resources/" + players[index].getName().toLowerCase() + ".png"));
+                    imageView = new ImageView(App.getImage(players[i].getName()));
                     imageView.setFitHeight(140);
                     imageView.setFitWidth(105);
                     b = new Button(players[index].getName());
@@ -70,9 +70,16 @@ public class PlayerSelectorPics {
         if(!purpose.equals("vote against")) vbox.getChildren().add(textField);
         b = new Button("Skip");
         b.setPrefWidth(420);
-        b.setOnAction(event -> app.next());
+        b.setOnAction(event ->{
+            if(App.inHotseat) app.next();
+            else{
+                Client.sendMessage(chooser.getName());
+                if(purpose.equals("vote against")) Client.voteHandler();
+                else Client.nightHandler();
+            }
+        });
         vbox.getChildren().add(b);
         vbox.setAlignment(Pos.CENTER);
-        return new Scene(vbox,600,600);
+        return new Scene(vbox,App.V0,App.V1);
     }
 }

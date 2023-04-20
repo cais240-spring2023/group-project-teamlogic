@@ -21,7 +21,7 @@ public class ProfileSelectorFX {
     public static Scene newScene(Model m, App a) {
         ComboBox<String> comboBox = new ComboBox<>();
         for(int i = 0; i < names.length; i++) comboBox.getItems().add(names[i]);
-        Image image = new Image("file:./src/main/resources/estor.png");
+        Image image = App.getNullImage();
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(280);
         imageView.setFitWidth(210);
@@ -40,7 +40,7 @@ public class ProfileSelectorFX {
         }
         root.setAlignment(Pos.CENTER);
         comboBox.setOnAction(event -> {
-            if(comboBox.getValue() != null) imageView.setImage(new Image("file:./src/main/resources/" + comboBox.getValue().toLowerCase() + ".png"));
+            if(comboBox.getValue() != null) imageView.setImage(App.getImage(comboBox.getValue()));
         });
         button.setOnAction(event ->{
 
@@ -54,6 +54,6 @@ public class ProfileSelectorFX {
             comboBox.getSelectionModel().clearSelection();
             imageView.setImage(new Image("file:./src/main/resources/estor.png"));
                 });
-        return new Scene(root,600,600);
+        return new Scene(root,App.V0,App.V1);
     }
 }

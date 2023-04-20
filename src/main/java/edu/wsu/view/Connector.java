@@ -28,7 +28,7 @@ public class Connector {
                 connect(a);
             }
         });
-        return new Scene(vbox,300,300);
+        return new Scene(vbox,App.V0,App.V1);
     }
     public static void connect(App a){
         String hostName;

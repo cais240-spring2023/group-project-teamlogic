@@ -58,7 +58,6 @@ public class Server {
         }
         String details = new String();
         m.assignRoles();
-        System.out.println(m.getPlayer(0).getName());
         for(int i = 0; i < 12; i++){
             if(m.getPlayer(i) != null) details += m.getPlayer(i).getName() + " ";
         }
@@ -93,11 +92,11 @@ public class Server {
                     if(messages[i] != null && !temp[i]){
                         temp[i] = true;
                         int finalI = i;
-                        Platform.runLater(() -> PlayersList.addName(messages[finalI]));
+                        Platform.runLater(() -> PlayersList.addName(messages[finalI].split(" -> ")[0]));
                     }
                 }
             }
-            nightHandler();
+            Platform.runLater(() -> nightHandler());
         });
         thread.start();
     }
@@ -131,8 +130,9 @@ public class Server {
                 communicators[i].send(deadPlayers + ";" + model.getPlayer(i).getMessages().replace('\n','\t'));
             }
         }
+        playerCount = model.countLivingPlayers();
         model.incrementTurn();
-        if(model.checkWinner() != null) voting();
+        if(model.checkWinner() == null) voting();
     }
     public static void voting(){
         System.out.println("Voting");
@@ -149,11 +149,11 @@ public class Server {
                     if(messages[i] != null && !temp[i]){
                         temp[i] = true;
                         int finalI = i;
-                        Platform.runLater(() -> PlayersList.addName(messages[finalI]));
+                        Platform.runLater(() -> PlayersList.addName(messages[finalI].split(" -> ")[0]));
                     }
                 }
             }
-            voteCounting();
+            Platform.runLater(() -> voteCounting());
         });
         thread.start();
     }
@@ -163,28 +163,29 @@ public class Server {
         for(int i = 0; i < communicators.length; i++){
             votes[i] = 0;
         }
-        int totalVotes = 0;
         for(int i = 0; i < messages.length; i++){
             if(messages[i] != null){
-                totalVotes++;
-                votes[model.getPlayerIndex(model.getPlayer(messages[i].split(" -> ")[1]))]++;
+                if(messages[i].split(" -> ").length == 2) votes[model.getPlayerIndex(model.getPlayer(messages[i].split(" -> ")[1]))]++;
             }
         }
+        boolean killedSomeone = false;
         for(int i = 0; i < votes.length; i++){
-            if(votes[i] < totalVotes / 2){
+            if(votes[i] > model.countLivingPlayers() / 2){
+                model.getPlayer(i).kill();
                 for(int j = 0; j < communicators.length; j++){
-                    communicators[j].send(model.getPlayer(i).getName());
+                    if(communicators[j] != null) communicators[j].send(model.getPlayer(i).getName());
                 }
-                totalVotes = Integer.MAX_VALUE;//a little control thing so I don't have to make a boolean
+                killedSomeone = true;//I named this variable "killedAMan" because
                 break;
             }
         }
-        if(totalVotes != Integer.MAX_VALUE){
+        if(killedSomeone){
             for(int j = 0; j < communicators.length; j++){
                 communicators[j].send("None");
             }
         }
-        if(model.checkWinner() != null) nightPhase();
+        playerCount = model.countLivingPlayers();
+        if(model.checkWinner() == null) nightPhase();
     }
     public static void receive(String message, Communicator communicator){
         int i = 0;

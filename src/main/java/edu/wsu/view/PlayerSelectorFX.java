@@ -141,6 +141,6 @@ public class PlayerSelectorFX {
         if(!purpose.equals("vote against")) root.getChildren().add(textField);
         root.getChildren().add(skip);
         root.setAlignment(Pos.CENTER);
-        return new Scene(root,600,600);
+        return new Scene(root,App.V0,App.V1);
     }
 }

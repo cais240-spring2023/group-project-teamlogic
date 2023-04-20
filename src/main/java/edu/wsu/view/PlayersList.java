@@ -26,12 +26,12 @@ public class PlayersList {
         if(phase.equals("Joined players...")) {
             Button b = new Button("Launch");
             b.setOnAction(event -> {
-                Server.launch();
+                if(index >= 2) Server.launch();
             });
             vBox.getChildren().add(b);
         }
         vBox.setAlignment(Pos.CENTER);
-        return new Scene(vBox,600,600);
+        return new Scene(vBox,App.V0,App.V1);
     }
     public static void addName(String name){
         if(index < 12) {

@@ -26,11 +26,15 @@ public class MessageDisplayerFX {
                         Client.nightPhase();
                     }
                     else{
-                        Client.voting();
+
+                        if(m.checkWinner() != null) Client.goodGame();
+                        else Client.voting();
                     }
                 }
-                else if(name.charAt(name.length()-1) == ' '){
-                    Client.nightPhase();
+                else if(name.charAt(name.length()-1) == ' '){//This will be true after voting
+
+                    if(m.checkWinner() != null) Client.goodGame();
+                    else Client.nightPhase();
                 }
                 else{
                     Platform.exit();

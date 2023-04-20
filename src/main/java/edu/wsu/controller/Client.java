@@ -85,7 +85,6 @@ public class Client {
                 else System.out.println("X. " + model.getPlayer(i).getName());
             }
         }
-        if(model.checkWinner() != null) goodGame();
         if(player.isAlive()) appLink.changeScene(PlayerSelectorPics.newScene(model.getPlayers(),player,player.getNightActionName(),appLink));
         else{
             appLink.changeScene(Problem.newScene("died"));
@@ -124,7 +123,7 @@ public class Client {
         MessageDisplayerFX.display("Good game!\nWinners",winnerString,appLink,model);
     }
     public static void nightHandler(){
-        app.changeScene(Waiting.newScene());
+        appLink.changeScene(Waiting.newScene());
         Thread thread = new Thread(() -> {
             String details = receive().replace('\t','\n');
             String[] deadPlayers = details.split(";")[0].split(",");

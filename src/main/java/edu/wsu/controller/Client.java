@@ -124,6 +124,7 @@ public class Client {
         MessageDisplayerFX.display("Good game!\nWinners",winnerString,appLink,model);
     }
     public static void nightHandler(){
+        app.changeScene(Waiting.newScene());
         Thread thread = new Thread(() -> {
             String details = receive().replace('\t','\n');
             String[] deadPlayers = details.split(";")[0].split(",");

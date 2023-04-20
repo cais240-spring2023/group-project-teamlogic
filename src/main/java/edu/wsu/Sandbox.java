@@ -13,6 +13,7 @@ public class Sandbox {
         final int count = sc.nextInt();
         sc.close();
         for(int i = 0; i < count; i++){
+            System.out.println("Launching "+i+"...");
             Application.launch(App.class);
         }
     }

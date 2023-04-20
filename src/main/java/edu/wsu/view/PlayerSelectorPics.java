@@ -50,7 +50,6 @@ public class PlayerSelectorPics {
                                 else{
                                     if (textField.getText().equals("")) Client.sendMessage(chooser.getName() + " -> " + selection[0].getName());
                                     else Client.sendMessage(chooser.getName() + " -> " + textField.getText() + " -> " + selection[0].getName());
-                                    app.changeScene(Waiting.newScene());
                                     if(purpose.equals("vote against")) Client.voteHandler();
                                     else Client.nightHandler();
                                 }

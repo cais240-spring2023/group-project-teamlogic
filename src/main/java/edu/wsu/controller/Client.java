@@ -103,7 +103,7 @@ public class Client {
         }
     }
     public static void voteHandler(){
-        appLink.changeScene(Waiting.newScene());
+        if(player.isAlive() && !player.isSilenced()) appLink.changeScene(Waiting.newScene());
         Thread thread = new Thread(() -> {
             String details = receive();
             if(details.equals("None")) Platform.runLater(() -> MessageDisplayerFX.display(" ","Nobody was voted off the train.",appLink,model));
@@ -125,15 +125,17 @@ public class Client {
         MessageDisplayerFX.display("Good game!\nWinners",winnerString,appLink,model);
     }
     public static void nightHandler(){
-        appLink.changeScene(Waiting.newScene());
+        if(player.isAlive())appLink.changeScene(Waiting.newScene());
         Thread thread = new Thread(() -> {
             String details = receive().replace('\t','\n');
             String[] deadPlayers = details.split(";")[0].split(",");
             for(int i = 0; i < deadPlayers.length; i++){
                 System.out.println(deadPlayers[i]);
             }
-            String message = details.split(";")[1];
-            player.hear(message);
+            if(details.split(";").length > 1) {
+                String message = details.split(";")[1];
+                player.hear(message);
+            }
             for(int i = 0; i < deadPlayers.length; i++){
                 if(model.getPlayer(deadPlayers[i]) != null) model.getPlayer(deadPlayers[i]).kill();
                 System.out.println("Killing" + model.getPlayer(deadPlayers[i]));

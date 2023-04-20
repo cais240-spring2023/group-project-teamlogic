@@ -27,7 +27,7 @@ public class PlayerSelectorPics {
     static Background cityBackgroundBG = new Background(cityBackground);
 
     public static Scene newScene(Player[] players, Player chooser, String purpose, App app) {
-        
+
             final int BUTTON_WIDTH = 75;
             final Player[] selection = {null};
             Model m = ModelSingleton.getInstance();

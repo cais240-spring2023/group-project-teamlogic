@@ -126,9 +126,14 @@ public class Server {
             if(model.getPlayer(i) != null && !model.getPlayer(i).isAlive()) deadPlayers += model.getPlayer(i).getName() + ",";
         }
         if(!deadPlayers.isEmpty()) deadPlayers = deadPlayers.substring(0,deadPlayers.length()-1);
+        String silencedPlayers = "";
+        for(int i = 0; i < communicators.length; i++){
+            if(model.getPlayer(i) != null && model.getPlayer(i).isSilenced()) silencedPlayers += model.getPlayer(i).getName() + ",";
+        }
+        if(!silencedPlayers.isEmpty()) silencedPlayers = silencedPlayers.substring(0,silencedPlayers.length()-1);
         for(int i = 0; i < communicators.length; i++){
             if(communicators[i] != null){
-                communicators[i].send(deadPlayers + ";" + model.getPlayer(i).getMessages().replace('\n','\t'));
+                communicators[i].send(deadPlayers + ";" + silencedPlayers + ";" + model.getPlayer(i).getMessages().replace('\n','\t'));
             }
         }
         playerCount = model.countLivingPlayers();

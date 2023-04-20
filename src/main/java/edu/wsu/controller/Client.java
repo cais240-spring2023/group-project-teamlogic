@@ -76,7 +76,7 @@ public class Client {
         thread.start();
     }
     public static void goodMorning(){
-        MessageDisplayerFX.display(player.getName()+".","Day " + model.getTurn() + "\nGood morning!\nLiving Players: "+model.listLivingPlayers()+"\n\nYour messages:\n"+player.getMessages(),appLink,model);
+        MessageDisplayerFX.display(player.getName()+".","Day " + model.getTurn() + "\nGood morning!\nLiving Players: "+model.listLivingPlayers()+"\n\nYour messages:\n"+player.getMessages().replace("$",Integer.toString(Model.MAX_TURNS-model.getTurn())),appLink,model);
     }
     public static void nightPhase(){
         for(int i = 0; i < 12; i++){
@@ -129,16 +129,25 @@ public class Client {
         Thread thread = new Thread(() -> {
             String details = receive().replace('\t','\n');
             String[] deadPlayers = details.split(";")[0].split(",");
+            String[] silencedPlayers = details.split(";")[1].split(",");
             for(int i = 0; i < deadPlayers.length; i++){
                 System.out.println(deadPlayers[i]);
             }
-            if(details.split(";").length > 1) {
-                String message = details.split(";")[1];
+            if(details.split(";").length > 2) {
+                String message = details.split(";")[2];
                 player.hear(message);
             }
             for(int i = 0; i < deadPlayers.length; i++){
-                if(model.getPlayer(deadPlayers[i]) != null) model.getPlayer(deadPlayers[i]).kill();
-                System.out.println("Killing" + model.getPlayer(deadPlayers[i]));
+                if(model.getPlayer(deadPlayers[i]) != null){
+                    model.getPlayer(deadPlayers[i]).kill();
+                    System.out.println("Killing " + model.getPlayer(deadPlayers[i]).getName());
+                }
+            }
+            for(int i = 0; i < silencedPlayers.length; i++){
+                if(model.getPlayer(silencedPlayers[i]) != null){
+                    model.getPlayer(silencedPlayers[i]).silence();
+                    System.out.println("Silencing " + model.getPlayer(deadPlayers[i]).getName());
+                }
             }
             model.incrementTurn();
             Platform.runLater(Client::goodMorning);

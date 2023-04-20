@@ -17,7 +17,7 @@ import edu.wsu.App;
 
 public class ProfileSelectorFX {
     static String[] names = {"Bertie","Brenden","Dan","Domino","Evan","Kenneth","Logan","Miner","Nick","Ruth","Spencer","Tim"};
-
+    private static int i = 0;
     public static Scene newScene(Model m, App a) {
         ComboBox<String> comboBox = new ComboBox<>();
         for(int i = 0; i < names.length; i++) comboBox.getItems().add(names[i]);
@@ -36,7 +36,7 @@ public class ProfileSelectorFX {
             Button finish = new Button("Finished");
             finish.setPrefWidth(210);
             root.getChildren().add(finish);
-            finish.setOnAction(event -> UsernameInput.complete(a));
+            finish.setOnAction(event -> {if(i >= 2) UsernameInput.complete(a);});
         }
         root.setAlignment(Pos.CENTER);
         comboBox.setOnAction(event -> {
@@ -45,6 +45,7 @@ public class ProfileSelectorFX {
         button.setOnAction(event ->{
 
             if(App.inHotseat) {
+                i++;
                 UsernameInput.nameGetter(comboBox.getValue(), m, a);
             }
             else{

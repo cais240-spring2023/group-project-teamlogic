@@ -134,10 +134,34 @@ public class Model
             selection[i] = acted;
         }
     }
+    public Player[][] reorder(Player[] players, Player[] selection){//puts all janitors first
+        Player[] newPlayers = new Player[PLAYER_COUNT];
+        Player[] newSelection = new Player[PLAYER_COUNT];
+        int index = 0;
+        for(int i = 0; i < PLAYER_COUNT; i++){
+            if(players[i] != null && players[i] instanceof Janitor){
+                newPlayers[index] = players[i];
+                newSelection[index] = selection[i];
+                index++;
+            }
+        }
+        for(int i = 0; i < PLAYER_COUNT; i++){
+            if(players[i] != null && !(players[i] instanceof Janitor)){
+                newPlayers[index] = players[i];
+                newSelection[index] = selection[i];
+                index++;
+            }
+        }
+        Player[][] toReturn = {newPlayers,newSelection};
+        return toReturn;
+    }
     public void nightOver(){
+        Player[][] filtered = reorder(players,selection);
+        Player[] fixedPlayers = filtered[0];
+        Player[] fixedSelection = filtered[1];
         for(int i = 0; i < players.length; i++){
-            if(selection[i] != null){
-                players[i].nightHandler(selection[i]);
+            if(fixedSelection[i] != null){
+                fixedPlayers[i].nightHandler(fixedSelection[i]);
             }
         }
         //Doing this for all players (not just murderer and detective) to future-proof this

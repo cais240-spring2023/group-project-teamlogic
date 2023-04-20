@@ -142,7 +142,6 @@ public class App extends Application {
         TextField nameField = new TextField();
         Button submitButton = new Button("Submit");
         Button exitButton = new Button("Done");
-        VBox root2 = new VBox(10, nameLabel, nameField, submitButton, exitButton);
         root.setPadding(new Insets(10));
 
         Scene scene = new Scene(root, 500, 600);

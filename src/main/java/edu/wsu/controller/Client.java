@@ -81,7 +81,7 @@ public class Client {
     public static void nightPhase(){
         for(int i = 0; i < 12; i++){
             if(model.getPlayer(i) != null){
-                if(model.getPlayer(i).isAlive()) System.out.println((i+1) + "." + model.getPlayer(i).getName());
+                if(model.getPlayer(i).isAlive()) System.out.println((i+1) + ". " + model.getPlayer(i).getName());
                 else System.out.println("X. " + model.getPlayer(i).getName());
             }
         }
@@ -125,7 +125,7 @@ public class Client {
         MessageDisplayerFX.display("Good game!\nWinners",winnerString,appLink,model);
     }
     public static void nightHandler(){
-        if(player.isAlive())appLink.changeScene(Waiting.newScene());
+        if(player.isAlive()) appLink.changeScene(Waiting.newScene());
         Thread thread = new Thread(() -> {
             String details = receive().replace('\t','\n');
             String[] deadPlayers = details.split(";")[0].split(",");

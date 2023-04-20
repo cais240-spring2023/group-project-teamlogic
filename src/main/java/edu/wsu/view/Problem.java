@@ -23,6 +23,6 @@ public class Problem {
         VBox v = new VBox();
         v.setBackground(wagonBackgroundBG);
         v.getChildren().add(l);
-        return new Scene(v,200,600);
+        return new Scene(v,500,600);
     }
 }

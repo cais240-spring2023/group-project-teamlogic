@@ -181,9 +181,9 @@ public class Server {
                 break;
             }
         }
-        if(killedSomeone){
+        if(!killedSomeone){
             for(int j = 0; j < communicators.length; j++){
-                communicators[j].send("None");
+                if(communicators[j] != null) communicators[j].send("None");
             }
         }
         playerCount = model.countLivingPlayers();

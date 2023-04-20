@@ -110,6 +110,7 @@ public class Client {
             else{
                 Player p = model.getPlayer(details);
                 p.kill();
+                if(p instanceof Trickster) model.addWinner(p);
                 Platform.runLater(()->MessageDisplayerFX.display("Player killed! ",p.getName() + " was thrown off the train. Good luck to them!\n\nThey were " + p.roleString(),appLink, model));
             }
         });

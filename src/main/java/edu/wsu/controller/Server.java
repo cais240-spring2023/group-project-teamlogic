@@ -4,6 +4,7 @@ import edu.wsu.App;
 import edu.wsu.model.Model;
 import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Player;
+import edu.wsu.model.Trickster;
 import edu.wsu.view.PlayersList;
 import javafx.application.Platform;
 
@@ -172,6 +173,7 @@ public class Server {
         for(int i = 0; i < votes.length; i++){
             if(votes[i] > model.countLivingPlayers() / 2){
                 model.getPlayer(i).kill();
+                if(model.getPlayer(i) instanceof Trickster) model.addWinner(model.getPlayer(i));
                 for(int j = 0; j < communicators.length; j++){
                     if(communicators[j] != null) communicators[j].send(model.getPlayer(i).getName());
                 }

@@ -87,7 +87,10 @@ public class Model
     public String listLivingPlayers(){
         String livingPlayers = new String();
         for(int i = 0; i < players.length; i++){
-            if(players[i] != null && players[i].isAlive()) livingPlayers += players[i].getName() + ", ";
+            if(players[i] != null && players[i].isAlive()){
+                if(i == 4 || i == 8) livingPlayers += players[i].getName() + "\n";
+                else livingPlayers += players[i].getName() + ", ";
+            }
         }
         return livingPlayers.substring(0,livingPlayers.length()-2);
     }

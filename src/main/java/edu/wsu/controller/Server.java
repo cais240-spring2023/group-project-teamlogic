@@ -144,12 +144,17 @@ public class Server {
         System.out.println("Voting");
         clearMessages();
         appLink.changeScene(PlayersList.newScene("Votes:"));
+        Model model  = ModelSingleton.getInstance();
         for(int i = 0; i < communicators.length; i++){
             if(communicators[i] != null) communicators[i].receive();
         }
         temp = new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false};
         Thread thread = new Thread(() -> {
-            while(received < playerCount){
+            int silencedCount = 0;
+            for(int i = 0; i < communicators.length; i++){
+                if(model.getPlayer(i).isSilenced()) silencedCount++;
+            }
+            while(received < playerCount-silencedCount){
                 System.out.print("");
                 for(int i = 0; i < messages.length; i++){
                     if(messages[i] != null && !temp[i]){

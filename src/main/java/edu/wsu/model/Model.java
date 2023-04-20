@@ -88,7 +88,7 @@ public class Model
         String livingPlayers = new String();
         for(int i = 0; i < players.length; i++){
             if(players[i] != null && players[i].isAlive()){
-                if(i == 4 || i == 8) livingPlayers += players[i].getName() + "\n";
+                if(i == 4 || i == 8) livingPlayers += players[i].getName() + " \n";
                 else livingPlayers += players[i].getName() + ", ";
             }
         }

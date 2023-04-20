@@ -146,7 +146,7 @@ public class Client {
             for(int i = 0; i < silencedPlayers.length; i++){
                 if(model.getPlayer(silencedPlayers[i]) != null){
                     model.getPlayer(silencedPlayers[i]).silence();
-                    System.out.println("Silencing " + model.getPlayer(deadPlayers[i]).getName());
+                    System.out.println("Silencing " + model.getPlayer(silencedPlayers[i]).getName());
                 }
             }
             model.incrementTurn();

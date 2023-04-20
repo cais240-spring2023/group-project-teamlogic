@@ -255,7 +255,7 @@ public class Model
     }
 
     private Role[] defaultRoles(int count){
-        Role[] fullList = new Role[] {Role.MURDERER,Role.DETECTIVE,Role.DOCTOR,Role.ENGINEER,Role.INNOCENT,Role.TRICKSTER,Role.INNOCENT,Role.SILENCER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.JANITOR};
+        Role[] fullList = new Role[] {Role.DETECTIVE,Role.ENGINEER,Role.TRICKSTER,Role.SILENCER,Role.JANITOR,Role.JANITOR,Role.JANITOR,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT};
         Role[] shortList = new Role[count];
         for(int i = 0; i < count; i++){
             shortList[i] = fullList[i];

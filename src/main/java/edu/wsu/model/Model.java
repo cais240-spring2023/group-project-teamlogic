@@ -20,6 +20,7 @@ public class Model
      5. Add the Role to the Assign Roles function in model
      6. Add an assign role function to the Player class
      7. Add to debug mode
+     8. Add to Client
 
 
 
@@ -86,7 +87,10 @@ public class Model
     public String listLivingPlayers(){
         String livingPlayers = new String();
         for(int i = 0; i < players.length; i++){
-            if(players[i] != null && players[i].isAlive()) livingPlayers += players[i].getName() + ", ";
+            if(players[i] != null && players[i].isAlive()){
+                if(i == 4 || i == 8) livingPlayers += players[i].getName() + " \n";
+                else livingPlayers += players[i].getName() + ", ";
+            }
         }
         return livingPlayers.substring(0,livingPlayers.length()-2);
     }
@@ -130,10 +134,34 @@ public class Model
             selection[i] = acted;
         }
     }
+    public Player[][] reorder(Player[] players, Player[] selection){//puts all janitors first
+        Player[] newPlayers = new Player[PLAYER_COUNT];
+        Player[] newSelection = new Player[PLAYER_COUNT];
+        int index = 0;
+        for(int i = 0; i < PLAYER_COUNT; i++){
+            if(players[i] != null && players[i] instanceof Janitor){
+                newPlayers[index] = players[i];
+                newSelection[index] = selection[i];
+                index++;
+            }
+        }
+        for(int i = 0; i < PLAYER_COUNT; i++){
+            if(players[i] != null && !(players[i] instanceof Janitor)){
+                newPlayers[index] = players[i];
+                newSelection[index] = selection[i];
+                index++;
+            }
+        }
+        Player[][] toReturn = {newPlayers,newSelection};
+        return toReturn;
+    }
     public void nightOver(){
+        Player[][] filtered = reorder(players,selection);
+        Player[] fixedPlayers = filtered[0];
+        Player[] fixedSelection = filtered[1];
         for(int i = 0; i < players.length; i++){
-            if(selection[i] != null){
-                players[i].nightHandler(selection[i]);
+            if(fixedSelection[i] != null){
+                fixedPlayers[i].nightHandler(fixedSelection[i]);
             }
         }
         //Doing this for all players (not just murderer and detective) to future-proof this
@@ -220,6 +248,13 @@ public class Model
         }
         return count;
     }
+    public int countLivingPlayers(){
+        int count = 0;
+        for(int i = 0; i < PLAYER_COUNT; i++){
+            if(players[i] != null && players[i].isAlive()) count++;
+        }
+        return count;
+    }
 
     public boolean addPlayer(Player player){//Take a wild guess what this does
         for(int i = 0; i < PLAYER_COUNT; i++){//searches for a null spot and then puts the player in that spot
@@ -244,7 +279,7 @@ public class Model
     }
 
     private Role[] defaultRoles(int count){
-        Role[] fullList = new Role[] {Role.MURDERER,Role.DETECTIVE,Role.DOCTOR,Role.ENGINEER,Role.INNOCENT,Role.TRICKSTER,Role.INNOCENT,Role.SILENCER,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.JANITOR};
+        Role[] fullList = new Role[] {Role.MURDERER,Role.DETECTIVE,Role.TRICKSTER,Role.ENGINEER,Role.JANITOR,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT};
         Role[] shortList = new Role[count];
         for(int i = 0; i < count; i++){
             shortList[i] = fullList[i];
@@ -306,11 +341,19 @@ public class Model
     public Player getPlayer(String playerName){
         for (Player player:
              players) {
-            if (player.nameIs(playerName)){
+            if (player != null && player.nameIs(playerName)){
                 return player;
             }
         }
         return null;
+    }
+    public Player getPlayer(int index){
+        try {
+            return players[index];
+        }
+        catch(ArrayIndexOutOfBoundsException e){
+            return null;
+        }
     }
     public void tellRoles(){
         for(int i = 0; i < players.length; i++){

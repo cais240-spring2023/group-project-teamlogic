@@ -1,28 +1,66 @@
 package edu.wsu.view;
 
 import edu.wsu.App;
+import edu.wsu.controller.Client;
 import edu.wsu.model.Model;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.stage.Screen;
 
 import java.util.Scanner;
 
 public class MessageDisplayerFX {
+    static Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+    static double screenWidth = screenBounds.getWidth();
+    static double screenHeight = screenBounds.getHeight();
+
+    static BackgroundImage cityBackground = new BackgroundImage(new Image("file:./src/main/resources/city background.png",screenWidth, screenHeight,false,true),
+            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+            BackgroundSize.DEFAULT);
+
+
+    static Background morningBackgroundBG = new Background(cityBackground);
 
     public static Scene newScene(String name, String messages, App app, Model m){
         StackPane root = new StackPane();
+        root.setBackground(morningBackgroundBG);
         Button close = new Button();
         close.setText("Okay");
-        close.setOnAction(event -> {app.next();});
+        close.setOnAction(event -> {
+            if(App.inHotseat) app.next();
+            else{
+                if(name.charAt(name.length()-1) == '.'){//This will be true during good morning
+                    if(m.getTurn() == 0){
+                        Client.nightPhase();
+                    }
+                    else{
+
+                        if(m.checkWinner() != null) Client.goodGame();
+                        else Client.voting();
+                    }
+                }
+                else if(name.charAt(name.length()-1) == ' '){//This will be true after voting
+
+                    if(m.checkWinner() != null) Client.goodGame();
+                    else Client.nightPhase();
+                }
+                else{
+                    Platform.exit();
+                }
+            }
+        });
         StackPane.setAlignment(close, Pos.BOTTOM_CENTER);
         Label text = new Label();
         text.setText(name + "...\n" + messages);
         root.getChildren().add(text);
         root.getChildren().add(close);
-        return new Scene(root,600,600);
+        return new Scene(root,App.V0,App.V1);
     }
 
     public static void display(String name, String messages, App app, Model m){

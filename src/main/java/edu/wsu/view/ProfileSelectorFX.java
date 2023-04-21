@@ -1,5 +1,6 @@
 package edu.wsu.view;
 
+import edu.wsu.controller.Client;
 import edu.wsu.controller.UsernameInput;
 import edu.wsu.model.Model;
 import edu.wsu.model.Player;
@@ -13,38 +14,52 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import edu.wsu.App;
 
+import static edu.wsu.view.PlayerSelectorFX.cityBackgroundBG;
+
 
 public class ProfileSelectorFX {
     static String[] names = {"Bertie","Brenden","Dan","Domino","Evan","Kenneth","Logan","Miner","Nick","Ruth","Spencer","Tim"};
-
+    private static int i = 0;
     public static Scene newScene(Model m, App a) {
         ComboBox<String> comboBox = new ComboBox<>();
         for(int i = 0; i < names.length; i++) comboBox.getItems().add(names[i]);
-        Image image = new Image("file:./src/main/resources/estor.png");
-        ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(280);
-        imageView.setFitWidth(210);
+
+          Image image = new Image("file:./src/main/resources/estor.png");
+          ImageView imageView = new ImageView(image);
+          imageView.setFitHeight(280);
+          imageView.setFitWidth(210);
+
         Button button  = new Button("Submit");
-        Button finish = new Button("Finished");
         comboBox.setPrefWidth(210);
         button.setPrefWidth(210);
-        finish.setPrefWidth(210);
         VBox root = new VBox();
+        root.setBackground(cityBackgroundBG);
         root.getChildren().add(comboBox);
         root.getChildren().add(imageView);
         root.getChildren().add(button);
-        root.getChildren().add(finish);
+        if(App.inHotseat){
+            Button finish = new Button("Finished");
+            finish.setPrefWidth(210);
+            root.getChildren().add(finish);
+            finish.setOnAction(event -> {if(i >= 2) UsernameInput.complete(a);});
+        }
         root.setAlignment(Pos.CENTER);
         comboBox.setOnAction(event -> {
-            if(comboBox.getValue() != null) imageView.setImage(new Image("file:./src/main/resources/" + comboBox.getValue().toLowerCase() + ".png"));
+            if(comboBox.getValue() != null) imageView.setImage(App.getImage(comboBox.getValue()));
         });
         button.setOnAction(event ->{
 
-            UsernameInput.nameGetter(comboBox.getValue(),m,a);
+            if(App.inHotseat) {
+                i++;
+                UsernameInput.nameGetter(comboBox.getValue(), m, a);
+            }
+            else{
+                Client.sendMessage(comboBox.getValue());
+                Client.beginGame();
+            }
             comboBox.getSelectionModel().clearSelection();
             imageView.setImage(new Image("file:./src/main/resources/estor.png"));
                 });
-        finish.setOnAction(event -> UsernameInput.complete(m,a));
-        return new Scene(root,600,600);
+        return new Scene(root,App.V0,App.V1);
     }
 }

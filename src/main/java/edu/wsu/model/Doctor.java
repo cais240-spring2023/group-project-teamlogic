@@ -34,9 +34,10 @@ public class Doctor extends Innocent {
         }
         acted.setImmune();
     }
-
     @Override
     public Role getRole() {
         return Role.DOCTOR;
     }
+    @Override
+    public String roleName(){ return "Doctor";}
 }

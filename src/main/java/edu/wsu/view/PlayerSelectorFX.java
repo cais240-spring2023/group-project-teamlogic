@@ -10,11 +10,21 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+
+import static edu.wsu.view.DebugModeFX.screenBounds;
+
 
 public class PlayerSelectorFX {
+    static double screenWidth = screenBounds.getWidth();
+    static double screenHeight = screenBounds.getHeight();
+    static BackgroundImage cityBackground = new BackgroundImage(new Image("file:./src/main/resources/city background.png",screenWidth, screenHeight,false,true),
+            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+            BackgroundSize.DEFAULT);
 
+
+    static Background cityBackgroundBG = new Background(cityBackground);
     public static Scene newScene(Player[] players, Player chooser, String purpose, App app, Model m){
         final int BUTTON_WIDTH = 75;
         final Player[] selection = {null};
@@ -135,12 +145,13 @@ public class PlayerSelectorFX {
             }
         }
         VBox root = new VBox();
+        root.setBackground(cityBackgroundBG);
         root.getChildren().add(text);
         grid.setAlignment(Pos.CENTER);
         root.getChildren().add(grid);
         if(!purpose.equals("vote against")) root.getChildren().add(textField);
         root.getChildren().add(skip);
         root.setAlignment(Pos.CENTER);
-        return new Scene(root,600,600);
+        return new Scene(root,App.V0,App.V1);
     }
 }

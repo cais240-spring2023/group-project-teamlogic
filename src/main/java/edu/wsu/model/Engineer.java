@@ -33,9 +33,10 @@ public class Engineer extends Innocent{
             hear("$ days until the train reaches its destination.");
         }
     }
-
     @Override
     public Role getRole() {
         return Role.ENGINEER;
     }
+    @Override
+    public String roleName(){ return "Engineer";}
 }

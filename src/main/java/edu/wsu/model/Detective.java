@@ -55,9 +55,10 @@ public class Detective extends Innocent{
         }
         hear(acted.getName() + " visited " + name);
     }
-
     @Override
     public Role getRole() {
         return Role.DETECTIVE;
     }
+    @Override
+    public String roleName(){ return "Detective";}
 }

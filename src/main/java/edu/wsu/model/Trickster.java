@@ -16,9 +16,10 @@ public class Trickster extends Player{
     public String roleString(){
         return "a trickster.";
     }
-
     @Override
     public Role getRole() {
         return Role.TRICKSTER;
     }
+    @Override
+    public String roleName(){ return "Trickster";}
 }

@@ -6,23 +6,57 @@ import edu.wsu.model.ModelSingleton;
 import edu.wsu.model.Player;
 import edu.wsu.model.Trickster;
 import edu.wsu.view.MessageDisplayerFX;
+import edu.wsu.view.Connector;
+import edu.wsu.view.PlayersList;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class App extends Application {
 
+    /*
+    TO DO
+
+    2. Disallow duplicate names
+     */
+
+    public static boolean inHotseat = true;
+    public static final int V0 = 500;
+    public static final int V1 = 600;
+
     public boolean DEBUG_MODE = false;
+
+    private static final Image[] images = new Image[12];
+    private static final Image nullImage = new Image("file:./src/main/resources/estor.png");
+    private static void loadImages(){
+        String[] names = {"Bertie","Brenden","Dan","Domino","Evan","Kenneth","Logan","Miner","Nick","Ruth","Spencer","Tim"};
+        for(int i = 0; i < names.length; i++){
+            images[i] = new Image("file:./src/main/resources/" + names[i].toLowerCase() + ".png");
+        }
+    }
+    public static Image getImage(String name){
+        String[] names = {"Bertie","Brenden","Dan","Domino","Evan","Kenneth","Logan","Miner","Nick","Ruth","Spencer","Tim"};
+        int i = 0;
+        while(!names[i].equals(name)){
+            i++;
+            if( i >= names.length) return nullImage;
+        }
+        return images[i];
+    }
+    public static Image getNullImage(){
+        return nullImage;
+    }
 
     private final String TUTORIAL = "\n\n\n\nThis is a social deduction game.\n" +
             "Every player will be assigned a role, and the goal of the game is to deduce which roles\n" +
@@ -53,9 +87,22 @@ public class App extends Application {
     private Player whoseTurn = null;
     private Model model;
 
+    Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+    double screenWidth = screenBounds.getWidth();
+    double screenHeight = screenBounds.getHeight();
+
+    BorderPane root = new BorderPane();
+    BackgroundImage cityBackground = new BackgroundImage(new Image("file:./src/main/resources/intro background.png",screenWidth, screenHeight,true,true),
+            BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+            BackgroundSize.DEFAULT);
+
+
+
+
     @Override
     public void start(Stage stage){
         initializeModel();
+        loadImages();
         final int BUTTON_WIDTH = 125;
 
         Image nestor = new Image("file:./src/main/resources/nestor.png");
@@ -66,9 +113,18 @@ public class App extends Application {
         hotSeat.setOnAction(event -> {startGame();});
 
         Button server = new Button("Launch server");
+        server.setOnAction(event -> {
+            changeScene(PlayersList.newScene("Joined players..."));
+            Server.runServer(this);
+            }
+        );
         server.setPrefWidth(BUTTON_WIDTH);
 
         Button client = new Button("Connect to server");
+        client.setOnAction(event ->{
+           inHotseat = false;
+           changeScene(Connector.newScene(this));
+        });
         client.setPrefWidth(BUTTON_WIDTH);
 
         Button roleList = new Button("Tutorial");
@@ -82,9 +138,8 @@ public class App extends Application {
             DebugMode.debug(this);
         });
 
+        root.setBackground(new Background(cityBackground));
 
-
-        BorderPane root = new BorderPane();
         VBox vbox = new VBox();
         vbox.getChildren().add(nestorView);
         vbox.getChildren().add(hotSeat);
@@ -99,10 +154,9 @@ public class App extends Application {
         TextField nameField = new TextField();
         Button submitButton = new Button("Submit");
         Button exitButton = new Button("Done");
-        VBox root2 = new VBox(10, nameLabel, nameField, submitButton, exitButton);
         root.setPadding(new Insets(10));
 
-        Scene scene = new Scene(root, 600, 500);
+        Scene scene = new Scene(root, 500, 600);
 
         stage.setTitle("Nestor's Murder Mystery");
         stage.setScene(scene);
@@ -112,24 +166,31 @@ public class App extends Application {
 
 
     }
+    @Override
+    public void stop(){
+        System.exit(0);
+    }
 
     public void initializeModel(){
         model = ModelSingleton.getInstance();
     }
+    public Model getModel() {return model;}
 
 
     public void changeScene(Scene scene){
-        if(currentlyShowing != null) stage.setScene(scene);
-        currentlyShowing = scene;
+        if(currentlyShowing != null) {
+            stage.setScene(scene);
+            currentlyShowing = scene;
+        }
     }
 
 
     public void startGame() {
-        model.setAppLink(this);
         UsernameInput.namer(model,this); //this is where the new players should get the names
     }
 
     public void beginGame(){
+        Model.setAppLink(this);
         model.assignRoles();
         model.tellRoles();
         currentlyOn = Order.GOOD_MORNING;

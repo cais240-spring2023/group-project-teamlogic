@@ -1,5 +1,7 @@
 package edu.wsu.model;
 
+import edu.wsu.model.Model.Role;
+
 public class Doctor extends Innocent {
     public Doctor(String name){
         super(name);
@@ -31,5 +33,10 @@ public class Doctor extends Innocent {
             acted.hear(Doctor.healString());
         }
         acted.setImmune();
+    }
+
+    @Override
+    public Role getRole() {
+        return Role.DOCTOR;
     }
 }

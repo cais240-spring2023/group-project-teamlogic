@@ -1,5 +1,6 @@
 package edu.wsu.model;
 
+import edu.wsu.model.Model.Role;
 import java.util.ArrayList;
 
 public class Innocent extends Player{
@@ -22,6 +23,10 @@ public class Innocent extends Player{
     @Override
     public String roleString(){
         return "a normie.";
+    }
+
+    public Role getRole(){
+        return Role.INNOCENT;
     }
 }
 

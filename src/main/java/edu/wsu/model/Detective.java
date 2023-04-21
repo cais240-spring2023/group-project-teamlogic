@@ -1,5 +1,7 @@
 package edu.wsu.model;
 
+import edu.wsu.model.Model.Role;
+
 public class Detective extends Innocent{
     //I thought it would be wise to split these off into different classes
     //rather than handling it all in one class
@@ -52,5 +54,10 @@ public class Detective extends Innocent{
             name = p.getName();
         }
         hear(acted.getName() + " visited " + name);
+    }
+
+    @Override
+    public Role getRole() {
+        return Role.DETECTIVE;
     }
 }

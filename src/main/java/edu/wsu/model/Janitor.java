@@ -1,5 +1,7 @@
 package edu.wsu.model;
 
+import edu.wsu.model.Model.Role;
+
 public class Janitor extends Murderer{
     public Janitor(String name) {
         super(name);
@@ -24,4 +26,8 @@ public class Janitor extends Murderer{
     public void nightHandler(Player acted){
         acted.clean();
     }
+    public Role getRole(){
+        return Role.JANITOR;
+    }
+
 }

@@ -1,6 +1,7 @@
 package edu.wsu.model;
 
 import edu.wsu.App;
+import edu.wsu.model.Model.Role;
 import edu.wsu.view.MessageDisplayerFX;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class Player implements PlayerInterface{
     private boolean isImmune = false;//If the model handles the doctor healing you before
     private boolean cleaned = false;
     private int silenced = 0;
+    private Role role;
 
     public String getNightActionName(){
         return "";
@@ -227,5 +229,8 @@ public class Player implements PlayerInterface{
     }
     public void nightHandler(Player acted){
         //do nothing
+    }
+    public Role getRole(){
+        return this.role;
     }
 }

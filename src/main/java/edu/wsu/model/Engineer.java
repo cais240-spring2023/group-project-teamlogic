@@ -1,5 +1,7 @@
 package edu.wsu.model;
 
+import edu.wsu.model.Model.Role;
+
 public class Engineer extends Innocent{
 
     public Engineer(String name){
@@ -30,5 +32,10 @@ public class Engineer extends Innocent{
             Model.MAX_TURNS--;//The train will take one less day to reach its destination
             hear("$ days until the train reaches its destination.");
         }
+    }
+
+    @Override
+    public Role getRole() {
+        return Role.ENGINEER;
     }
 }

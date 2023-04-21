@@ -152,7 +152,7 @@ public class Server {
         Thread thread = new Thread(() -> {
             int silencedCount = 0;
             for(int i = 0; i < communicators.length; i++){
-                if(model.getPlayer(i).isSilenced()) silencedCount++;
+                if(model.getPlayer(i) != null && model.getPlayer(i).isSilenced()) silencedCount++;
             }
             while(received < playerCount-silencedCount){
                 System.out.print("");

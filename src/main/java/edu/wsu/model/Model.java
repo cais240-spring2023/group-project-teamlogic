@@ -344,7 +344,7 @@ public class Model
             if(tally[i] >= threshold){//if the player's tally exceeds the threshold, return this player
                 clearVotes();//clear the votes after the votes have all been tallied
                 if(TEXT_MODE) System.out.println(players[i].name + kickedOffText + goodLuck);
-                else MessageDisplayerFX.display("Vote result",players[i].name + kickedOffText + goodLuck, appLink, this);
+                else if(appLink != null) MessageDisplayerFX.display("Vote result",players[i].name + kickedOffText + goodLuck, appLink, this);
                 return players[i];
             }
         }

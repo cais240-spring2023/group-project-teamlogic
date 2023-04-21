@@ -1,5 +1,7 @@
 package edu.wsu.model;
 
+import edu.wsu.model.Model.Role;
+
 public class Silencer extends Murderer{
     public Silencer(String name) {
         super(name);
@@ -23,6 +25,10 @@ public class Silencer extends Murderer{
     @Override
     public void nightHandler(Player acted){
         acted.silence();
+    }
+    @Override
+    public Role getRole() {
+        return Role.SILENCER;
     }
     @Override
     public String roleName(){ return "Silencer";}

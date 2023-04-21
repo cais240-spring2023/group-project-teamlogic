@@ -1,5 +1,6 @@
 package edu.wsu.model;
 
+import edu.wsu.model.Model.Role;
 import java.util.ArrayList;
 
 public class Murderer extends Player{
@@ -50,6 +51,9 @@ public class Murderer extends Player{
     @Override
     public String roleString(){
         return "a murderer!";
+    }
+    public Role getRole(){
+        return Role.MURDERER;
     }
     @Override
     public String roleName(){ return "Murderer";}

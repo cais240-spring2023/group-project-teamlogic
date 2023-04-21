@@ -1,5 +1,7 @@
 package edu.wsu.model;
 
+import edu.wsu.model.Model.Role;
+
 public class Janitor extends Murderer{
     public Janitor(String name) {
         super(name);
@@ -25,5 +27,8 @@ public class Janitor extends Murderer{
         acted.clean();
     }
     @Override
+    public Role getRole(){
+        return Role.JANITOR;
+    }
     public String roleName(){ return "Janitor";}
 }

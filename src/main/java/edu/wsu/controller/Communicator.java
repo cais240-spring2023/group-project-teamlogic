@@ -27,12 +27,23 @@ public class Communicator extends Thread{
             System.out.println("Thread begun");
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            receive();
-            while(received.equals("")){
-                System.out.print("");//This has to be there or it breaks the program
+            while(name == null) {
+                receive();
+                while (received.equals("")) {
+                    System.out.print("");//This has to be there or it breaks the program
+                }
+                System.out.println("---\n" + received);
+                if(!PlayersList.has(received)){
+                    name = received;
+                    System.out.println("valid");
+                    send("valid");
+                }
+                else{
+                    received = "";
+                    System.out.println("invalid");
+                    send("invalid");
+                }
             }
-            System.out.println("---\n" + received);
-            name = received;
             Platform.runLater(() -> PlayersList.addName(received));
         }
         catch(IOException e){

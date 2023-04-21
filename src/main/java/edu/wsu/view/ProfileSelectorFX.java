@@ -51,11 +51,12 @@ public class ProfileSelectorFX {
 
             if(App.inHotseat) {
                 i++;
+                comboBox.getItems().remove(i);
                 UsernameInput.nameGetter(comboBox.getValue(), m, a);
             }
             else{
                 Client.sendMessage(comboBox.getValue());
-                Client.beginGame();
+                Client.confirmName();
             }
             comboBox.getSelectionModel().clearSelection();
             imageView.setImage(new Image("file:./src/main/resources/estor.png"));

@@ -33,6 +33,14 @@ public class Client {
         model = ModelSingleton.getInstance();
         a.changeScene(ProfileSelectorFX.newScene(model,appLink));
     }
+    public static void confirmName(){
+        Thread thread = new Thread(() -> {
+            String valid = receive();
+            System.out.println(valid);
+            if(valid.equals("valid")) Platform.runLater(() -> beginGame());
+        });
+        thread.start();
+    }
     public static void beginGame(){
         appLink.changeScene(Waiting.newScene());
         Thread thread = new Thread(() -> {

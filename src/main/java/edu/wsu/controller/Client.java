@@ -137,7 +137,10 @@ public class Client {
         Thread thread = new Thread(() -> {
             String details = receive().replace('\t','\n');
             String[] deadPlayers = details.split(";")[0].split(",");
-            String[] silencedPlayers = details.split(";")[1].split(",");
+            String[] silencedPlayers = {};
+            if(details.split(";").length > 1){
+                silencedPlayers = details.split(";")[1].split(",");
+            }
             for(int i = 0; i < deadPlayers.length; i++){
                 System.out.println(deadPlayers[i]);
             }

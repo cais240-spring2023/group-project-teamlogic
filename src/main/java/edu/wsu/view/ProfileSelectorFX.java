@@ -51,8 +51,11 @@ public class ProfileSelectorFX {
 
             if(App.inHotseat) {
                 i++;
-                comboBox.getItems().remove(i);
-                UsernameInput.nameGetter(comboBox.getValue(), m, a);
+                String name = comboBox.getValue();
+                if(name != null) {
+                    comboBox.getItems().remove(name);
+                    UsernameInput.nameGetter(name, m, a);
+                }
             }
             else{
                 Client.sendMessage(comboBox.getValue());

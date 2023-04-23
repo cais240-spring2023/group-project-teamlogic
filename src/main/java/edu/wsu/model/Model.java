@@ -32,7 +32,7 @@ public class Model
 
     public Player[] players;
     private static final int PLAYER_COUNT = 12;
-    public static int MAX_TURNS = 16;
+    public static int MAX_TURNS = 10;
     public boolean rolesAssigned;//keeps track of whether the roles were already assigned
     //                             because I can't directly access it the way I stored this information
 
@@ -279,7 +279,7 @@ public class Model
     }
 
     private Role[] defaultRoles(int count){
-        Role[] fullList = new Role[] {Role.MURDERER,Role.DETECTIVE,Role.TRICKSTER,Role.ENGINEER,Role.JANITOR,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT,Role.INNOCENT};
+        Role[] fullList = new Role[] {Role.MURDERER,Role.DETECTIVE,Role.DOCTOR,Role.SILENCER,Role.ENGINEER,Role.TRICKSTER,Role.JANITOR,Role.INNOCENT,Role.JANITOR,Role.DETECTIVE,Role.INNOCENT,Role.MURDERER};
         Role[] shortList = new Role[count];
         for(int i = 0; i < count; i++){
             shortList[i] = fullList[i];
@@ -324,14 +324,6 @@ public class Model
                 }
             }
             rolesAssigned = true;
-            if(!TEXT_MODE && TEST_MODE){
-                for(int i = 0; i < players.length; i++){
-                    if(players[i] instanceof Detective) System.out.println(players[i].getName() + " is a detective.");
-                    else if(players[i] instanceof Innocent) System.out.println(players[i].getName() + " is an innocent.");
-                    else if(players[i] instanceof Murderer) System.out.println(players[i].getName() + " is a murderer.");
-                    else if(players[i] != null) System.out.println(players[i].getName() + " has no role!");
-                }
-            }
             return true;
         }
         else{

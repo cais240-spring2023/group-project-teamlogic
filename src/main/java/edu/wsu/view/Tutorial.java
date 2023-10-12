@@ -67,6 +67,6 @@ public class Tutorial {
         vbox.setAlignment(Pos.CENTER);
         vbox.setPadding(new Insets(10));
 
-        return new Scene(vbox, 960,App.V1);
+        return new Scene(vbox, App.V0*2,App.V1);
     }
 }

@@ -8,6 +8,7 @@ import edu.wsu.model.Trickster;
 import edu.wsu.view.MessageDisplayerFX;
 import edu.wsu.view.Connector;
 import edu.wsu.view.PlayersList;
+import edu.wsu.view.Tutorial;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -91,7 +92,7 @@ public class App extends Application {
     double screenWidth = screenBounds.getWidth();
     double screenHeight = screenBounds.getHeight();
 
-    BorderPane root = new BorderPane();
+    BorderPane root;
     BackgroundImage cityBackground = new BackgroundImage(new Image("file:./src/main/resources/intro background.png",screenWidth, screenHeight,true,true),
             BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
             BackgroundSize.DEFAULT);
@@ -103,6 +104,20 @@ public class App extends Application {
     public void start(Stage stage){
         initializeModel();
         loadImages();
+
+
+        Scene scene = getDefaultScene();
+
+        stage.setTitle("Nestor's Murder Mystery");
+        stage.setScene(scene);
+        currentlyShowing = scene;
+        this.stage = stage;
+        stage.show();
+
+
+    }
+    public Scene getDefaultScene(){
+        root = new BorderPane();
         final int BUTTON_WIDTH = 125;
 
         Image nestor = new Image("file:./src/main/resources/nestor.png");
@@ -114,22 +129,23 @@ public class App extends Application {
 
         Button server = new Button("Launch server");
         server.setOnAction(event -> {
-            changeScene(PlayersList.newScene("Joined players..."));
-            Server.runServer(this);
-            }
+                    changeScene(PlayersList.newScene("Joined players..."));
+                    Server.runServer(this);
+                }
         );
         server.setPrefWidth(BUTTON_WIDTH);
 
         Button client = new Button("Connect to server");
         client.setOnAction(event ->{
-           inHotseat = false;
-           changeScene(Connector.newScene(this));
+            inHotseat = false;
+            changeScene(Connector.newScene(this));
         });
         client.setPrefWidth(BUTTON_WIDTH);
 
         Button roleList = new Button("Tutorial");
         roleList.setPrefWidth(BUTTON_WIDTH);
-        roleList.setOnAction(event -> {System.out.println(TUTORIAL);});
+        roleList.setOnAction(event -> {
+            changeScene(Tutorial.newScene(this));});
 
         Button debugMode = new Button("Debug Mode");
         debugMode.setPrefWidth(BUTTON_WIDTH);
@@ -150,21 +166,9 @@ public class App extends Application {
         vbox.setAlignment(Pos.CENTER);
         root.setCenter(vbox);
 
-        Label nameLabel = new Label("Enter Name");
-        TextField nameField = new TextField();
-        Button submitButton = new Button("Submit");
-        Button exitButton = new Button("Done");
         root.setPadding(new Insets(10));
 
-        Scene scene = new Scene(root, 500, 600);
-
-        stage.setTitle("Nestor's Murder Mystery");
-        stage.setScene(scene);
-        currentlyShowing = scene;
-        this.stage = stage;
-        stage.show();
-
-
+        return new Scene(root,500,600);
     }
     @Override
     public void stop(){
